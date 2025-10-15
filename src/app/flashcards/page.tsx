@@ -67,14 +67,14 @@ export default function Cards() {
       return;
     }
 
-    const module: Module = {
+    const createdModule: Module = {
       id: Date.now().toString(),
       title: newModule.title,
       description: newModule.description,
       wordCount: 0,
     };
 
-    setModules([...modules, module]);
+    setModules([...modules, createdModule]);
     setNewModule({ title: "", description: "" });
     setIsDialogOpen(false);
     toast.success("Модуль создан!", {

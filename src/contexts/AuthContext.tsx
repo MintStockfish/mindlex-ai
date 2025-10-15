@@ -12,6 +12,7 @@ interface User {
   id: string;
   email: string;
   name: string;
+  password?: string;
 }
 
 interface AuthContextType {
@@ -33,7 +34,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
-      } catch (e) {
+      } catch (_e) {
+        console.log(_e);
         localStorage.removeItem("mindlex_user");
       }
     }
@@ -44,8 +46,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     const users = JSON.parse(localStorage.getItem("mindlex_users") || "[]");
-    const foundUser = users.find(
-      (u: any) => u.email === email && u.password === password
+    const foundUser: User = users.find(
+      (u: User) => u.email === email && u.password === password
     );
 
     if (foundUser) {
@@ -69,8 +71,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   ): Promise<boolean> => {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    const users = JSON.parse(localStorage.getItem("mindlex_users") || "[]");
-    const existingUser = users.find((u: any) => u.email === email);
+    const users: User[] = JSON.parse(
+      localStorage.getItem("mindlex_users") || "[]"
+    );
+    const existingUser = users.find((u: User) => u.email === email);
 
     if (existingUser) {
       return false;

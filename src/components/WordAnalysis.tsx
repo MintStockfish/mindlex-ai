@@ -10,6 +10,8 @@ interface WordAnalysisProps {
 }
 
 export function WordAnalysis({ word, onAddToCards }: WordAnalysisProps) {
+  console.log(word);
+
   const wordData = {
     word: "comprehend",
     translation: "понимать, постигать",

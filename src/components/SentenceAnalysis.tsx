@@ -20,6 +20,7 @@ interface WordDetail {
 
 export function SentenceAnalysis({ sentence }: SentenceAnalysisProps) {
   const [selectedWord, setSelectedWord] = useState<WordDetail | null>(null);
+  console.log(sentence);
 
   const sentenceData = {
     original: "The quick brown fox jumps over the lazy dog.",
