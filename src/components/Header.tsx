@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Moon, Sun, LogOut } from "lucide-react";
+import { Moon, Sun, LogOut, LogIn } from "lucide-react";
 import { Button } from "./ui/button";
 import { MindlexLogo } from "./MindlexLogo";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "./ThemeProvider";
 
 export function Header() {
@@ -77,10 +77,17 @@ export function Header() {
               <span className="sr-only">Переключить тему</span>
             </Button>
 
-            {user && (
+            {user ? (
               <Button onClick={logout} variant="ghost" asChild>
                 <Link href="/login">
                   <LogOut className="h-4 w-4" />
+                  <span className="sr-only">Выйти</span>
+                </Link>
+              </Button>
+            ) : (
+              <Button variant="ghost" asChild>
+                <Link href="/login">
+                  <LogIn className="h-4 w-4" />
                   <span className="sr-only">Войти</span>
                 </Link>
               </Button>
