@@ -14,5 +14,5 @@ const script = `
 `;
 
 export const ThemeScript = () => {
-  return <script dangerouslySetInnerHTML={{ __html: script }} />;
+    return <script dangerouslySetInnerHTML={{ __html: script }} />;
 };

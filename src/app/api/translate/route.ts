@@ -1,73 +1,99 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 interface ChatRequest {
-  prompt: string;
+    prompt: string;
 }
 
 interface ChatResponse {
-  success: boolean;
-  message?: Ai_Cf_Mistralai_Mistral_Small_3_1_24B_Instruct_Output;
-  error?: string;
+    success: boolean;
+    message?: {
+        response: Ai_Cf_Openai_Gpt_Oss_120B_Output;
+    };
+    error?: string;
 }
 
 export async function POST(request: Request): Promise<Response> {
-  try {
-    const { env } = await getCloudflareContext();
+    try {
+        const { env } = await getCloudflareContext();
 
-    const body: ChatRequest = await request.json();
-    const additionalPromt = `Я буду тебе давать слово, ты должен расписать:
-    1. Перевод и пример предложения с этим словом.
-    2. Транскрипция, а также произношение русскими символами
-    3. Если слово имеет форму в разных частях речи, то опиши их
-    4. Синонимы и антонимы с транскрипциями
-    5. Где чаще используется (в разговорном, литературной, газетном и т.п)
-    6. Происхождение
-    `;
+        const body: ChatRequest = await request.json();
+        const systemPrompt = `Ты — API, которое получает английское слово и возвращает всю информацию о нём в строго заданном JSON-формате. Не добавляй никаких объяснений или лишнего текста вне JSON. Пример формата:
+    {
+      "word": "comprehend",
+      "translation": "понимать, постигать",
+      "exampleSentence": "It's difficult to comprehend the scale of the universe.",
+      "exampleTranslation": "Трудно постичь масштабы вселенной.",
+      "ipa": "/ˌkɒmprɪˈhend/",
+      "pronunciation": "ка́мприхэ́нд",
+      "partsOfSpeech": [
+        { "type": "Verb", "meaning": "Понимать или постигать что-то полностью", "example": "She couldn't comprehend what had happened." },
+        { "type": "Verb (formal)", "meaning": "Включать, охватывать", "example": "The course comprehends all aspects of business management." }
+      ],
+      "synonyms": [
+        { "word": "understand", "ipa": "/ˌʌndəˈstænd/" },
+        { "word": "grasp", "ipa": "/ɡrɑːsp/" }
+      ],
+      "antonyms": [
+        { "word": "misunderstand", "ipa": "/ˌmɪsʌndəˈstænd/" }
+      ],
+      "usage": { "informal": 15, "neutral": 60, "formal": 25 },
+      "etymology": "От латинского 'comprehendere', от com- (полностью) + prehendere (схватывать). Вошло в английский через старофранцузский в XIV веке."
+    }`;
 
-    const { prompt } = body;
+        const { prompt: userWord } = body;
 
-    if (!prompt || typeof prompt !== "string") {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: "Valid prompt is required",
-        } as ChatResponse),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
+        if (!userWord || typeof userWord !== "string") {
+            return new Response(
+                JSON.stringify({
+                    success: false,
+                    error: "Valid prompt is required",
+                } as ChatResponse),
+                {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
         }
-      );
+
+        const modelInput = {
+            //   messages: [
+            //     { role: "system", content: systemPrompt },
+            //     { role: "user", content: userWord },
+            //   ],
+            //   response_format: {
+            //     type: "json_object",
+            //   },
+            //   max_tokens: 1024,
+            input: systemPrompt + userWord,
+        };
+
+        const aiResponse = await env.AI.run(
+            "@cf/openai/gpt-oss-120b",
+            modelInput
+        );
+
+        const response: ChatResponse = {
+            success: true,
+            message: {
+                response: aiResponse,
+            },
+        };
+
+        return new Response(JSON.stringify(response), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error("API Error:", error);
+
+        const errorResponse: ChatResponse = {
+            success: false,
+            error: "Internal server error",
+        };
+
+        return new Response(JSON.stringify(errorResponse), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
     }
-
-    const aiResponse = await env.AI.run(
-      "@cf/mistralai/mistral-small-3.1-24b-instruct",
-      {
-        prompt: additionalPromt + prompt,
-        max_tokens: 256,
-        stream: false,
-      }
-    );
-
-    const response: ChatResponse = {
-      success: true,
-      message: aiResponse,
-    };
-
-    return new Response(JSON.stringify(response), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("API Error:", error);
-
-    const errorResponse: ChatResponse = {
-      success: false,
-      error: "Internal server error",
-    };
-
-    return new Response(JSON.stringify(errorResponse), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 }

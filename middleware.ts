@@ -15,12 +15,9 @@ export function middleware(request: NextRequest) {
     headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
     headers.set("Access-Control-Max-Age", "86400");
 
-    // Отвечаем на OPTIONS и прекращаем дальнейшую обработку.
     return new NextResponse(null, { headers });
   }
 
-  // Для всех остальных запросов (POST и др.) просто добавляем заголовок к ИСХОДЯЩЕМУ ответу.
-  // Сначала получаем ответ от роута.
   const response = NextResponse.next();
 
   response.headers.set(
