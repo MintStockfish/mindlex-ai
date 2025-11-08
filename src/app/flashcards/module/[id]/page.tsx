@@ -3,7 +3,13 @@
 import { use } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Plus, Trash2, Volume2 } from "lucide-react";
+import {
+    ChevronLeft,
+    Plus,
+    Trash2,
+    Volume2,
+    GraduationCap,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,13 +24,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { toast } from "sonner";
 
-type Props = {
+export type Props = {
     params: Promise<{
         id: string;
     }>;
 };
 
-interface FlashCard {
+export interface FlashCard {
     id: string;
     word: string;
     translation: string;
@@ -119,11 +125,26 @@ export default function ModuleDetail({ params }: Props) {
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     Назад к модулям
                 </Button>
-                <h1 className="text-3xl sm:text-4xl mb-2">{moduleTitle}</h1>
-                <p className="text-muted-foreground">
-                    {cards.length}{" "}
-                    {cards.length === 1 ? "карточка" : "карточек"}
-                </p>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
+                    <div>
+                        <h1 className="text-3xl sm:text-4xl mb-2">
+                            {moduleTitle}
+                        </h1>
+                        <p className="text-muted-foreground">
+                            {cards.length}{" "}
+                            {cards.length === 1 ? "карточка" : "карточек"}
+                        </p>
+                    </div>
+                    {cards.length > 0 && (
+                        <Button
+                            onClick={() => navigate.push(`${id}/learnModule`)}
+                            className="bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
+                        >
+                            <GraduationCap className="h-4 w-4 mr-2" />
+                            Начать изучение
+                        </Button>
+                    )}
+                </div>
             </div>
 
             {/* Add Card Form */}
