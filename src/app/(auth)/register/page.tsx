@@ -16,6 +16,8 @@ import { MindlexLogo } from "@/components/MindlexLogo";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { registerSchema } from "@/validations/authorization";
+import { z } from "zod";
 
 export default function Register() {
     const navigate = useRouter();
@@ -31,31 +33,28 @@ export default function Register() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (
-            !formData.name ||
-            !formData.email ||
-            !formData.password ||
-            !formData.confirmPassword
-        ) {
-            toast.error("Заполните все поля");
-            return;
-        }
+        const result = registerSchema.safeParse(formData);
 
-        if (formData.password !== formData.confirmPassword) {
-            toast.error("Пароли не совпадают");
-            return;
-        }
+        if (!result.success) {
+            const flattenedErrors = z.flattenError(result.error);
 
-        if (formData.password.length < 6) {
-            toast.error("Пароль должен содержать минимум 6 символов");
+            const allErrors = [
+                ...flattenedErrors.formErrors,
+                ...Object.values(flattenedErrors.fieldErrors).flat(),
+            ];
+
+            allErrors.forEach((errorMessage) => {
+                if (errorMessage) toast.error(errorMessage);
+            });
+
             return;
         }
 
         setIsLoading(true);
         const success = await register(
-            formData.email,
-            formData.password,
-            formData.name
+            result.data.name,
+            result.data.email,
+            result.data.password
         );
         setIsLoading(false);
 
@@ -71,9 +70,12 @@ export default function Register() {
         <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-background via-background to-[#06b6d4]/5">
             <div className="w-full max-w-md">
                 {/* Logo */}
-                <div className="flex justify-center mb-8">
+                <Link
+                    href="/"
+                    className="flex items-center gap-2 hover:opacity-80 transition-opacity justify-center mb-8"
+                >
                     <MindlexLogo />
-                </div>
+                </Link>
 
                 {/* Register Card */}
                 <Card className="border-2">

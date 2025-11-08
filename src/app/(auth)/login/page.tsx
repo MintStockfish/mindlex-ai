@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { z } from "zod";
 import {
     Card,
     CardContent,
@@ -16,6 +17,7 @@ import { MindlexLogo } from "@/components/MindlexLogo";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { loginSchema } from "@/validations/authorization";
 
 export default function Login() {
     const navigate = useRouter();
@@ -29,13 +31,26 @@ export default function Login() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.email || !formData.password) {
-            toast.error("Заполните все поля");
+        const result = loginSchema.safeParse(formData);
+
+        if (!result.success) {
+            const flattenedErrors = z.flattenError(result.error);
+
+            const { fieldErrors } = flattenedErrors;
+
+            const allErrors = Object.values(fieldErrors).flat();
+
+            allErrors.forEach((errorMessage) => {
+                if (errorMessage) {
+                    toast.error(errorMessage);
+                }
+            });
+
             return;
         }
 
         setIsLoading(true);
-        const success = await login(formData.email, formData.password);
+        const success = await login(result.data.email, result.data.password);
         setIsLoading(false);
 
         if (success) {
@@ -50,9 +65,12 @@ export default function Login() {
         <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-background via-background to-[#06b6d4]/5">
             <div className="w-full max-w-md">
                 {/* Logo */}
-                <div className="flex justify-center mb-8">
+                <Link
+                    href="/"
+                    className="flex items-center gap-2 hover:opacity-80 transition-opacity justify-center mb-8"
+                >
                     <MindlexLogo />
-                </div>
+                </Link>
 
                 {/* Login Card */}
                 <Card className="border-2">
