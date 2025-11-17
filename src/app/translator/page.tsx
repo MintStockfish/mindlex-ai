@@ -8,6 +8,11 @@ import { WordAnalysis } from "@/components/WordAnalysis";
 import { SentenceAnalysis } from "@/components/SentenceAnalysis";
 import { toast } from "sonner";
 import { cn } from "@/components/ui/utils";
+import type {
+    WordData,
+    ApiResponse,
+    OutputBlock,
+} from "@/types/translatorTypes";
 
 export default function Translator() {
     const [query, setQuery] = useState("");
@@ -17,42 +22,70 @@ export default function Translator() {
         "word" | "sentence" | null
     >(null);
 
-    interface WordData {
-        word: string;
-        translation: string;
-        exampleSentence: string;
-        exampleTranslation: string;
-        ipa: string;
-        pronunciation: string;
-        partsOfSpeech: {
-            type: string;
-            meaning: string;
-            example: string;
-        }[];
-        synonyms: { word: string; ipa: string }[];
-        antonyms: { word: string; ipa: string }[];
-        usage: { informal: string; neutral: string; formal: string };
-        etymology: string;
-    }
+    const handleWordAnalysis = async () => {
+        try {
+            const response = await fetch("/api/translate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ prompt: query }),
+            });
 
-    interface MessageContent {
-        text: string;
-    }
+            if (!response.ok) {
+                throw new Error("Ошибка сети или сервера");
+            }
 
-    interface OutputBlock {
-        type: string;
-        content?: MessageContent[];
-    }
+            const result: ApiResponse = await response.json();
 
-    interface ApiResponse {
-        success: boolean;
-        message?: {
-            response: {
-                output: OutputBlock[];
-            };
-        };
-        error?: string;
-    }
+            if (result.success && result.message) {
+                try {
+                    const aiOutput = result.message.response?.output;
+
+                    const messageBlock = aiOutput?.find(
+                        (block: OutputBlock) => block.type === "message"
+                    );
+
+                    const aiResponseString = messageBlock?.content?.[0]?.text;
+
+                    if (aiResponseString) {
+                        const parsedData: WordData =
+                            JSON.parse(aiResponseString);
+                        setWordData(parsedData);
+                    } else {
+                        throw new Error(
+                            "Не удалось найти текстовый ответ внутри объекта от ИИ."
+                        );
+                    }
+                } catch (error) {
+                    console.error(
+                        "Ошибка обработки или парсинга ответа от ИИ:",
+                        error
+                    );
+                    toast.error(
+                        error instanceof Error
+                            ? error.message
+                            : "Произошла неизвестная ошибка при разборе ответа."
+                    );
+                    setAnalysisType(null);
+                }
+            } else {
+                throw new Error(
+                    result.error || "Не удалось получить анализ слова."
+                );
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Произошла неизвестная ошибка"
+            );
+            setAnalysisType(null);
+        }
+    };
+
+    const handleSentenceAnalysis = async () => {};
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -62,77 +95,25 @@ export default function Translator() {
         setWordData(null);
         setAnalysisType(null);
 
-        const isSingleWord = query.trim().split(/\s+/).length === 1;
-        const currentAnalysisType = isSingleWord ? "word" : "sentence";
-        setAnalysisType(currentAnalysisType);
+        try {
+            const isSingleWord = query.trim().split(/\s+/).length === 1;
+            const currentAnalysisType = isSingleWord ? "word" : "sentence";
+            setAnalysisType(currentAnalysisType);
 
-        if (currentAnalysisType === "word") {
-            try {
-                const response = await fetch("/api/translate", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ prompt: query }),
-                });
-
-                if (!response.ok) {
-                    throw new Error("Ошибка сети или сервера");
-                }
-
-                const result: ApiResponse = await response.json();
-
-                if (result.success && result.message) {
-                    try {
-                        const aiOutput = result.message.response?.output;
-
-                        const messageBlock = aiOutput?.find(
-                            (block: OutputBlock) => block.type === "message"
-                        );
-
-                        const aiResponseString =
-                            messageBlock?.content?.[0]?.text;
-
-                        if (aiResponseString) {
-                            const parsedData: WordData =
-                                JSON.parse(aiResponseString);
-                            setWordData(parsedData);
-                        } else {
-                            throw new Error(
-                                "Не удалось найти текстовый ответ внутри объекта от ИИ."
-                            );
-                        }
-                    } catch (error) {
-                        console.error(
-                            "Ошибка обработки или парсинга ответа от ИИ:",
-                            error
-                        );
-                        toast.error(
-                            error instanceof Error
-                                ? error.message
-                                : "Произошла неизвестная ошибка при разборе ответа."
-                        );
-                        setAnalysisType(null);
-                    }
-                } else {
-                    throw new Error(
-                        result.error || "Не удалось получить анализ слова."
-                    );
-                }
-            } catch (error) {
-                console.error("Fetch error:", error);
-                toast.error(
-                    error instanceof Error
-                        ? error.message
-                        : "Произошла неизвестная ошибка"
-                );
-                setAnalysisType(null);
+            if (currentAnalysisType === "word") {
+                await handleWordAnalysis();
+            } else {
+                await handleSentenceAnalysis();
             }
-        } else {
-            // Здесь будет логика для предложений
+        } catch (error) {
+            console.error(
+                "An unexpected error occurred in handleSearch:",
+                error
+            );
+            toast.error("Произошла совсем уж непредвиденная ошибка!");
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
 
     const handleAddToCards = () => {
@@ -145,7 +126,7 @@ export default function Translator() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-8 sm:py-12">
             {/* Hero Section */}
             <div className="text-center mb-8 sm:mb-12">
-                <h1 className="text-4xl sm:text-5xl mb-4 bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent">
+                <h1 className="text-4xl sm:text-5xl mb-4 bg-linear-to-r from-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent">
                     Переводчик с ИИ
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -192,7 +173,7 @@ export default function Translator() {
 
                 {!isLoading && !analysisType && (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="w-24 h-24 mb-6 rounded-full bg-gradient-to-r from-[#06b6d4]/20 to-[#3b82f6]/20 flex items-center justify-center">
+                        <div className="w-24 h-24 mb-6 rounded-full bg-linear-to-r from-[#06b6d4]/20 to-[#3b82f6]/20 flex items-center justify-center">
                             <Search className="h-12 w-12 text-[#06b6d4]" />
                         </div>
                         <h3 className="mb-2">Начните изучение</h3>
