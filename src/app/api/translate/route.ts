@@ -14,9 +14,11 @@ interface ChatResponse {
 
 export async function POST(request: Request): Promise<Response> {
     try {
-        const { env } = await getCloudflareContext();
+        const { env } = getCloudflareContext();
 
-        const body: ChatRequest = await request.json();
+        const body: ChatRequest & { word?: string } = await request.json();
+        console.log("API /translate received body:", body);
+
         const systemPrompt = `Ты — API, которое получает английское слово и возвращает всю информацию о нём в строго заданном JSON-формате. Не добавляй никаких объяснений или лишнего текста вне JSON. Пример формата:
     {
       "word": "comprehend",
@@ -40,13 +42,14 @@ export async function POST(request: Request): Promise<Response> {
       "etymology": "От латинского 'comprehendere', от com- (полностью) + prehendere (схватывать). Вошло в английский через старофранцузский в XIV веке."
     }`;
 
-        const { prompt: userWord } = body;
+        const userWord = body.prompt || body.word;
 
         if (!userWord || typeof userWord !== "string") {
+            console.error("Invalid prompt received. Body keys:", Object.keys(body));
             return new Response(
                 JSON.stringify({
                     success: false,
-                    error: "Valid prompt is required",
+                    error: `Valid prompt is required. Received keys: ${Object.keys(body).join(", ")}`,
                 } as ChatResponse),
                 {
                     status: 400,
@@ -55,21 +58,14 @@ export async function POST(request: Request): Promise<Response> {
             );
         }
 
-        const modelInput = {
-            //   messages: [
-            //     { role: "system", content: systemPrompt },
-            //     { role: "user", content: userWord },
-            //   ],
-            //   response_format: {
-            //     type: "json_object",
-            //   },
-            //   max_tokens: 1024,
-            input: systemPrompt + userWord,
-        };
+        const messages = [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userWord },
+        ];
 
         const aiResponse = await env.AI.run(
             "@cf/openai/gpt-oss-120b",
-            modelInput
+            { input: messages }
         );
 
         const response: ChatResponse = {
