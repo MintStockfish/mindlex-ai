@@ -20,7 +20,7 @@ export default function Home() {
             <div className="text-center mb-12 sm:mb-16">
                 {user && (
                     <>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 mb-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 mb-6">
                             <Sparkles className="h-4 w-4 text-[#06b6d4]" />
                             <span className="text-sm">
                                 Добро пожаловать, {user?.name}!
@@ -29,7 +29,7 @@ export default function Home() {
                     </>
                 )}
 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl mb-4 bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent leading-relaxed">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl mb-4 bg-linear-to-r from-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent leading-relaxed">
                     Изучайте языки с ИИ
                 </h1>
                 <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -45,9 +45,9 @@ export default function Home() {
                     onClick={() => navigate.push("/translator")}
                     className="group cursor-pointer hover:shadow-xl hover:border-[#06b6d4]/50 transition-all duration-300 hover:-translate-y-2 overflow-hidden relative"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#06b6d4]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-linear-to-br from-[#06b6d4]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <CardHeader>
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 rounded-lg bg-linear-to-r from-[#06b6d4] to-[#3b82f6] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <Languages className="h-6 w-6 text-white" />
                         </div>
                         <CardTitle className="flex items-center justify-between">
@@ -83,9 +83,9 @@ export default function Home() {
                     onClick={() => navigate.push("/flashcards")}
                     className="group cursor-pointer hover:shadow-xl hover:border-[#06b6d4]/50 transition-all duration-300 hover:-translate-y-2 overflow-hidden relative"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#3b82f6]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-linear-to-br from-[#3b82f6]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <CardHeader>
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 rounded-lg bg-linear-to-r from-[#3b82f6] to-[#8b5cf6] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <BookOpen className="h-6 w-6 text-white" />
                         </div>
                         <CardTitle className="flex items-center justify-between">
@@ -118,14 +118,14 @@ export default function Home() {
             </div>
 
             {/* Features List */}
-            <div className="bg-gradient-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 rounded-2xl p-8 sm:p-12">
+            <div className="bg-linear-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 rounded-2xl p-8 sm:p-12">
                 <h2 className="text-2xl sm:text-3xl mb-8 text-center">
                     Почему Mindlex AI?
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#06b6d4] to-[#3b82f6]" />
+                            <div className="w-2 h-2 rounded-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6]" />
                             <h4>Детальный анализ</h4>
                         </div>
                         <p className="text-sm text-muted-foreground pl-4">
@@ -135,7 +135,7 @@ export default function Home() {
                     </div>
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#06b6d4] to-[#3b82f6]" />
+                            <div className="w-2 h-2 rounded-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6]" />
                             <h4>Интеллектуальные карточки</h4>
                         </div>
                         <p className="text-sm text-muted-foreground pl-4">
@@ -144,7 +144,7 @@ export default function Home() {
                     </div>
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#06b6d4] to-[#3b82f6]" />
+                            <div className="w-2 h-2 rounded-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6]" />
                             <h4>Произношение</h4>
                         </div>
                         <p className="text-sm text-muted-foreground pl-4">
@@ -154,7 +154,7 @@ export default function Home() {
                     </div>
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#06b6d4] to-[#3b82f6]" />
+                            <div className="w-2 h-2 rounded-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6]" />
                             <h4>Этимология</h4>
                         </div>
                         <p className="text-sm text-muted-foreground pl-4">
@@ -163,7 +163,7 @@ export default function Home() {
                     </div>
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#06b6d4] to-[#3b82f6]" />
+                            <div className="w-2 h-2 rounded-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6]" />
                             <h4>Контекст использования</h4>
                         </div>
                         <p className="text-sm text-muted-foreground pl-4">
@@ -172,7 +172,7 @@ export default function Home() {
                     </div>
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#06b6d4] to-[#3b82f6]" />
+                            <div className="w-2 h-2 rounded-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6]" />
                             <h4>Персонализация</h4>
                         </div>
                         <p className="text-sm text-muted-foreground pl-4">

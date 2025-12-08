@@ -3,7 +3,7 @@ export function AILoader() {
         <div className="flex flex-col items-center justify-center py-12">
             <div className="relative w-24 h-24">
                 {/* Outer pulsing circle */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#06b6d4]/20 to-[#3b82f6]/20 animate-pulse" />
+                <div className="absolute inset-0 rounded-full bg-linear-to-r from-[#06b6d4]/20 to-[#3b82f6]/20 animate-pulse" />
 
                 {/* Rotating neural nodes */}
                 <svg
@@ -139,7 +139,7 @@ export function AILoader() {
 
                 {/* Center pulsing core */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] animate-pulse" />
+                    <div className="w-3 h-3 rounded-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6] animate-pulse" />
                 </div>
             </div>
 

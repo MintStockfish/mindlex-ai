@@ -13,7 +13,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { MindlexLogo } from "@/components/MindlexLogo";
+import { MindlexLogo } from "@/components/ui/MindlexLogo";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -62,7 +62,7 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-background via-background to-[#06b6d4]/5">
+        <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-linear-to-br from-background via-background to-[#06b6d4]/5">
             <div className="w-full max-w-md">
                 {/* Logo */}
                 <Link
@@ -118,7 +118,7 @@ export default function Login() {
                             </div>
                             <Button
                                 type="submit"
-                                className="w-full bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
+                                className="w-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
                                 disabled={isLoading}
                             >
                                 {isLoading ? (

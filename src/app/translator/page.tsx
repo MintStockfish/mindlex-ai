@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { AILoader } from "@/components/AILoader";
-import { WordAnalysis } from "@/components/WordAnalysis";
-import { SentenceAnalysis } from "@/components/SentenceAnalysis";
+import { AILoader } from "@/components/ui/AILoader";
+import { WordAnalysis } from "@/components/features/translator/WordAnalysis";
+import { SentenceAnalysis } from "@/components/features/translator/SentenceAnalysis";
 import { toast } from "sonner";
 import { cn } from "@/components/ui/utils";
 import type {

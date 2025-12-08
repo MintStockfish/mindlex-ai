@@ -84,7 +84,7 @@ export function MindlexLogo() {
                 />
             </svg>
 
-            <span className="bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent text-xl tracking-tight select-none">
+            <span className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent text-xl tracking-tight select-none">
                 Mindlex AI
             </span>
         </div>

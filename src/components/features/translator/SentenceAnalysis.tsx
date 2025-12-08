@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Card, CardContent } from "./ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Badge } from "./ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import { Volume2 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 interface SentenceAnalysisProps {
     sentence: string;
@@ -180,7 +180,7 @@ export function SentenceAnalysis({ sentence }: SentenceAnalysisProps) {
                     {/* Translation */}
                     <div className="space-y-3">
                         <h3>Перевод</h3>
-                        <div className="bg-gradient-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 rounded-lg p-4">
+                        <div className="bg-linear-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 rounded-lg p-4">
                             <p className="text-lg">
                                 {sentenceData.translation}
                             </p>
@@ -237,7 +237,7 @@ export function SentenceAnalysis({ sentence }: SentenceAnalysisProps) {
             >
                 <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent">
+                        <DialogTitle className="text-2xl bg-linear-to-r from-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent">
                             {selectedWord?.word}
                         </DialogTitle>
                     </DialogHeader>

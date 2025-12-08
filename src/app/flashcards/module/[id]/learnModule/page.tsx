@@ -134,7 +134,7 @@ export default function LearnModule({ params }: Props) {
                     </p>
                     <Button
                         onClick={() => navigate.push("/module")}
-                        className="bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90"
+                        className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90"
                     >
                         Вернуться к модулю
                     </Button>
@@ -237,7 +237,7 @@ export default function LearnModule({ params }: Props) {
                     >
                         {/* Front Side - Word */}
                         <div
-                            className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#06b6d4]/10 to-[#3b82f6]/10 border-2 border-[#06b6d4]/30 rounded-2xl shadow-xl flex flex-col items-center justify-center p-8"
+                            className="absolute inset-0 w-full h-full bg-linear-to-br from-[#06b6d4]/10 to-[#3b82f6]/10 border-2 border-[#06b6d4]/30 rounded-2xl shadow-xl flex flex-col items-center justify-center p-8"
                             style={{
                                 backfaceVisibility: "hidden",
                                 WebkitBackfaceVisibility: "hidden",
@@ -275,7 +275,7 @@ export default function LearnModule({ params }: Props) {
 
                         {/* Back Side - Translation */}
                         <div
-                            className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#3b82f6]/10 to-[#8b5cf6]/10 border-2 border-[#3b82f6]/30 rounded-2xl shadow-xl flex flex-col items-center justify-center p-8"
+                            className="absolute inset-0 w-full h-full bg-linear-to-br from-[#3b82f6]/10 to-[#8b5cf6]/10 border-2 border-[#3b82f6]/30 rounded-2xl shadow-xl flex flex-col items-center justify-center p-8"
                             style={{
                                 backfaceVisibility: "hidden",
                                 WebkitBackfaceVisibility: "hidden",
@@ -345,7 +345,7 @@ export default function LearnModule({ params }: Props) {
 
             {/* Completion Message */}
             {currentIndex === cards.length - 1 && isFlipped && (
-                <div className="mt-8 text-center p-6 bg-gradient-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 rounded-xl border border-[#06b6d4]/30">
+                <div className="mt-8 text-center p-6 bg-linear-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 rounded-xl border border-[#06b6d4]/30">
                     <h3 className="mb-2">🎉 Отличная работа!</h3>
                     <p className="text-muted-foreground mb-4">
                         Вы просмотрели все карточки в этом модуле
@@ -357,7 +357,7 @@ export default function LearnModule({ params }: Props) {
                         </Button>
                         <Button
                             onClick={() => navigate.push(`/module/${id}`)}
-                            className="bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90"
+                            className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90"
                         >
                             Вернуться к модулю
                         </Button>

@@ -95,7 +95,7 @@ export default function Cards() {
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button className="bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity">
+                        <Button className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity">
                             <Plus className="h-4 w-4 mr-2" />
                             Добавить модуль
                         </Button>
@@ -149,7 +149,7 @@ export default function Cards() {
                             </Button>
                             <Button
                                 onClick={handleCreateModule}
-                                className="bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
+                                className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
                             >
                                 Создать
                             </Button>
@@ -161,7 +161,7 @@ export default function Cards() {
             {/* Modules Grid */}
             {modules.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="w-24 h-24 mb-6 rounded-full bg-gradient-to-r from-[#06b6d4]/20 to-[#3b82f6]/20 flex items-center justify-center">
+                    <div className="w-24 h-24 mb-6 rounded-full bg-linear-to-r from-[#06b6d4]/20 to-[#3b82f6]/20 flex items-center justify-center">
                         <BookOpen className="h-12 w-12 text-[#06b6d4]" />
                     </div>
                     <h3 className="mb-2">Нет модулей</h3>
@@ -171,7 +171,7 @@ export default function Cards() {
                     </p>
                     <Button
                         onClick={() => setIsDialogOpen(true)}
-                        className="bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
+                        className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
                     >
                         <Plus className="h-4 w-4 mr-2" />
                         Создать модуль

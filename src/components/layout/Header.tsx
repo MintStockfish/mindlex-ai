@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Moon, Sun, LogOut, LogIn } from "lucide-react";
-import { Button } from "./ui/button";
-import { MindlexLogo } from "./MindlexLogo";
+import { Button } from "@/components/ui/button";
+import { MindlexLogo } from "@/components/ui/MindlexLogo";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTheme } from "./ThemeProvider";
+import { useTheme } from "@/components/shared/ThemeProvider";
 
 export function Header() {
     const pathname = usePathname();

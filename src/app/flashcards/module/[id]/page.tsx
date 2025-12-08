@@ -138,7 +138,7 @@ export default function ModuleDetail({ params }: Props) {
                     {cards.length > 0 && (
                         <Button
                             onClick={() => navigate.push(`${id}/learnModule`)}
-                            className="bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
+                            className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
                         >
                             <GraduationCap className="h-4 w-4 mr-2" />
                             Начать изучение
@@ -199,7 +199,7 @@ export default function ModuleDetail({ params }: Props) {
                     </div>
                     <Button
                         onClick={handleAddCard}
-                        className="w-full bg-gradient-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
+                        className="w-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
                     >
                         <Plus className="h-4 w-4 mr-2" />
                         Добавить карточку
