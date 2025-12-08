@@ -42,14 +42,19 @@ export async function POST(request: Request): Promise<Response> {
       "etymology": "От латинского 'comprehendere', от com- (полностью) + prehendere (схватывать). Вошло в английский через старофранцузский в XIV веке."
     }`;
 
-        const userWord = body.prompt || body.word;
+        const userWord = (body.prompt || body.word)?.trim();
 
         if (!userWord || typeof userWord !== "string") {
-            console.error("Invalid prompt received. Body keys:", Object.keys(body));
+            console.error(
+                "Invalid prompt received. Body keys:",
+                Object.keys(body)
+            );
             return new Response(
                 JSON.stringify({
                     success: false,
-                    error: `Valid prompt is required. Received keys: ${Object.keys(body).join(", ")}`,
+                    error: `Valid prompt is required. Received keys: ${Object.keys(
+                        body
+                    ).join(", ")}`,
                 } as ChatResponse),
                 {
                     status: 400,
@@ -60,13 +65,12 @@ export async function POST(request: Request): Promise<Response> {
 
         const messages = [
             { role: "system", content: systemPrompt },
-            { role: "user", content: userWord },
+            { role: "user", content: userWord.toLowerCase() },
         ];
 
-        const aiResponse = await env.AI.run(
-            "@cf/openai/gpt-oss-120b",
-            { input: messages }
-        );
+        const aiResponse = await env.AI.run("@cf/openai/gpt-oss-120b", {
+            input: messages,
+        });
 
         const response: ChatResponse = {
             success: true,

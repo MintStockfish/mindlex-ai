@@ -69,7 +69,7 @@ export function useTranslation() {
             setAnalysisType(type);
 
             if (type === "word") {
-                await handleWordAnalysis(query);
+                await handleWordAnalysis(query.toLowerCase());
             } else {
                 await handleSentenceAnalysis(query);
             }
