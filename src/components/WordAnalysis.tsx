@@ -36,7 +36,7 @@ export function WordAnalysis({ wordData, onAddToCards }: WordAnalysisProps) {
 
     console.log(wordData);
 
-    if (wordData?.word) {
+    if (wordData?.word && wordData?.translation) {
         return (
             <Card className="border-none shadow-lg">
                 <CardContent className="p-6 sm:p-8 space-y-6">
