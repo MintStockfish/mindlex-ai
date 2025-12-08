@@ -20,8 +20,8 @@ export function Header() {
     }
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
                     <Link
@@ -44,7 +44,7 @@ export function Header() {
                             >
                                 Переводчик
                                 {isActive("/translator") && (
-                                    <span className="absolute -bottom-[17px] left-0 right-0 h-[2px] bg-[#06b6d4]" />
+                                    <span className="absolute -bottom-[17px] left-0 right-0 h-0.5 bg-[#06b6d4]" />
                                 )}
                             </Link>
                             <Link
@@ -59,7 +59,7 @@ export function Header() {
                                 Карточки
                                 {(isActive("/flashcards") ||
                                     pathname.startsWith("/module/")) && (
-                                    <span className="absolute -bottom-[17px] left-0 right-0 h-[2px] bg-[#06b6d4]" />
+                                    <span className="absolute -bottom-[17px] left-0 right-0 h-0.5 bg-[#06b6d4]" />
                                 )}
                             </Link>
                         </nav>
@@ -108,7 +108,7 @@ export function Header() {
                     >
                         Переводчик
                         {isActive("/translator") && (
-                            <span className="absolute -bottom-[16px] left-0 right-0 h-[2px] bg-[#06b6d4]" />
+                            <span className="absolute -bottom-4 left-0 right-0 h-0.5 bg-[#06b6d4]" />
                         )}
                     </Link>
                     <Link
@@ -123,7 +123,7 @@ export function Header() {
                         Карточки
                         {(isActive("/flashcards") ||
                             pathname.startsWith("/module/")) && (
-                            <span className="absolute -bottom-[16px] left-0 right-0 h-[2px] bg-[#06b6d4]" />
+                            <span className="absolute -bottom-4 left-0 right-0 h-0.5 bg-[#06b6d4]" />
                         )}
                     </Link>
                 </nav>
