@@ -7,7 +7,7 @@ export default function EmptyStateAnimation() {
     useEffect(() => {
         const interval = setInterval(() => {
             setShowMainMessage((prev) => !prev);
-        }, 3000);
+        }, 2000);
 
         return () => clearInterval(interval);
     }, []);

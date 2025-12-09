@@ -5,6 +5,7 @@ import { AILoader } from "@/components/ui/AILoader";
 import { WordAnalysis } from "@/components/features/translator/WordAnalysis";
 import { SentenceAnalysis } from "@/components/features/translator/SentenceAnaylysis";
 import { useTranslation } from "@/hooks/useTranslation";
+import { InputFocusProvider } from "@/contexts/InputFocusContext";
 
 import TranslatorHero from "@/components/features/translator/Page/TranslatorHero";
 import TranslatorSearch from "@/components/features/translator/Page/TranslatorSearch";
@@ -21,36 +22,38 @@ export default function Translator() {
     };
 
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-8 sm:py-12">
-            <TranslatorHero />
+        <InputFocusProvider setQuery={setQuery}>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-8 sm:py-12">
+                <TranslatorHero />
 
-            <TranslatorSearch
-                value={query}
-                onChange={setQuery}
-                onSubmit={search}
-                isLoading={isLoading}
-            />
+                <TranslatorSearch
+                    value={query}
+                    onChange={setQuery}
+                    onSubmit={search}
+                    isLoading={isLoading}
+                />
 
-            <div className="min-h-[400px]">
-                {isLoading ? (
-                    <AILoader />
-                ) : (
-                    <>
-                        {analysisType === "word" && wordData && (
-                            <WordAnalysis
-                                wordData={wordData}
-                                onAddToCards={handleAddToCards}
-                            />
-                        )}
+                <div className="min-h-[400px]">
+                    {isLoading ? (
+                        <AILoader />
+                    ) : (
+                        <>
+                            {analysisType === "word" && wordData && (
+                                <WordAnalysis
+                                    wordData={wordData}
+                                    onAddToCards={handleAddToCards}
+                                />
+                            )}
 
-                        {analysisType === "sentence" && (
-                            <SentenceAnalysis sentence={query} />
-                        )}
+                            {analysisType === "sentence" && (
+                                <SentenceAnalysis sentence={query} />
+                            )}
 
-                        {!analysisType && <TranslatorWelcome />}
-                    </>
-                )}
+                            {!analysisType && <TranslatorWelcome />}
+                        </>
+                    )}
+                </div>
             </div>
-        </div>
+        </InputFocusProvider>
     );
 }

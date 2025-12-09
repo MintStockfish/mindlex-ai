@@ -24,8 +24,8 @@ export default function WordPartsOfSpeech({
                         className="space-y-2 mt-4"
                     >
                         <p className="text-sm">{pos.meaning}</p>
-                        <div className="bg-muted/50 rounded-lg p-3">
-                            <p className="text-sm italic">
+                        <div className="max-w-[80vw] sm:max-w-full wrap-break-word bg-muted/50 rounded-lg p-4 space-y-2">
+                            <p className="text-sm sm:text-base italic truncate hover:overflow-x-auto hover:scrollbar-thin hover:scrollbar-thumb-rounded hover:scrollbar-thumb-gray-500 hover:scrollbar-track-gray-200 dark:hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-track-gray-800">
                                 &ldquo;{pos.example}&rdquo;
                             </p>
                         </div>

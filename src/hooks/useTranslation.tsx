@@ -74,7 +74,7 @@ export function useTranslation() {
                 await handleSentenceAnalysis(query);
             }
         } catch (error) {
-            toast.error("Непредвиденная ошибка");
+            toast.error(`Непредвиденная ошибка: ${error}`);
         } finally {
             setIsLoading(false);
         }

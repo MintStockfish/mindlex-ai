@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/components/ui/utils";
+import { useInputFocus } from "@/contexts/InputFocusContext";
 
 interface TranslatorSearchProps {
     value: string;
@@ -15,6 +16,8 @@ export default function TranslatorSearch({
     onSubmit,
     isLoading,
 }: TranslatorSearchProps) {
+    const { inputRef } = useInputFocus();
+
     return (
         <form onSubmit={onSubmit} className="mb-8">
             <div className="relative">
@@ -25,6 +28,7 @@ export default function TranslatorSearch({
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     disabled={isLoading}
+                    ref={inputRef}
                     className={cn(
                         "pl-12 pr-4 py-6 text-lg bg-card border-2 transition-colors",
                         "border-slate-300 dark:border-slate-700",

@@ -68,9 +68,47 @@ export async function POST(request: Request): Promise<Response> {
             { role: "user", content: userWord.toLowerCase() },
         ];
 
-        const aiResponse = await env.AI.run("@cf/openai/gpt-oss-120b", {
-            input: messages,
-        });
+        let aiResponse;
+        try {
+            aiResponse = await env.AI.run("@cf/openai/gpt-oss-120b", {
+                input: messages,
+            });
+        } catch (aiError) {
+            console.error("AI Model Error:", aiError);
+
+            const fallbackResponse = {
+                word: userWord,
+                translation: "Translation unavailable at the moment",
+                exampleSentence: "Example sentence unavailable",
+                exampleTranslation: "Translation unavailable",
+                ipa: "/",
+                pronunciation: "unavailable",
+                partsOfSpeech: [
+                    {
+                        type: "Unknown",
+                        meaning: "Translation service temporarily unavailable",
+                        example: "",
+                    },
+                ],
+                synonyms: [],
+                antonyms: [],
+                usage: { informal: 0, neutral: 0, formal: 0 },
+                etymology: "Translation service unavailable",
+            };
+
+            const response: ChatResponse = {
+                success: false,
+                message: {
+                    response: fallbackResponse,
+                },
+                error: "AI model temporarily unavailable, using fallback data",
+            };
+
+            return new Response(JSON.stringify(response), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
 
         const response: ChatResponse = {
             success: true,
