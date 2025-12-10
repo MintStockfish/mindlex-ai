@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { AILoader } from "@/components/ui/AILoader";
-import { WordAnalysis } from "@/components/features/translator/WordAnalysis";
+import { WordAnalysis } from "@/components/features/translator/WordAnalysisCard";
 import { SentenceAnalysis } from "@/components/features/translator/SentenceAnaylysis";
 import { useTranslation } from "@/hooks/useTranslation";
 import { InputFocusProvider } from "@/contexts/InputFocusContext";

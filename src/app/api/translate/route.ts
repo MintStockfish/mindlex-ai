@@ -1,137 +1,113 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { WordData } from "@/types/translatorTypes";
+import {
+    createSystemPrompt,
+    createFallback,
+    parseWordData,
+    fetchRawAiResponse,
+} from "@/utils/apiUtils";
 
 interface ChatRequest {
-    prompt: string;
+    prompt?: string;
+    word?: string;
 }
 
 interface ChatResponse {
     success: boolean;
-    message?: {
-        response: Ai_Cf_Openai_Gpt_Oss_120B_Output;
-    };
+    data?: WordData;
     error?: string;
 }
 
+const SYSTEM_PROMPT = createSystemPrompt();
+
 export async function POST(request: Request): Promise<Response> {
+    let userWord = "";
+
     try {
         const { env } = getCloudflareContext();
+        const body: ChatRequest = await request.json();
 
-        const body: ChatRequest & { word?: string } = await request.json();
-        console.log("API /translate received body:", body);
+        userWord = (body.prompt || body.word || "").trim();
 
-        const systemPrompt = `Ты — API, которое получает английское слово и возвращает всю информацию о нём в строго заданном JSON-формате. Не добавляй никаких объяснений или лишнего текста вне JSON. Пример формата:
-    {
-      "word": "comprehend",
-      "translation": "понимать, постигать",
-      "exampleSentence": "It's difficult to comprehend the scale of the universe.",
-      "exampleTranslation": "Трудно постичь масштабы вселенной.",
-      "ipa": "/ˌkɒmprɪˈhend/",
-      "pronunciation": "ка́мприхэ́нд",
-      "partsOfSpeech": [
-        { "type": "Verb", "meaning": "Понимать или постигать что-то полностью", "example": "She couldn't comprehend what had happened." },
-        { "type": "Verb (formal)", "meaning": "Включать, охватывать", "example": "The course comprehends all aspects of business management." }
-      ],
-      "synonyms": [
-        { "word": "understand", "ipa": "/ˌʌndəˈstænd/" },
-        { "word": "grasp", "ipa": "/ɡrɑːsp/" }
-      ],
-      "antonyms": [
-        { "word": "misunderstand", "ipa": "/ˌmɪsʌndəˈstænd/" }
-      ],
-      "usage": { "informal": 15, "neutral": 60, "formal": 25 },
-      "etymology": "От латинского 'comprehendere', от com- (полностью) + prehendere (схватывать). Вошло в английский через старофранцузский в XIV веке."
-    }`;
+        console.log(`[API] Processing word: "${userWord}"`);
 
-        const userWord = (body.prompt || body.word)?.trim();
-
-        if (!userWord || typeof userWord !== "string") {
-            console.error(
-                "Invalid prompt received. Body keys:",
-                Object.keys(body)
-            );
-            return new Response(
-                JSON.stringify({
-                    success: false,
-                    error: `Valid prompt is required. Received keys: ${Object.keys(
-                        body
-                    ).join(", ")}`,
-                } as ChatResponse),
-                {
-                    status: 400,
-                    headers: { "Content-Type": "application/json" },
-                }
+        if (!userWord) {
+            return Response.json(
+                { success: false, error: "Word is required" },
+                { status: 400 }
             );
         }
 
         const messages = [
-            { role: "system", content: systemPrompt },
+            { role: "system", content: SYSTEM_PROMPT },
             { role: "user", content: userWord.toLowerCase() },
         ];
 
-        let aiResponse;
-        try {
-            aiResponse = await env.AI.run("@cf/openai/gpt-oss-120b", {
-                input: messages,
-            });
-        } catch (aiError) {
-            console.error("AI Model Error:", aiError);
+        const MAX_RETRIES = 3;
+        let parsedData: WordData | null = null;
+        let lastError: unknown = null;
 
-            const fallbackResponse = {
-                word: userWord,
-                translation: "Translation unavailable at the moment",
-                exampleSentence: "Example sentence unavailable",
-                exampleTranslation: "Translation unavailable",
-                ipa: "/",
-                pronunciation: "unavailable",
-                partsOfSpeech: [
-                    {
-                        type: "Unknown",
-                        meaning: "Translation service temporarily unavailable",
-                        example: "",
-                    },
-                ],
-                synonyms: [],
-                antonyms: [],
-                usage: { informal: 0, neutral: 0, formal: 0 },
-                etymology: "Translation service unavailable",
-            };
+        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                if (attempt > 1) {
+                    console.warn(`[API] Attempt ${attempt}/${MAX_RETRIES}...`);
+                }
 
-            const response: ChatResponse = {
-                success: false,
-                message: {
-                    response: fallbackResponse,
-                },
-                error: "AI model temporarily unavailable, using fallback data",
-            };
+                const rawResponse = await fetchRawAiResponse(env, messages);
 
-            return new Response(JSON.stringify(response), {
-                status: 200,
-                headers: { "Content-Type": "application/json" },
-            });
+                parsedData = parseWordData(rawResponse);
+
+                break;
+            } catch (error) {
+                lastError = error;
+                console.warn(
+                    `[API] Attempt ${attempt} failed:`,
+                    error instanceof Error ? error.message : error
+                );
+            }
         }
 
-        const response: ChatResponse = {
+        if (!parsedData) {
+            console.error("[API] All retries failed.");
+            throw lastError || new Error("AI_MODEL_FAILURE");
+        }
+
+        return Response.json({
             success: true,
-            message: {
-                response: aiResponse,
-            },
-        };
+            data: parsedData,
+        } as ChatResponse);
+    } catch (error: unknown) {
+        console.error("[API] Global Handler Error:", error);
 
-        return new Response(JSON.stringify(response), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-        });
-    } catch (error) {
-        console.error("API Error:", error);
+        let errorMessage = "Internal server error";
+        let shouldUseFallback = false;
 
-        const errorResponse: ChatResponse = {
-            success: false,
-            error: "Internal server error",
-        };
+        if (error instanceof Error) {
+            errorMessage = error.message;
 
-        return new Response(JSON.stringify(errorResponse), {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-        });
+            if (
+                errorMessage === "AI_MODEL_FAILURE" ||
+                errorMessage === "INVALID_JSON_FORMAT" ||
+                errorMessage === "UNEXPECTED_AI_RESPONSE_FORMAT" ||
+                errorMessage.includes("UNEXPECTED")
+            ) {
+                shouldUseFallback = true;
+            }
+        } else if (typeof error === "string") {
+            errorMessage = error;
+        }
+
+        if (shouldUseFallback) {
+            return Response.json({
+                success: false,
+                data: createFallback(userWord),
+                error: `AI unavailable after retries (${errorMessage}), using fallback`,
+            } as ChatResponse);
+        }
+
+        return Response.json(
+            { success: false, error: errorMessage } as ChatResponse,
+            { status: 500 }
+        );
     }
 }

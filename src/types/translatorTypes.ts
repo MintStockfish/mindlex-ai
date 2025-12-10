@@ -12,27 +12,14 @@ interface WordData {
     }[];
     synonyms: { word: string; ipa: string }[];
     antonyms: { word: string; ipa: string }[];
-    usage: { informal: string; neutral: string; formal: string };
+    usage: { informal: number; neutral: number; formal: number };
     etymology: string;
-}
-
-interface MessageContent {
-    text: string;
-}
-
-interface OutputBlock {
-    type: string;
-    content?: MessageContent[];
 }
 
 interface ApiResponse {
     success: boolean;
-    message?: {
-        response: {
-            output: OutputBlock[];
-        };
-    };
+    data?: WordData;
     error?: string;
 }
 
-export type { WordData, OutputBlock, ApiResponse };
+export type { WordData, ApiResponse };

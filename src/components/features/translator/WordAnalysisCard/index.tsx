@@ -1,13 +1,13 @@
 import { WordData } from "@/types/translatorTypes";
 import { Card, CardContent } from "@/components/ui/card";
 import EmptyState from "@/components/shared/EmptyState";
-import WordHeader from "@/components/features/translator/WordAnalysis/WordHeader";
-import WordExample from "@/components/features/translator/WordAnalysis/WordExample";
-import WordPronunciation from "@/components/features/translator/WordAnalysis/WordPronunciaton";
-import WordPartsOfSpeech from "@/components/features/translator/WordAnalysis/WordPartsOfSpeech";
-import WordRelationsGroup from "@/components/features/translator/WordAnalysis/WordRelationsGroup";
-import WordUsageStats from "@/components/features/translator/WordAnalysis/WordUsageStats";
-import WordEtymology from "@/components/features/translator/WordAnalysis/WordEtymology";
+import WordHeader from "@/components/features/translator/WordAnalysisCard/WordHeader";
+import WordExample from "@/components/features/translator/WordAnalysisCard/WordExample";
+import WordPronunciation from "@/components/features/translator/WordAnalysisCard/WordPronunciaton";
+import WordPartsOfSpeech from "@/components/features/translator/WordAnalysisCard/WordPartsOfSpeech";
+import WordRelationsGroup from "@/components/features/translator/WordAnalysisCard/WordRelationsGroup";
+import WordUsageStats from "@/components/features/translator/WordAnalysisCard/WordUsageStats";
+import WordEtymology from "@/components/features/translator/WordAnalysisCard/WordEtymology";
 
 interface WordAnalysisProps {
     wordData: WordData | null;

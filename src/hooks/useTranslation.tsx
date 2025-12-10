@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import type {
-    WordData,
-    ApiResponse,
-    OutputBlock,
-} from "@/types/translatorTypes";
+import type { WordData, ApiResponse } from "@/types/translatorTypes";
 
 export function useTranslation() {
     const [query, setQuery] = useState("");
@@ -25,21 +21,14 @@ export function useTranslation() {
             if (!response.ok) throw new Error("Ошибка сети или сервера");
 
             const result: ApiResponse = await response.json();
+            console.log("[TEST]: API Response:", result);
 
-            if (result.success && result.message) {
-                const aiOutput = result.message.response?.output;
-                const messageBlock = aiOutput?.find(
-                    (block: OutputBlock) => block.type === "message"
-                );
-                const aiResponseString = messageBlock?.content?.[0]?.text;
-
-                if (aiResponseString) {
-                    setWordData(JSON.parse(aiResponseString));
-                } else {
-                    throw new Error("Не удалось найти ответ от ИИ.");
-                }
+            if (result.success && result.data) {
+                setWordData(result.data);
             } else {
-                throw new Error(result.error || "Не удалось получить анализ.");
+                throw new Error(
+                    result.error || "Не удалось получить анализ слова"
+                );
             }
         } catch (error) {
             console.error("Analysis error:", error);

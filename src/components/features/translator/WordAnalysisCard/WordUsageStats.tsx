@@ -20,7 +20,7 @@ export default function WordUsageStats({ usage }: { usage: WordData["usage"] }) 
                             </span>
                             <span>{stat.value}%</span>
                         </div>
-                        {stat.value && (
+                        {stat.value !== undefined && (
                             <Progress value={+stat.value} className="h-2" />
                         )}
                     </div>
