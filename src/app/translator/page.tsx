@@ -12,8 +12,21 @@ import TranslatorSearch from "@/components/features/translator/Page/TranslatorSe
 import TranslatorWelcome from "@/components/features/translator/Page/TranslatorWelcome";
 
 export default function Translator() {
-    const { query, setQuery, wordData, isLoading, analysisType, search } =
-        useTranslation();
+    const {
+        query,
+        setQuery,
+        wordData,
+        isLoading,
+        analysisType,
+        search,
+        sourceLang,
+        targetLang,
+        setSourceLang,
+        setTargetLang,
+        sourcePlaceholder,
+        targetPlaceholder,
+        swapLanguages,
+    } = useTranslation();
 
     const handleAddToCards = () => {
         toast.success("Слово добавлено в карточки!", {
@@ -31,6 +44,13 @@ export default function Translator() {
                     onChange={setQuery}
                     onSubmit={search}
                     isLoading={isLoading}
+                    sourceLang={sourceLang}
+                    targetLang={targetLang}
+                    setSourceLang={setSourceLang}
+                    setTargetLang={setTargetLang}
+                    sourcePlaceholder={sourcePlaceholder}
+                    targetPlaceholder={targetPlaceholder}
+                    swapLanguages={swapLanguages}
                 />
 
                 <div className="min-h-[400px]">

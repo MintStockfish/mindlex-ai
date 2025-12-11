@@ -2,19 +2,34 @@ import { WordData } from "@/types/translatorTypes";
 import { WordDataSchema } from "@/validations/aiResponse";
 import { z } from "zod";
 
-function createSystemPrompt() {
+function createSystemPrompt(sourceLang: string = "English", targetLang: string = "Russian") {
     return `
         You are a strict linguistic API that outputs ONLY valid JSON.
-        Your task: Analyze the provided English word and return a JSON object strictly following the schema below.
+        Your task: Analyze the provided ${sourceLang} word and translate it to ${targetLang}.
 
-        RULES:
+        LANGUAGE RULES:
+        - "word": The original word (in ${sourceLang})
+        - "translation": Translation of the word (in ${targetLang})
+        - "exampleSentence": An example sentence using the original word (in ${sourceLang})
+        - "exampleTranslation": The same sentence translated (in ${targetLang})
+        - "ipa": IPA pronunciation of the original ${sourceLang} word
+        - "pronunciation": How to pronounce the ${sourceLang} word using ${targetLang} letters/alphabet
+        - "partsOfSpeech.type": Part of speech name in ${targetLang} (e.g., "Существительное", "Глагол" for Russian)
+        - "partsOfSpeech.meaning": Definition/meaning (in ${targetLang})
+        - "partsOfSpeech.example": Usage example phrase (in ${sourceLang})
+        - "synonyms": Words similar to the original (in ${sourceLang} with IPA)
+        - "antonyms": Words opposite to the original (in ${sourceLang} with IPA)
+        - "usage": Formality distribution percentages
+        - "etymology": Detailed origin, historical evolution of meaning, and interesting cultural context or fun facts (in ${targetLang}). Avoid dry genealogy; explain HOW the meaning changed if applicable.
+
+        OUTPUT RULES:
         1. Output RAW JSON only. Do NOT use Markdown code blocks (no \`\`\`json).
         2. Do NOT add any conversational text, explanations, or preambles.
         3. Use double quotes for all JSON keys and values.
         4. Ensure the JSON is valid RFC 8259.
-        5. CRITICAL: If the word acts as multiple parts of speech (e.g., "water" is both a Noun and a Verb), you MUST include entries for ALL common parts of speech in the "partsOfSpeech" array.
+        5. CRITICAL: If the word acts as multiple parts of speech, include entries for ALL common parts of speech.
 
-        SCHEMA EXAMPLE:
+        SCHEMA EXAMPLE (for English->Russian):
         {
         "word": "water",
         "translation": "вода",
@@ -23,18 +38,17 @@ function createSystemPrompt() {
         "ipa": "/ˈwɔːtər/",
         "pronunciation": "уо́тэр",
         "partsOfSpeech": [
-            { "type": "Noun", "meaning": "Прозрачная жидкость без цвета и запаха", "example": "Glass of water" },
-            { "type": "Verb", "meaning": "Поливать растения", "example": "I need to water the flowers" }
+            { "type": "Существительное", "meaning": "Прозрачная жидкость без цвета и запаха", "example": "Glass of water" },
+            { "type": "Глагол", "meaning": "Поливать растения", "example": "I need to water the flowers" }
         ],
         "synonyms": [
-            { "word": "liquid", "ipa": "/ˈlɪkwɪd/" },
-            { "word": "irrigate", "ipa": "/ˈɪrɪɡeɪt/" }
+            { "word": "liquid", "ipa": "/ˈlɪkwɪd/" }
         ],
         "antonyms": [
             { "word": "drought", "ipa": "/draʊt/" }
         ],
         "usage": { "informal": 10, "neutral": 80, "formal": 10 },
-        "etymology": "From Old English wæter..."
+        "etymology": "От протоиндоевропейского *wódr̥. Любопытно, что в древности это слово обозначало 'неодушевленную' воду (как вещество), в отличие от 'ap-', которое могло означать живую, текущую воду (сравни с рекой)."
         }
     `;
 }

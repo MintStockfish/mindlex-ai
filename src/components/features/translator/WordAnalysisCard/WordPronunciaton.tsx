@@ -28,7 +28,7 @@ export default function WordPronunciation({
 
                 <div className="flex flex-col sm:flex-row sm:items-baseline gap-2">
                     <span className="text-sm text-muted-foreground whitespace-nowrap shrink-0">
-                        Русскими:
+                        Произношение:
                     </span>
 
                     <span className="text-sm font-medium break-all">

@@ -10,6 +10,8 @@ import {
 interface ChatRequest {
     prompt?: string;
     word?: string;
+    sourceLang?: string;
+    targetLang?: string;
 }
 
 interface ChatResponse {
@@ -17,8 +19,6 @@ interface ChatResponse {
     data?: WordData;
     error?: string;
 }
-
-const SYSTEM_PROMPT = createSystemPrompt();
 
 export async function POST(request: Request): Promise<Response> {
     let userWord = "";
@@ -28,8 +28,8 @@ export async function POST(request: Request): Promise<Response> {
         const body: ChatRequest = await request.json();
 
         userWord = (body.prompt || body.word || "").trim();
-
-        console.log(`[API] Processing word: "${userWord}"`);
+        const sourceLang = body.sourceLang || "English";
+        const targetLang = body.targetLang || "Russian";
 
         if (!userWord) {
             return Response.json(
@@ -38,8 +38,10 @@ export async function POST(request: Request): Promise<Response> {
             );
         }
 
+        const systemPrompt = createSystemPrompt(sourceLang, targetLang);
+
         const messages = [
-            { role: "system", content: SYSTEM_PROMPT },
+            { role: "system", content: systemPrompt },
             { role: "user", content: userWord.toLowerCase() },
         ];
 
