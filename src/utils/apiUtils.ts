@@ -29,17 +29,19 @@ function createSystemPrompt(sourceLang: string = "English", targetLang: string =
         4. Ensure the JSON is valid RFC 8259.
         5. CRITICAL: If the word acts as multiple parts of speech, include entries for ALL common parts of speech.
 
-        SCHEMA EXAMPLE (for English->Russian):
+        IMPORTANT: All translated content (translation, exampleTranslation, pronunciation, partsOfSpeech.type, partsOfSpeech.meaning, etymology) MUST be in ${targetLang}.
+        
+        SCHEMA EXAMPLE (structure only - adapt all ${targetLang} content to the actual target language):
         {
         "word": "water",
-        "translation": "вода",
+        "translation": "[translation in ${targetLang}]",
         "exampleSentence": "Can you give me some water?",
-        "exampleTranslation": "Ты можешь дать мне воды?",
+        "exampleTranslation": "[same sentence translated to ${targetLang}]",
         "ipa": "/ˈwɔːtər/",
-        "pronunciation": "уо́тэр",
+        "pronunciation": "[how to pronounce using ${targetLang} alphabet]",
         "partsOfSpeech": [
-            { "type": "Существительное", "meaning": "Прозрачная жидкость без цвета и запаха", "example": "Glass of water" },
-            { "type": "Глагол", "meaning": "Поливать растения", "example": "I need to water the flowers" }
+            { "type": "[Noun in ${targetLang}]", "meaning": "[definition in ${targetLang}]", "example": "Glass of water" },
+            { "type": "[Verb in ${targetLang}]", "meaning": "[definition in ${targetLang}]", "example": "I need to water the flowers" }
         ],
         "synonyms": [
             { "word": "liquid", "ipa": "/ˈlɪkwɪd/" }
@@ -48,7 +50,7 @@ function createSystemPrompt(sourceLang: string = "English", targetLang: string =
             { "word": "drought", "ipa": "/draʊt/" }
         ],
         "usage": { "informal": 10, "neutral": 80, "formal": 10 },
-        "etymology": "От протоиндоевропейского *wódr̥. Любопытно, что в древности это слово обозначало 'неодушевленную' воду (как вещество), в отличие от 'ap-', которое могло означать живую, текущую воду (сравни с рекой)."
+        "etymology": "[etymology and cultural context in ${targetLang}]"
         }
     `;
 }
