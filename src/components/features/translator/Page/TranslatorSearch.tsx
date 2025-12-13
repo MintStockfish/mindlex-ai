@@ -41,6 +41,7 @@ export default function TranslatorSearch({
                 <div className="w-full sm:w-[45%]">
                     <LanguageSelector
                         value={sourceLang}
+                        excludeValue={targetLang}
                         onChange={setSourceLang}
                         label={sourcePlaceholder}
                         disabled={isLoading}
@@ -61,6 +62,7 @@ export default function TranslatorSearch({
                 <div className="w-full sm:w-[45%]">
                     <LanguageSelector
                         value={targetLang}
+                        excludeValue={sourceLang}
                         onChange={setTargetLang}
                         label={targetPlaceholder}
                         disabled={isLoading}

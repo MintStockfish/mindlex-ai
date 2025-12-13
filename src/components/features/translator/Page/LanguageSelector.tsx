@@ -1,12 +1,11 @@
-//TODO: оптимизировать данный компонент
-
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/components/ui/utils";
 import { Input } from "@/components/ui/input";
 
 interface LanguageSelectorProps {
     value: string;
+    excludeValue?: string;
     onChange: (val: string) => void;
     label?: string;
     disabled?: boolean;
@@ -33,6 +32,7 @@ const LANGUAGES = [
 export default function LanguageSelector({
     value,
     onChange,
+    excludeValue,
     label = "Select language...",
     disabled = false,
 }: LanguageSelectorProps) {
@@ -45,7 +45,6 @@ export default function LanguageSelector({
         setSearchTerm(value);
     }, [value]);
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (
@@ -58,7 +57,7 @@ export default function LanguageSelector({
         document.addEventListener("mousedown", handleClickOutside);
         return () =>
             document.removeEventListener("mousedown", handleClickOutside);
-    }, [value]);
+    }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
@@ -84,9 +83,19 @@ export default function LanguageSelector({
         }
     };
 
-    const filteredLanguages = LANGUAGES.filter((lang) =>
-        lang.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredLanguages = useMemo(() => {
+        const normalizedSearch = searchTerm.toLowerCase();
+        const normalizedExcludeValue = excludeValue?.toLowerCase();
+
+        return LANGUAGES.filter((lang) => {
+            const normalizedLang = lang.toLowerCase();
+
+            return (
+                normalizedLang !== normalizedExcludeValue &&
+                normalizedLang.includes(normalizedSearch)
+            );
+        });
+    }, [searchTerm, excludeValue]);
 
     return (
         <div className="relative w-full" ref={containerRef}>
@@ -124,24 +133,26 @@ export default function LanguageSelector({
                 <div className="absolute z-50 w-full mt-2 bg-card border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
                     <div className="p-1">
                         {filteredLanguages.length > 0 ? (
-                            filteredLanguages.map((lang) => (
-                                <button
-                                    key={lang}
-                                    type="button"
-                                    onClick={() => handleSelect(lang)}
-                                    className={cn(
-                                        "w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors",
-                                        "hover:bg-accent hover:text-accent-foreground",
-                                        value === lang &&
-                                            "bg-accent/50 text-accent-foreground font-medium"
-                                    )}
-                                >
-                                    {lang}
-                                    {value === lang && (
-                                        <Check className="h-4 w-4 text-[#06b6d4]" />
-                                    )}
-                                </button>
-                            ))
+                            filteredLanguages.map((lang) => {
+                                return (
+                                    <button
+                                        key={lang}
+                                        type="button"
+                                        onClick={() => handleSelect(lang)}
+                                        className={cn(
+                                            "w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors",
+                                            "hover:bg-accent hover:text-accent-foreground",
+                                            value === lang &&
+                                                "bg-accent/50 text-accent-foreground font-medium"
+                                        )}
+                                    >
+                                        {lang}
+                                        {value === lang && (
+                                            <Check className="h-4 w-4 text-[#06b6d4]" />
+                                        )}
+                                    </button>
+                                );
+                            })
                         ) : (
                             <div className="px-3 py-2 text-sm text-muted-foreground text-center">
                                 Custom language: &quot;{searchTerm}&quot;

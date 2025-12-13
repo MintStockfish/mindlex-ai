@@ -41,40 +41,66 @@ export function useTranslation() {
 
     const setSourceLang = useCallback((lang: string) => {
         setSourceLangInternal(lang);
-        if (typeof window !== "undefined" && lang) {
-            localStorage.setItem(STORAGE_KEY_SOURCE, lang);
+        if (typeof window !== "undefined") {
+            if (lang) {
+                localStorage.setItem(STORAGE_KEY_SOURCE, lang);
+            } else {
+                localStorage.removeItem(STORAGE_KEY_SOURCE);
+            }
         }
     }, []);
 
     const setTargetLang = useCallback((lang: string) => {
         setTargetLangInternal(lang);
-        if (typeof window !== "undefined" && lang) {
-            localStorage.setItem(STORAGE_KEY_TARGET, lang);
+        if (typeof window !== "undefined") {
+            if (lang) {
+                localStorage.setItem(STORAGE_KEY_TARGET, lang);
+            } else {
+                localStorage.removeItem(STORAGE_KEY_TARGET);
+            }
         }
     }, []);
 
     const swapLanguages = useCallback(() => {
-        const newSource = targetLang || targetPlaceholder;
-        const newTarget = sourceLang || sourcePlaceholder;
+        let nextSourceLang = targetLang;
+        let nextTargetLang = sourceLang;
 
-        setSourceLangInternal(newSource);
-        setTargetLangInternal(newTarget);
+        const nextSourcePlaceholder = targetPlaceholder;
+        const nextTargetPlaceholder = sourcePlaceholder;
 
-        if (typeof window !== "undefined") {
-            localStorage.setItem(STORAGE_KEY_SOURCE, newSource);
-            localStorage.setItem(STORAGE_KEY_TARGET, newTarget);
+        let effectiveSource = nextSourceLang || nextSourcePlaceholder;
+        let effectiveTarget = nextTargetLang || nextTargetPlaceholder;
+
+        if (effectiveSource === effectiveTarget) {
+            console.log("[SWAP FIX] Collision detected! Resolving...");
+
+            if (!nextSourceLang) {
+                nextSourceLang = nextTargetPlaceholder;
+                effectiveSource = nextSourceLang;
+            } else if (!nextTargetLang) {
+                nextTargetLang = nextSourcePlaceholder;
+                effectiveTarget = nextTargetLang;
+            }
         }
 
-        setSourcePlaceholder(targetPlaceholder);
-        setTargetPlaceholder(sourcePlaceholder);
+        const finalSource = nextSourceLang || nextSourcePlaceholder;
+        const finalTarget = nextTargetLang || nextTargetPlaceholder;
+
+        setSourceLangInternal(finalSource);
+        setTargetLangInternal(finalTarget);
+        setSourcePlaceholder(nextSourcePlaceholder);
+        setTargetPlaceholder(nextTargetPlaceholder);
+
         if (typeof window !== "undefined") {
+            localStorage.setItem(STORAGE_KEY_SOURCE, finalSource);
+            localStorage.setItem(STORAGE_KEY_TARGET, finalTarget);
             localStorage.setItem(
                 STORAGE_KEY_PLACEHOLDER_SOURCE,
-                targetPlaceholder
+                nextSourcePlaceholder
             );
             localStorage.setItem(
                 STORAGE_KEY_PLACEHOLDER_TARGET,
-                sourcePlaceholder
+                nextTargetPlaceholder
             );
         }
     }, [sourceLang, targetLang, sourcePlaceholder, targetPlaceholder]);
