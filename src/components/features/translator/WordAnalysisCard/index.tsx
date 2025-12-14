@@ -26,6 +26,7 @@ export function WordAnalysis({ wordData, onAddToCards }: WordAnalysisProps) {
                     <WordHeader
                         word={wordData.word}
                         translation={wordData.translation}
+                        ipa={wordData.ipa}
                         onAdd={onAddToCards}
                     />
 

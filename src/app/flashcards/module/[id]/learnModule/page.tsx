@@ -26,28 +26,16 @@ export default function LearnModule({ params }: Props) {
     const { id } = use(params);
 
     const [moduleTitle] = useState("Английский: IT-термины");
-    const originalCards: FlashCard[] = [
-        {
-            id: "1",
-            word: "algorithm",
-            translation: "алгоритм",
-            transcription: "/ˈælɡərɪðəm/",
-        },
-        {
-            id: "2",
-            word: "debugging",
-            translation: "отладка",
-            transcription: "/dɪˈbʌɡɪŋ/",
-        },
-        {
-            id: "3",
-            word: "deployment",
-            translation: "развёртывание",
-            transcription: "/dɪˈplɔɪmənt/",
-        },
-    ];
 
-    const [cards, setCards] = useState<FlashCard[]>(originalCards);
+    useEffect(() => {
+        const storedItem = localStorage.getItem("modules");
+        const userModules = storedItem
+            ? JSON.parse(storedItem)[+id - 1].words
+            : [];
+        setCards(userModules);
+    }, [id]);
+
+    const [cards, setCards] = useState<FlashCard[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
     const [disableTransition, setDisableTransition] = useState(false);
@@ -98,7 +86,7 @@ export default function LearnModule({ params }: Props) {
     };
 
     const handleReset = () => {
-        setCards(originalCards);
+        setCards(cards);
         setCurrentIndex(0);
         setIsFlipped(false);
         toast.success("Порядок восстановлен");
@@ -248,19 +236,19 @@ export default function LearnModule({ params }: Props) {
                                 Слово
                             </p>
                             <h2 className="text-4xl sm:text-5xl text-center mb-6">
-                                {currentCard.word}
+                                {currentCard.name}
                             </h2>
-                            {currentCard.transcription && (
+                            {currentCard.ipa && (
                                 <div className="flex items-center gap-3">
                                     <code className="px-3 py-1.5 bg-muted rounded text-muted-foreground">
-                                        {currentCard.transcription}
+                                        {currentCard.ipa}
                                     </code>
                                     <Button
                                         variant="ghost"
                                         size="sm"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            playPronunciation(currentCard.word);
+                                            playPronunciation(currentCard.name);
                                         }}
                                         className="h-9 w-9 p-0"
                                     >
@@ -289,7 +277,7 @@ export default function LearnModule({ params }: Props) {
                                 {currentCard.translation}
                             </h2>
                             <p className="text-muted-foreground text-center">
-                                {currentCard.word}
+                                {currentCard.name}
                             </p>
                             <p className="text-xs text-muted-foreground mt-8 opacity-60">
                                 Нажмите, чтобы увидеть слово

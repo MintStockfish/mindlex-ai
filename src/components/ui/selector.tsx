@@ -3,39 +3,23 @@ import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/components/ui/utils";
 import { Input } from "@/components/ui/input";
 
-interface LanguageSelectorProps {
+interface SelectorProps {
     value: string;
     excludeValue?: string;
     onChange: (val: string) => void;
     label?: string;
     disabled?: boolean;
+    options?: string[];
 }
 
-const LANGUAGES = [
-    "English",
-    "Russian",
-    "Spanish",
-    "French",
-    "German",
-    "Italian",
-    "Portuguese",
-    "Chinese",
-    "Japanese",
-    "Korean",
-    "Turkish",
-    "Arabic",
-    "Hindi",
-    "Dutch",
-    "Polish",
-];
-
-export default function LanguageSelector({
+export function Selector({
     value,
     onChange,
     excludeValue,
     label = "Select language...",
     disabled = false,
-}: LanguageSelectorProps) {
+    options,
+}: SelectorProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState(value);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -66,9 +50,9 @@ export default function LanguageSelector({
         setIsOpen(true);
     };
 
-    const handleSelect = (lang: string) => {
-        onChange(lang);
-        setSearchTerm(lang);
+    const handleSelect = (opt: string) => {
+        onChange(opt);
+        setSearchTerm(opt);
         setIsOpen(false);
     };
 
@@ -83,19 +67,19 @@ export default function LanguageSelector({
         }
     };
 
-    const filteredLanguages = useMemo(() => {
+    const filteredOptions = useMemo(() => {
         const normalizedSearch = searchTerm.toLowerCase();
         const normalizedExcludeValue = excludeValue?.toLowerCase();
 
-        return LANGUAGES.filter((lang) => {
-            const normalizedLang = lang.toLowerCase();
+        return options?.filter((opt) => {
+            const normalizedOpt = opt.toLowerCase();
 
             return (
-                normalizedLang !== normalizedExcludeValue &&
-                normalizedLang.includes(normalizedSearch)
+                normalizedOpt !== normalizedExcludeValue &&
+                normalizedOpt.includes(normalizedSearch)
             );
         });
-    }, [searchTerm, excludeValue]);
+    }, [searchTerm, excludeValue, options]);
 
     return (
         <div className="relative w-full" ref={containerRef}>
@@ -132,22 +116,22 @@ export default function LanguageSelector({
             {isOpen && !disabled && (
                 <div className="absolute z-50 w-full mt-2 bg-card border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
                     <div className="p-1">
-                        {filteredLanguages.length > 0 ? (
-                            filteredLanguages.map((lang) => {
+                        {(filteredOptions?.length ?? 0) > 0 ? (
+                            filteredOptions?.map((opt) => {
                                 return (
                                     <button
-                                        key={lang}
+                                        key={opt}
                                         type="button"
-                                        onClick={() => handleSelect(lang)}
+                                        onClick={() => handleSelect(opt)}
                                         className={cn(
                                             "w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors",
                                             "hover:bg-accent hover:text-accent-foreground",
-                                            value === lang &&
+                                            value === opt &&
                                                 "bg-accent/50 text-accent-foreground font-medium"
                                         )}
                                     >
-                                        {lang}
-                                        {value === lang && (
+                                        {opt}
+                                        {value === opt && (
                                             <Check className="h-4 w-4 text-[#06b6d4]" />
                                         )}
                                     </button>
@@ -155,7 +139,7 @@ export default function LanguageSelector({
                             })
                         ) : (
                             <div className="px-3 py-2 text-sm text-muted-foreground text-center">
-                                Custom language: &quot;{searchTerm}&quot;
+                                Custom option: &quot;{searchTerm}&quot;
                             </div>
                         )}
                     </div>

@@ -4,7 +4,7 @@ import { cn } from "@/components/ui/utils";
 import { useInputFocus } from "@/contexts/InputFocusContext";
 import { Button } from "@/components/ui/button";
 import { GenerateButton } from "@/components/ui/translateButton";
-import LanguageSelector from "./LanguageSelector";
+import { Selector } from "@/components/ui/selector";
 
 interface TranslatorSearchProps {
     value: string;
@@ -19,6 +19,24 @@ interface TranslatorSearchProps {
     targetPlaceholder: string;
     swapLanguages: () => void;
 }
+
+const LANGUAGES = [
+    "English",
+    "Russian",
+    "Spanish",
+    "French",
+    "German",
+    "Italian",
+    "Portuguese",
+    "Chinese",
+    "Japanese",
+    "Korean",
+    "Turkish",
+    "Arabic",
+    "Hindi",
+    "Dutch",
+    "Polish",
+];
 
 export default function TranslatorSearch({
     value,
@@ -39,7 +57,7 @@ export default function TranslatorSearch({
         <form onSubmit={onSubmit} className="mb-8 space-y-4">
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between z-20 relative">
                 <div className="w-full sm:w-[45%]">
-                    <LanguageSelector
+                    <Selector
                         value={sourceLang}
                         excludeValue={targetLang}
                         onChange={setSourceLang}
@@ -60,12 +78,13 @@ export default function TranslatorSearch({
                 </Button>
 
                 <div className="w-full sm:w-[45%]">
-                    <LanguageSelector
+                    <Selector
                         value={targetLang}
                         excludeValue={sourceLang}
                         onChange={setTargetLang}
                         label={targetPlaceholder}
                         disabled={isLoading}
+                        options={LANGUAGES}
                     />
                 </div>
             </div>

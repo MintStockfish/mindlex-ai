@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
     ChevronLeft,
@@ -24,6 +24,21 @@ import {
 } from "@/components/ui/breadcrumb";
 import { toast } from "sonner";
 
+interface Word {
+    id: string;
+    name: string;
+    translation: string;
+    ipa: string;
+}
+
+interface Module {
+    id: string;
+    title: string;
+    description: string;
+    words: Word[];
+    wordCount: number;
+}
+
 export type Props = {
     params: Promise<{
         id: string;
@@ -32,39 +47,33 @@ export type Props = {
 
 export interface FlashCard {
     id: string;
-    word: string;
+    name: string;
     translation: string;
-    transcription?: string;
+    ipa: string;
 }
 
 export default function ModuleDetail({ params }: Props) {
     const navigate = useRouter();
     const { id } = use(params);
-    console.log(id);
 
+    useEffect(() => {
+        const storedItem = localStorage.getItem("modules");
+        const userModules = storedItem ? JSON.parse(storedItem) : [];
+        console.log("modules:", userModules);
+        const moduleWords = userModules[+id - 1]?.words;
+        console.log("words:", moduleWords);
+        setModules(userModules);
+        setCards(moduleWords);
+    }, [id]);
+
+    const [modules, setModules] = useState<Module[]>([]);
     const [moduleTitle] = useState("Английский: IT-термины");
     const [cards, setCards] = useState<FlashCard[]>([
-        {
-            id: "1",
-            word: "algorithm",
-            translation: "алгоритм",
-            transcription: "/ˈælɡərɪðəm/",
-        },
-        {
-            id: "2",
-            word: "debugging",
-            translation: "отладка",
-            transcription: "/dɪˈbʌɡɪŋ/",
-        },
-        {
-            id: "3",
-            word: "deployment",
-            translation: "развёртывание",
-            transcription: "/dɪˈplɔɪmənt/",
-        },
+        { id: "1", name: "", translation: "", ipa: "" },
     ]);
 
     const [newCard, setNewCard] = useState({
+        id: Date.now().toString(),
         word: "",
         translation: "",
         transcription: "",
@@ -78,13 +87,35 @@ export default function ModuleDetail({ params }: Props) {
 
         const card: FlashCard = {
             id: Date.now().toString(),
-            word: newCard.word,
+            name: newCard.word,
             translation: newCard.translation,
-            transcription: newCard.transcription,
+            ipa: newCard.transcription,
         };
 
         setCards([...cards, card]);
-        setNewCard({ word: "", translation: "", transcription: "" });
+        setNewCard({
+            id: Date.now().toString(),
+            word: "",
+            translation: "",
+            transcription: "",
+        });
+
+        const updatedModules = modules.map((m) => {
+            if (m.id === id) {
+                const updatedWords = [...m.words, card];
+
+                return {
+                    ...m,
+                    words: updatedWords,
+                    wordCount: updatedWords.length,
+                };
+            }
+            return m;
+        });
+
+        setModules(updatedModules);
+        localStorage.setItem("modules", JSON.stringify(updatedModules));
+
         toast.success("Карточка добавлена!");
     };
 
@@ -131,11 +162,11 @@ export default function ModuleDetail({ params }: Props) {
                             {moduleTitle}
                         </h1>
                         <p className="text-muted-foreground">
-                            {cards.length}{" "}
-                            {cards.length === 1 ? "карточка" : "карточек"}
+                            {cards?.length ?? 0}{" "}
+                            {cards?.length === 1 ? "карточка" : "карточек"}
                         </p>
                     </div>
-                    {cards.length > 0 && (
+                    {cards?.length > 0 && (
                         <Button
                             onClick={() => navigate.push(`${id}/learnModule`)}
                             className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
@@ -210,7 +241,7 @@ export default function ModuleDetail({ params }: Props) {
             {/* Cards List */}
             <div className="space-y-4">
                 <h3 className="mb-4">Карточки в модуле</h3>
-                {cards.length === 0 ? (
+                {cards?.length === 0 ? (
                     <div className="text-center py-12 text-muted-foreground">
                         <p>Пока нет карточек. Добавьте первую карточку выше.</p>
                     </div>
@@ -226,19 +257,19 @@ export default function ModuleDetail({ params }: Props) {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex flex-wrap items-center gap-3 mb-2">
                                                 <h4 className="text-lg">
-                                                    {card.word}
+                                                    {card.name}
                                                 </h4>
-                                                {card.transcription && (
+                                                {card.ipa && (
                                                     <>
                                                         <code className="px-2 py-0.5 bg-muted rounded text-sm text-muted-foreground">
-                                                            {card.transcription}
+                                                            {card.ipa}
                                                         </code>
                                                         <Button
                                                             variant="ghost"
                                                             size="sm"
                                                             onClick={() =>
                                                                 playPronunciation(
-                                                                    card.word
+                                                                    card.name
                                                                 )
                                                             }
                                                             className="h-8 w-8 p-0"

@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "sonner";
 import { AILoader } from "@/components/ui/AILoader";
 import { WordAnalysis } from "@/components/features/translator/WordAnalysisCard";
 import { SentenceAnalysis } from "@/components/features/translator/SentenceAnaylysis";
@@ -28,11 +27,7 @@ export default function Translator() {
         swapLanguages,
     } = useTranslation();
 
-    const handleAddToCards = () => {
-        toast.success("Слово добавлено в карточки!", {
-            description: "Вы можете найти его в разделе 'Карточки'",
-        });
-    };
+    const handleAddToCards = () => {};
 
     return (
         <InputFocusProvider setQuery={setQuery}>

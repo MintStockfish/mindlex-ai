@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, BookOpen, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,35 +25,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
+interface Word {
+    name: string;
+    translation: string;
+    ipa: string;
+}
+
 interface Module {
     id: string;
     title: string;
     description: string;
+    words: Word[];
     wordCount: number;
 }
 
 export default function Cards() {
     const navigate = useRouter();
-    const [modules, setModules] = useState<Module[]>([
-        {
-            id: "1",
-            title: "Испанский: Базовые глаголы",
-            description: "Самые употребляемые глаголы в испанском языке",
-            wordCount: 45,
-        },
-        {
-            id: "2",
-            title: "Английский: IT-термины",
-            description: "Технические термины для программистов",
-            wordCount: 68,
-        },
-        {
-            id: "3",
-            title: "Французский: Путешествия",
-            description: "Полезные фразы для путешественников",
-            wordCount: 33,
-        },
-    ]);
+    const [modules, setModules] = useState<Module[]>([]);
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [newModule, setNewModule] = useState({
@@ -61,20 +49,39 @@ export default function Cards() {
         description: "",
     });
 
+    useEffect(() => {
+        const storedItem = localStorage.getItem("modules");
+        const userModules = storedItem ? JSON.parse(storedItem) : [];
+        setModules(userModules);
+    }, []);
+
     const handleCreateModule = () => {
         if (!newModule.title.trim()) {
             toast.error("Введите название модуля");
             return;
         }
 
+        let nextId: string;
+
+        if (modules.length === 0) {
+            nextId = "1";
+        } else {
+            const lastModuleId = modules[modules.length - 1].id;
+            const nextNumericId = parseInt(lastModuleId, 10) + 1;
+            nextId = nextNumericId.toString();
+        }
+
         const createdModule: Module = {
-            id: Date.now().toString(),
+            id: nextId,
             title: newModule.title,
             description: newModule.description,
+            words: [],
             wordCount: 0,
         };
 
-        setModules([...modules, createdModule]);
+        const updatedModules = [...modules, createdModule];
+        setModules(updatedModules);
+        localStorage.setItem("modules", JSON.stringify(updatedModules));
         setNewModule({ title: "", description: "" });
         setIsDialogOpen(false);
         toast.success("Модуль создан!", {
