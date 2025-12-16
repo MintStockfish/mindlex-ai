@@ -25,14 +25,19 @@ export default function LearnModule({ params }: Props) {
     const navigate = useRouter();
     const { id } = use(params);
 
-    const [moduleTitle] = useState("Английский: IT-термины");
+    const [moduleTitle, setModuleTitle] = useState("");
 
     useEffect(() => {
         const storedItem = localStorage.getItem("modules");
-        const userModules = storedItem
-            ? JSON.parse(storedItem)[+id - 1].words
-            : [];
-        setCards(userModules);
+        const userModules = storedItem ? JSON.parse(storedItem) : [];
+
+        const currentModule = userModules[+id - 1];
+
+        const moduleTitle = currentModule?.title;
+        const moduleWords = currentModule?.words;
+
+        setModuleTitle(moduleTitle);
+        setCards(moduleWords);
     }, [id]);
 
     const [cards, setCards] = useState<FlashCard[]>([]);
@@ -147,7 +152,9 @@ export default function LearnModule({ params }: Props) {
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
                         <BreadcrumbLink
-                            onClick={() => navigate.push(`/module/${id}`)}
+                            onClick={() =>
+                                navigate.push(`/flashcards/module/${id}`)
+                            }
                             className="cursor-pointer hover:text-[#06b6d4] transition-colors"
                         >
                             {moduleTitle}

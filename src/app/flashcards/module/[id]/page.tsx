@@ -59,15 +59,18 @@ export default function ModuleDetail({ params }: Props) {
     useEffect(() => {
         const storedItem = localStorage.getItem("modules");
         const userModules = storedItem ? JSON.parse(storedItem) : [];
-        console.log("modules:", userModules);
-        const moduleWords = userModules[+id - 1]?.words;
-        console.log("words:", moduleWords);
+        const currentModule = userModules[+id - 1];
+
+        const moduleWords = currentModule?.words;
+        const moduleTitle = currentModule?.title;
+
+        setModuleTitle(moduleTitle);
         setModules(userModules);
         setCards(moduleWords);
     }, [id]);
 
     const [modules, setModules] = useState<Module[]>([]);
-    const [moduleTitle] = useState("Английский: IT-термины");
+    const [moduleTitle, setModuleTitle] = useState("");
     const [cards, setCards] = useState<FlashCard[]>([
         { id: "1", name: "", translation: "", ipa: "" },
     ]);
@@ -129,13 +132,18 @@ export default function ModuleDetail({ params }: Props) {
         toast.info("Воспроизведение произношения...");
     };
 
+    const navigateToModules = () => navigate.push("/flashcards/");
+
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-8 sm:py-12">
             {/* Breadcrumbs */}
             <Breadcrumb className="mb-6">
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink className="cursor-pointer hover:text-[#06b6d4] transition-colors">
+                        <BreadcrumbLink
+                            className="cursor-pointer hover:text-[#06b6d4] transition-colors"
+                            onClick={navigateToModules}
+                        >
                             Мои модули
                         </BreadcrumbLink>
                     </BreadcrumbItem>
@@ -168,7 +176,7 @@ export default function ModuleDetail({ params }: Props) {
                     </div>
                     {cards?.length > 0 && (
                         <Button
-                            onClick={() => navigate.push(`${id}/learnModule`)}
+                            onClick={() => navigate.push(`${id}/learn`)}
                             className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
                         >
                             <GraduationCap className="h-4 w-4 mr-2" />
