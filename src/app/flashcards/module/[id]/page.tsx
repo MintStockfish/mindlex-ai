@@ -24,33 +24,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { toast } from "sonner";
 
-interface Word {
-    id: string;
-    name: string;
-    translation: string;
-    ipa: string;
-}
-
-interface Module {
-    id: string;
-    title: string;
-    description: string;
-    words: Word[];
-    wordCount: number;
-}
+import type { Word, Module } from "@/types/flashcardsTypes";
 
 export type Props = {
     params: Promise<{
         id: string;
     }>;
 };
-
-export interface FlashCard {
-    id: string;
-    name: string;
-    translation: string;
-    ipa: string;
-}
 
 export default function ModuleDetail({ params }: Props) {
     const navigate = useRouter();
@@ -71,7 +51,7 @@ export default function ModuleDetail({ params }: Props) {
 
     const [modules, setModules] = useState<Module[]>([]);
     const [moduleTitle, setModuleTitle] = useState("");
-    const [cards, setCards] = useState<FlashCard[]>([
+    const [cards, setCards] = useState<Word[]>([
         { id: "1", name: "", translation: "", ipa: "" },
     ]);
 
@@ -88,7 +68,7 @@ export default function ModuleDetail({ params }: Props) {
             return;
         }
 
-        const card: FlashCard = {
+        const card: Word = {
             id: Date.now().toString(),
             name: newCard.word,
             translation: newCard.translation,

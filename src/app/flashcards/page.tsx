@@ -25,19 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-interface Word {
-    name: string;
-    translation: string;
-    ipa: string;
-}
-
-interface Module {
-    id: string;
-    title: string;
-    description: string;
-    words: Word[];
-    wordCount: number;
-}
+import type { Module } from "@/types/flashcardsTypes";
 
 export default function Cards() {
     const navigate = useRouter();

@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Props, FlashCard } from "../page";
+import { Props } from "../page";
+import type { Word } from "@/types/flashcardsTypes";
 
 export default function LearnModule({ params }: Props) {
     const navigate = useRouter();
@@ -40,7 +41,7 @@ export default function LearnModule({ params }: Props) {
         setCards(moduleWords);
     }, [id]);
 
-    const [cards, setCards] = useState<FlashCard[]>([]);
+    const [cards, setCards] = useState<Word[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
     const [disableTransition, setDisableTransition] = useState(false);
