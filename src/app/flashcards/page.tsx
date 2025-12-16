@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus, BookOpen, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,59 +22,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-import type { Module } from "@/types/flashcardsTypes";
+import { useModules } from "@/hooks/useModules";
 
 export default function Cards() {
     const navigate = useRouter();
-    const [modules, setModules] = useState<Module[]>([]);
-
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const { modules, createModule } = useModules();
+
     const [newModule, setNewModule] = useState({
         title: "",
         description: "",
     });
 
-    useEffect(() => {
-        const storedItem = localStorage.getItem("modules");
-        const userModules = storedItem ? JSON.parse(storedItem) : [];
-        setModules(userModules);
-    }, []);
-
-    const handleCreateModule = () => {
-        if (!newModule.title.trim()) {
-            toast.error("Введите название модуля");
-            return;
-        }
-
-        let nextId: string;
-
-        if (modules.length === 0) {
-            nextId = "1";
-        } else {
-            const lastModuleId = modules[modules.length - 1].id;
-            const nextNumericId = parseInt(lastModuleId, 10) + 1;
-            nextId = nextNumericId.toString();
-        }
-
-        const createdModule: Module = {
-            id: nextId,
-            title: newModule.title,
-            description: newModule.description,
-            words: [],
-            wordCount: 0,
-        };
-
-        const updatedModules = [...modules, createdModule];
-        setModules(updatedModules);
-        localStorage.setItem("modules", JSON.stringify(updatedModules));
-        setNewModule({ title: "", description: "" });
+    const handleCreate = () => {
+        createModule(newModule);
         setIsDialogOpen(false);
-        toast.success("Модуль создан!", {
-            description: "Теперь вы можете добавить в него карточки",
-        });
+        setNewModule({ title: "", description: "" });
     };
 
     return (
@@ -143,7 +108,7 @@ export default function Cards() {
                                 Отмена
                             </Button>
                             <Button
-                                onClick={handleCreateModule}
+                                onClick={handleCreate}
                                 className="bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
                             >
                                 Создать

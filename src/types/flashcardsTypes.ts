@@ -8,7 +8,7 @@ export interface Word {
 export interface Module {
     id: string;
     title: string;
-    description: string;
+    description?: string;
     words: Word[];
     wordCount: number;
 }

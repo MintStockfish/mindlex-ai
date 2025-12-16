@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
     ChevronLeft,
@@ -24,7 +24,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import { toast } from "sonner";
 
-import type { Word, Module } from "@/types/flashcardsTypes";
+import type { Word } from "@/types/flashcardsTypes";
+import { useModules } from "@/hooks/useModules";
 
 export type Props = {
     params: Promise<{
@@ -35,76 +36,30 @@ export type Props = {
 export default function ModuleDetail({ params }: Props) {
     const navigate = useRouter();
     const { id } = use(params);
-
-    useEffect(() => {
-        const storedItem = localStorage.getItem("modules");
-        const userModules = storedItem ? JSON.parse(storedItem) : [];
-        const currentModule = userModules[+id - 1];
-
-        const moduleWords = currentModule?.words;
-        const moduleTitle = currentModule?.title;
-
-        setModuleTitle(moduleTitle);
-        setModules(userModules);
-        setCards(moduleWords);
-    }, [id]);
-
-    const [modules, setModules] = useState<Module[]>([]);
-    const [moduleTitle, setModuleTitle] = useState("");
-    const [cards, setCards] = useState<Word[]>([
-        { id: "1", name: "", translation: "", ipa: "" },
-    ]);
+    const {
+        moduleTitle,
+        currentModuleWords: cards,
+        addCard,
+        deleteCard,
+    } = useModules(id);
 
     const [newCard, setNewCard] = useState({
-        id: Date.now().toString(),
         word: "",
         translation: "",
         transcription: "",
     });
 
-    const handleAddCard = () => {
-        if (!newCard.word.trim() || !newCard.translation.trim()) {
-            toast.error("Заполните слово и перевод");
-            return;
-        }
-
-        const card: Word = {
-            id: Date.now().toString(),
-            name: newCard.word,
-            translation: newCard.translation,
-            ipa: newCard.transcription,
-        };
-
-        setCards([...cards, card]);
+    const handleAdd = () => {
+        addCard(id, newCard);
         setNewCard({
-            id: Date.now().toString(),
             word: "",
             translation: "",
             transcription: "",
         });
-
-        const updatedModules = modules.map((m) => {
-            if (m.id === id) {
-                const updatedWords = [...m.words, card];
-
-                return {
-                    ...m,
-                    words: updatedWords,
-                    wordCount: updatedWords.length,
-                };
-            }
-            return m;
-        });
-
-        setModules(updatedModules);
-        localStorage.setItem("modules", JSON.stringify(updatedModules));
-
-        toast.success("Карточка добавлена!");
     };
 
-    const handleDeleteCard = (id: string) => {
-        setCards(cards.filter((card) => card.id !== id));
-        toast.success("Карточка удалена");
+    const handleDeleteCard = (cardId: string) => {
+        deleteCard(id, cardId);
     };
 
     const playPronunciation = (word: string) => {
@@ -217,7 +172,7 @@ export default function ModuleDetail({ params }: Props) {
                         />
                     </div>
                     <Button
-                        onClick={handleAddCard}
+                        onClick={handleAdd}
                         className="w-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"
                     >
                         <Plus className="h-4 w-4 mr-2" />
@@ -235,7 +190,7 @@ export default function ModuleDetail({ params }: Props) {
                     </div>
                 ) : (
                     <div className="space-y-3">
-                        {cards.map((card) => (
+                        {cards.map((card: Word) => (
                             <Card
                                 key={card.id}
                                 className="group hover:shadow-md transition-shadow"
