@@ -1,5 +1,5 @@
-import { WordData } from "@/types/translatorTypes";
-import { WordDataSchema } from "@/validations/aiResponse";
+import { WordData } from "@/features/translator/types";
+import { WordDataSchema } from "@/features/translator/schemas";
 import { z } from "zod";
 
 function createSystemPrompt(sourceLang: string = "English", targetLang: string = "Russian") {

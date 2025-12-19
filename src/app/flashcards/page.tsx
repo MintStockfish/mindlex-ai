@@ -24,7 +24,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 
-import { useModules } from "@/hooks/useModules";
+import { useModules } from "@/features/flashcards/hooks/useModules";
 
 export default function Cards() {
     const navigate = useRouter();

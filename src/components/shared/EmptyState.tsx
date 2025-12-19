@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utils";
 
 export default function EmptyStateAnimation() {
     const [showMainMessage, setShowMainMessage] = useState(true);

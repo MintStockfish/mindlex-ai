@@ -13,10 +13,10 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { MindlexLogo } from "@/components/ui/MindlexLogo";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { registerSchema } from "@/validations/authorization";
+import { registerSchema } from "@/features/auth/schemas";
 import { z } from "zod";
 
 export default function Register() {

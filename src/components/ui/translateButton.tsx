@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "./utils"; 
+import { cn } from "@/lib/utils"; 
 
 interface GenerateButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {

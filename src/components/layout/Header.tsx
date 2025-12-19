@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Moon, Sun, LogOut, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MindlexLogo } from "@/components/ui/MindlexLogo";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/context";
 import { useTheme } from "@/components/shared/ThemeProvider";
 
 export function Header() {

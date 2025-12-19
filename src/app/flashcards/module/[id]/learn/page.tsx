@@ -20,7 +20,7 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Props } from "../page";
-import type { Word } from "@/types/flashcardsTypes";
+import type { Word } from "@/features/flashcards/types";
 
 export default function LearnModule({ params }: Props) {
     const navigate = useRouter();

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { ChevronDown, Check } from "lucide-react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
 interface SelectorProps {

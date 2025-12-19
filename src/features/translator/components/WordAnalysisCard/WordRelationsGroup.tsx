@@ -1,4 +1,4 @@
-import { useInputFocus } from "@/contexts/InputFocusContext";
+import { useInputFocus } from "@/features/translator/context";
 
 interface WordItem {
     word: string;

@@ -1,7 +1,7 @@
 import { Search, ArrowRightLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/components/ui/utils";
-import { useInputFocus } from "@/contexts/InputFocusContext";
+import { cn } from "@/lib/utils";
+import { useInputFocus } from "@/features/translator/context";
 import { Button } from "@/components/ui/button";
 import { GenerateButton } from "@/components/ui/translateButton";
 import { Selector } from "@/components/ui/selector";

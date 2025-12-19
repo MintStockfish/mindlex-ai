@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
-import type { WordData, ApiResponse } from "@/types/translatorTypes";
+import type { WordData, ApiResponse } from "@/features/translator/types";
 
 const STORAGE_KEY_SOURCE = "mindlex_sourceLang";
 const STORAGE_KEY_TARGET = "mindlex_targetLang";

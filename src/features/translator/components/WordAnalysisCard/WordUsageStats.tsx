@@ -1,5 +1,5 @@
 import { Progress } from "@/components/ui/progress";
-import { WordData } from "@/types/translatorTypes";
+import { WordData } from "@/features/translator/types";
 
 export default function WordUsageStats({ usage }: { usage: WordData["usage"] }) {
     const stats = [

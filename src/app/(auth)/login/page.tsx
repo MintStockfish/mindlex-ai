@@ -14,10 +14,10 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { MindlexLogo } from "@/components/ui/MindlexLogo";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { loginSchema } from "@/validations/authorization";
+import { loginSchema } from "@/features/auth/schemas";
 
 export default function Login() {
     const navigate = useRouter();

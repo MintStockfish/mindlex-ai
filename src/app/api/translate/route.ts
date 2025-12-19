@@ -1,11 +1,11 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { WordData } from "@/types/translatorTypes";
+import { WordData } from "@/features/translator/types";
 import {
     createSystemPrompt,
-    createFallback,
     parseWordData,
+    createFallback,
     fetchRawAiResponse,
-} from "@/utils/apiUtils";
+} from "@/features/translator/utils/apiUtils";
 
 interface ChatRequest {
     prompt?: string;

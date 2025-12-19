@@ -24,8 +24,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import { toast } from "sonner";
 
-import type { Word } from "@/types/flashcardsTypes";
-import { useModules } from "@/hooks/useModules";
+import type { Word } from "@/features/flashcards/types";
+import { useModules } from "@/features/flashcards/hooks/useModules";
 
 export type Props = {
     params: Promise<{

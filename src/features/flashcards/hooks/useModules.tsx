@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import type { Module, Word } from "@/types/flashcardsTypes";
+import type { Module, Word } from "@/features/flashcards/types";
 
 export const useModules = (id?: string) => {
     const [modules, setModules] = useState<Module[]>([]);
