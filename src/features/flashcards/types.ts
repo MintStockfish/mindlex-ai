@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface Word {
     id: string;
     name: string;
@@ -11,4 +13,9 @@ export interface Module {
     description?: string;
     words: Word[];
     wordCount: number;
+}
+
+export interface FlashCardHeaderProps {
+    isDialogOpen: boolean;
+    setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
