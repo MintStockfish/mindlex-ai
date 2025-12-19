@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -25,7 +25,7 @@ import {
 import { toast } from "sonner";
 
 import type { Word } from "@/features/flashcards/types";
-import { useModules } from "@/features/flashcards/hooks/useModules";
+import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
 
 export type Props = {
     params: Promise<{
@@ -41,7 +41,12 @@ export default function ModuleDetail({ params }: Props) {
         currentModuleWords: cards,
         addCard,
         deleteCard,
-    } = useModules(id);
+        setModuleId,
+    } = useModulesContext();
+
+    useEffect(() => {
+        setModuleId(id);
+    }, [id, setModuleId]);
 
     const [newCard, setNewCard] = useState({
         word: "",
@@ -50,7 +55,12 @@ export default function ModuleDetail({ params }: Props) {
     });
 
     const handleAdd = () => {
-        addCard(id, newCard);
+        addCard(id, {
+            id: Date.now().toString(),
+            name: newCard.word,
+            translation: newCard.translation,
+            ipa: newCard.transcription,
+        });
         setNewCard({
             word: "",
             translation: "",

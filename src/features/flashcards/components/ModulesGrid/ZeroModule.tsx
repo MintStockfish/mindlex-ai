@@ -1,8 +1,12 @@
 import { Plus, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FlashCardHeaderProps } from "../../types";
+import { Dispatch, SetStateAction } from "react";
 
-export default function ZeroModule({ setIsDialogOpen }: FlashCardHeaderProps) {
+export default function ZeroModule({
+    setIsDialogOpen,
+}: {
+    setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
+}) {
     return (
         <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-24 h-24 mb-6 rounded-full bg-linear-to-r from-[#06b6d4]/20 to-[#3b82f6]/20 flex items-center justify-center">

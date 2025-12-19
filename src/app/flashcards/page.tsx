@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useModules } from "@/features/flashcards/hooks/useModules";
+import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
 
 import ZeroModule from "@/features/flashcards/components/ModulesGrid/ZeroModule";
 import ModulesList from "@/features/flashcards/components/ModulesGrid/ModulesList";
 import FlashCardHeader from "@/features/flashcards/components/FlashCardHeader";
 
 export default function Cards() {
-    const { modules } = useModules();
+    const { modules } = useModulesContext();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     return (

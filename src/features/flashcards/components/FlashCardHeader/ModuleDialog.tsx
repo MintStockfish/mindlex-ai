@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useModules } from "../../hooks/useModules";
+import { useModulesContext } from "../../contexts/ModulesContext";
 
 import {
     Dialog,
@@ -21,7 +21,7 @@ export default function ModuleDialog({
     isDialogOpen,
     setIsDialogOpen,
 }: FlashCardHeaderProps) {
-    const { createModule } = useModules();
+    const { createModule } = useModulesContext();
     const [newModule, setNewModule] = useState({
         title: "",
         description: "",

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -15,21 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Selector } from "@/components/ui/selector";
-
-interface Word {
-    id: string;
-    name: string;
-    translation: string;
-    ipa: string;
-}
-
-interface Module {
-    id: string;
-    title: string;
-    description: string;
-    words: Word[];
-    wordCount: number;
-}
+import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
+import { Word } from "@/features/flashcards/types";
 
 export default function WordHeader({
     word,
@@ -42,7 +29,6 @@ export default function WordHeader({
     ipa: string;
     onAdd: () => void;
 }) {
-    const [modules, setModules] = useState<Module[]>([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const [selectedModuleId, setSelectedModuleId] = useState<string>("");
@@ -50,12 +36,7 @@ export default function WordHeader({
         title: "",
         description: "",
     });
-
-    useEffect(() => {
-        const storedItem = localStorage.getItem("modules");
-        const userModules = storedItem ? JSON.parse(storedItem) : [];
-        setModules(userModules);
-    }, []);
+    const { modules, createModule, addCard } = useModulesContext();
 
     const handleSave = () => {
         const newWord: Word = {
@@ -65,56 +46,24 @@ export default function WordHeader({
             ipa,
         };
 
+        const title = newModule.title.trim();
+
         if (selectedModuleId) {
-            let moduleName = "";
-
-            const updatedModules = modules.map((m) => {
-                if (m.id === selectedModuleId) {
-                    moduleName = m.title;
-                    const updatedWords = [...m.words, newWord];
-
-                    return {
-                        ...m,
-                        words: updatedWords,
-                        wordCount: updatedWords.length,
-                    };
-                }
-                return m;
+            addCard(selectedModuleId, newWord);
+            setIsDialogOpen(false);
+        } else if (title) {
+            const moduleId = createModule({ 
+                title, 
+                description: newModule.description 
             });
 
-            setModules(updatedModules);
-            localStorage.setItem("modules", JSON.stringify(updatedModules));
-
-            toast.success(`Слово добавлено в модуль "${moduleName}"`);
-            setIsDialogOpen(false);
-        } else if (newModule.title.trim()) {
-            let nextId: string;
-
-            if (modules.length === 0) {
-                nextId = "1";
-            } else {
-                const lastModuleId = modules[modules.length - 1].id;
-                const nextNumericId = parseInt(lastModuleId, 10) + 1;
-                nextId = nextNumericId.toString();
+            if (moduleId) {
+                addCard(moduleId, newWord);
             }
-            const createdModule: Module = {
-                id: (nextId + 1).toString(),
-                title: newModule.title,
-                description: newModule.description,
-                words: [newWord],
-                wordCount: 1,
-            };
-
-            const updatedModules = [...modules, createdModule];
-            setModules(updatedModules);
-            localStorage.setItem("modules", JSON.stringify(updatedModules));
 
             setNewModule({ title: "", description: "" });
             setIsDialogOpen(false);
             setIsCreating(false);
-            toast.success(
-                `Модуль "${createdModule.title}" создан и слово добавлено!`
-            );
         } else {
             toast.error("Выберите модуль или создайте новый");
         }

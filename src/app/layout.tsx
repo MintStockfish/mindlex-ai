@@ -8,6 +8,8 @@ import { Toaster } from "@/components/shared/Toaster";
 import { AuthProvider } from "@/features/auth/context";
 import { ThemeScript } from "@/components/shared/ThemeScript";
 
+import { ModulesProvider } from "@/features/flashcards/contexts/ModulesContext";
+
 const geistSans = Geist({
     variable: "--font-geist-sans",
     subsets: ["latin"],
@@ -37,12 +39,14 @@ export default function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
             >
                 <AuthProvider>
-                    <ThemeProvider>
-                        <Header />
-                        <main className="flex-1">{children}</main>
-                        <Footer />
-                        <Toaster />
-                    </ThemeProvider>
+                    <ModulesProvider>
+                        <ThemeProvider>
+                            <Header />
+                            <main className="flex-1">{children}</main>
+                            <Footer />
+                            <Toaster />
+                        </ThemeProvider>
+                    </ModulesProvider>
                 </AuthProvider>
             </body>
         </html>
