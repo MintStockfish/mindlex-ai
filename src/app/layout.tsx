@@ -1,4 +1,4 @@
-import "./globals.css";
+import "../styles/globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/Header";
@@ -7,7 +7,6 @@ import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { Toaster } from "@/components/shared/Toaster";
 import { AuthProvider } from "@/features/auth/context";
 import { ThemeScript } from "@/components/shared/ThemeScript";
-
 import { ModulesProvider } from "@/features/flashcards/contexts/ModulesContext";
 
 const geistSans = Geist({
