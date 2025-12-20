@@ -30,3 +30,24 @@ export const WordDataSchema = z.object({
     usage: UsageSchema,
     etymology: z.string(),
 });
+
+const SentenceWordDetailSchema = z.object({
+    word: z.string(),
+    translation: z.string(),
+    partOfSpeech: z.string(),
+    ipa: z.string(),
+    meaning: z.string(),
+    example: z.string(),
+});
+
+const SentenceWordSchema = z.object({
+    word: z.string(),
+    partOfSpeech: z.string(),
+    detail: SentenceWordDetailSchema,
+});
+
+export const SentenceDataSchema = z.object({
+    original: z.string(),
+    translation: z.string(),
+    words: z.array(SentenceWordSchema),
+});

@@ -1,157 +1,59 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SentenceData } from "@/features/translator/types";
 
 interface SentenceAnalysisProps {
-    sentence: string;
+    data: SentenceData;
+    onAnalyzeWord?: (word: string) => void;
 }
 
-interface WordDetail {
-    word: string;
-    translation: string;
-    partOfSpeech: string;
-    ipa: string;
-    meaning: string;
-    example: string;
+function getPartOfSpeechColor(pos: string): string {
+    const lowerPos = pos.toLowerCase();
+    if (lowerPos.includes("noun") || lowerPos.includes("существительное"))
+        return "bg-purple-500/10 text-purple-700 dark:text-purple-300";
+    if (lowerPos.includes("verb") || lowerPos.includes("глагол"))
+        return "bg-red-500/10 text-red-700 dark:text-red-300";
+    if (lowerPos.includes("adjective") || lowerPos.includes("прилагательное"))
+        return "bg-green-500/10 text-green-700 dark:text-green-300";
+    if (lowerPos.includes("adverb") || lowerPos.includes("наречие"))
+        return "bg-orange-500/10 text-orange-700 dark:text-orange-300";
+    if (lowerPos.includes("preposition") || lowerPos.includes("предлог"))
+        return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400";
+    if (lowerPos.includes("article") || lowerPos.includes("артикль"))
+        return "bg-blue-500/10 text-blue-700 dark:text-blue-300";
+    
+    return "bg-gray-500/10 text-gray-700 dark:text-gray-300";
 }
 
-export function SentenceAnalysis({ sentence }: SentenceAnalysisProps) {
-    const [selectedWord, setSelectedWord] = useState<WordDetail | null>(null);
-    console.log(sentence);
+function getBadgeColor(pos: string): string {
+    const lowerPos = pos.toLowerCase();
+    if (lowerPos.includes("noun") || lowerPos.includes("существительное"))
+        return "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20";
+    if (lowerPos.includes("verb") || lowerPos.includes("глагол"))
+        return "bg-red-500/10 text-red-700 dark:text-red-300 border-red-500/20";
+    if (lowerPos.includes("adjective") || lowerPos.includes("прилагательное"))
+        return "bg-green-500/10 text-green-700 dark:text-green-300 border-green-500/20";
+    if (lowerPos.includes("adverb") || lowerPos.includes("наречие"))
+        return "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20";
+    if (lowerPos.includes("preposition") || lowerPos.includes("предлог"))
+        return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20";
+    if (lowerPos.includes("article") || lowerPos.includes("артикль"))
+        return "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20";
+    
+    return "bg-gray-500/10 text-gray-700 dark:text-gray-300 border-gray-500/20";
+}
 
-    const sentenceData = {
-        original: "The quick brown fox jumps over the lazy dog.",
-        translation: "Быстрая коричневая лиса прыгает через ленивую собаку.",
-        words: [
-            {
-                word: "The",
-                partOfSpeech: "Article",
-                color: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
-                detail: {
-                    word: "the",
-                    translation: "определённый артикль",
-                    partOfSpeech: "Article",
-                    ipa: "/ðə/, /ði/",
-                    meaning:
-                        "Используется для обозначения определённого предмета или понятия",
-                    example: "The sun rises in the east.",
-                },
-            },
-            {
-                word: "quick",
-                partOfSpeech: "Adjective",
-                color: "bg-green-500/10 text-green-700 dark:text-green-300",
-                detail: {
-                    word: "quick",
-                    translation: "быстрый",
-                    partOfSpeech: "Adjective",
-                    ipa: "/kwɪk/",
-                    meaning:
-                        "Движущийся или способный двигаться с большой скоростью",
-                    example: "She gave him a quick answer.",
-                },
-            },
-            {
-                word: "brown",
-                partOfSpeech: "Adjective",
-                color: "bg-green-500/10 text-green-700 dark:text-green-300",
-                detail: {
-                    word: "brown",
-                    translation: "коричневый",
-                    partOfSpeech: "Adjective",
-                    ipa: "/braʊn/",
-                    meaning:
-                        "Цвет, получаемый смешением красного, жёлтого и чёрного",
-                    example: "He has brown eyes.",
-                },
-            },
-            {
-                word: "fox",
-                partOfSpeech: "Noun",
-                color: "bg-purple-500/10 text-purple-700 dark:text-purple-300",
-                detail: {
-                    word: "fox",
-                    translation: "лиса",
-                    partOfSpeech: "Noun",
-                    ipa: "/fɒks/",
-                    meaning:
-                        "Хищное млекопитающее семейства псовых с пушистым хвостом",
-                    example: "A fox was seen in the garden.",
-                },
-            },
-            {
-                word: "jumps",
-                partOfSpeech: "Verb",
-                color: "bg-red-500/10 text-red-700 dark:text-red-300",
-                detail: {
-                    word: "jump",
-                    translation: "прыгать",
-                    partOfSpeech: "Verb",
-                    ipa: "/dʒʌmp/",
-                    meaning:
-                        "Отталкиваться от поверхности, чтобы подняться в воздух",
-                    example: "The cat jumped onto the table.",
-                },
-            },
-            {
-                word: "over",
-                partOfSpeech: "Preposition",
-                color: "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400",
-                detail: {
-                    word: "over",
-                    translation: "над, через",
-                    partOfSpeech: "Preposition",
-                    ipa: "/ˈəʊvə(r)/",
-                    meaning: "Выражает движение или положение выше чего-либо",
-                    example: "The bird flew over the house.",
-                },
-            },
-            {
-                word: "the",
-                partOfSpeech: "Article",
-                color: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
-                detail: {
-                    word: "the",
-                    translation: "определённый артикль",
-                    partOfSpeech: "Article",
-                    ipa: "/ðə/, /ði/",
-                    meaning:
-                        "Используется для обозначения определённого предмета или понятия",
-                    example: "The sun rises in the east.",
-                },
-            },
-            {
-                word: "lazy",
-                partOfSpeech: "Adjective",
-                color: "bg-green-500/10 text-green-700 dark:text-green-300",
-                detail: {
-                    word: "lazy",
-                    translation: "ленивый",
-                    partOfSpeech: "Adjective",
-                    ipa: "/ˈleɪzi/",
-                    meaning: "Не желающий работать или прилагать усилия",
-                    example: "He's too lazy to do any work.",
-                },
-            },
-            {
-                word: "dog.",
-                partOfSpeech: "Noun",
-                color: "bg-purple-500/10 text-purple-700 dark:text-purple-300",
-                detail: {
-                    word: "dog",
-                    translation: "собака",
-                    partOfSpeech: "Noun",
-                    ipa: "/dɒɡ/",
-                    meaning:
-                        "Домашнее животное, часто содержащееся как питомец или для работы",
-                    example: "They have a pet dog.",
-                },
-            },
-        ],
-    };
+export function SentenceAnalysis({ data, onAnalyzeWord }: SentenceAnalysisProps) {
+    const [selectedWord, setSelectedWord] = useState<SentenceData["words"][0]["detail"] | null>(null);
+
+    const uniquePartsOfSpeech = useMemo(() => {
+        const parts = new Set(data.words.map(w => w.partOfSpeech));
+        return Array.from(parts);
+    }, [data.words]);
 
     return (
         <>
@@ -162,13 +64,16 @@ export function SentenceAnalysis({ sentence }: SentenceAnalysisProps) {
                         <h3>Исходное предложение</h3>
                         <div className="bg-muted/50 rounded-lg p-4">
                             <p className="text-lg leading-relaxed flex flex-wrap gap-2">
-                                {sentenceData.words.map((wordData, index) => (
+                                {data.words.map((wordData, index) => (
                                     <button
                                         key={index}
                                         onClick={() =>
                                             setSelectedWord(wordData.detail)
                                         }
-                                        className={`${wordData.color} px-2 py-1 rounded transition-all hover:scale-105 hover:shadow-md cursor-pointer`}
+                                        className={`${getPartOfSpeechColor(
+                                            wordData.partOfSpeech
+                                        )} px-2 py-1 rounded transition-all hover:scale-105 hover:shadow-md cursor-pointer`}
+                                        title={wordData.partOfSpeech}
                                     >
                                         {wordData.word}
                                     </button>
@@ -182,51 +87,32 @@ export function SentenceAnalysis({ sentence }: SentenceAnalysisProps) {
                         <h3>Перевод</h3>
                         <div className="bg-linear-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 rounded-lg p-4">
                             <p className="text-lg">
-                                {sentenceData.translation}
+                                {data.translation}
                             </p>
                         </div>
                     </div>
 
                     {/* Grammar Structure Legend */}
-                    <div className="space-y-3">
-                        <h3>Части речи</h3>
-                        <div className="flex flex-wrap gap-2">
-                            <Badge
-                                variant="outline"
-                                className="bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20"
-                            >
-                                Артикль
-                            </Badge>
-                            <Badge
-                                variant="outline"
-                                className="bg-green-500/10 text-green-700 dark:text-green-300 border-green-500/20"
-                            >
-                                Прилагательное
-                            </Badge>
-                            <Badge
-                                variant="outline"
-                                className="bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20"
-                            >
-                                Существительное
-                            </Badge>
-                            <Badge
-                                variant="outline"
-                                className="bg-red-500/10 text-red-700 dark:text-red-300 border-red-500/20"
-                            >
-                                Глагол
-                            </Badge>
-                            <Badge
-                                variant="outline"
-                                className="bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20"
-                            >
-                                Предлог
-                            </Badge>
+                    {uniquePartsOfSpeech.length > 0 && (
+                        <div className="space-y-3">
+                            <h3>Части речи</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {uniquePartsOfSpeech.map((pos) => (
+                                    <Badge
+                                        key={pos}
+                                        variant="outline"
+                                        className={getBadgeColor(pos)}
+                                    >
+                                        {pos}
+                                    </Badge>
+                                ))}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                                Нажмите на любое слово в предложении для детального
+                                разбора
+                            </p>
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                            Нажмите на любое слово в предложении для детального
-                            разбора
-                        </p>
-                    </div>
+                    )}
                 </CardContent>
             </Card>
 
@@ -240,16 +126,33 @@ export function SentenceAnalysis({ sentence }: SentenceAnalysisProps) {
                         <DialogTitle className="text-2xl bg-linear-to-r from-[#06b6d4] to-[#3b82f6] bg-clip-text text-transparent">
                             {selectedWord?.word}
                         </DialogTitle>
+                        <DialogDescription>
+                            Детальный разбор слова
+                        </DialogDescription>
                     </DialogHeader>
                     {selectedWord && (
                         <div className="space-y-4">
-                            <div>
-                                <p className="text-lg">
-                                    {selectedWord.translation}
-                                </p>
-                                <Badge variant="secondary" className="mt-2">
-                                    {selectedWord.partOfSpeech}
-                                </Badge>
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <p className="text-lg">
+                                        {selectedWord.translation}
+                                    </p>
+                                    <Badge variant="secondary" className="mt-2">
+                                        {selectedWord.partOfSpeech}
+                                    </Badge>
+                                </div>
+                                <Button 
+                                    onClick={() => {
+                                        if (onAnalyzeWord && selectedWord) {
+                                            onAnalyzeWord(selectedWord.word);
+                                            setSelectedWord(null);
+                                        }
+                                    }}
+                                    variant="secondary"
+                                    size="sm"
+                                >
+                                    Детальный разбор
+                                </Button>
                             </div>
 
                             <div className="space-y-2">

@@ -2,7 +2,7 @@ import { useInputFocus } from "@/features/translator/context";
 
 interface WordItem {
     word: string;
-    ipa: string;
+    ipa?: string;
 }
 
 interface WordRelationsGroupProps {
@@ -36,9 +36,11 @@ export default function WordRelationsGroup({
                         }}
                     >
                         <p className="text-sm font-medium">{item.word}</p>
-                        <p className="text-xs text-muted-foreground">
-                            {item.ipa}
-                        </p>
+                        {item.ipa && (
+                            <p className="text-xs text-muted-foreground">
+                                {item.ipa}
+                            </p>
+                        )}
                     </button>
                 ))}
             </div>

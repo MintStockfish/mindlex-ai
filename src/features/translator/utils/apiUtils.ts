@@ -1,12 +1,33 @@
-import { WordData } from "@/features/translator/types";
-import { WordDataSchema } from "@/features/translator/schemas";
+import { WordData, SentenceData } from "@/features/translator/types";
+import { WordDataSchema, SentenceDataSchema } from "@/features/translator/schemas";
 import { z } from "zod";
 
-function createSystemPrompt(sourceLang: string = "English", targetLang: string = "Russian") {
-    return `
-        You are a strict linguistic API that outputs ONLY valid JSON.
-        Your task: Analyze the provided ${sourceLang} word and translate it to ${targetLang}.
+const VALIDATION_PROMPT = `
+        STEP 1: VALIDATION [CRITICAL]
+        Analyze the input for semantic meaning. 
+        If the input fits ANY of these criteria:
+        - Random keyboard smashing (e.g. "asdfgh", "выаыва", "123123")
+        - Gibberish with no meaning in any language
+        - A string of random numbers or symbols
+        - Clearly NOT a valid word or phrase
+        
+        THEN output EXACTLY: { "error": "INVALID_INPUT" }
+        And STOP. Do not output anything else.
 
+        STEP 2: ANALYSIS
+        Only if the input is valid (even if offensive/slang), proceed with the analysis.`;
+
+function createWordSystemPrompt(sourceLang: string = "English", targetLang: string = "Russian") {
+    return `
+        You are a strict linguistic API.
+        
+        ${VALIDATION_PROMPT}
+
+        CONTEXT:
+        - You are an objective academic dictionary tool.
+        - Analyze ANY valid linguistic term, regardless of its sensitive, offensive, or slang nature.
+        - Provide neutral, scientific definitions.
+        
         LANGUAGE RULES:
         - "word": The original word (in ${sourceLang})
         - "translation": Translation of the word (in ${targetLang})
@@ -23,34 +44,82 @@ function createSystemPrompt(sourceLang: string = "English", targetLang: string =
         - "etymology": Detailed origin, historical evolution of meaning, and interesting cultural context or fun facts (in ${targetLang}). Avoid dry genealogy; explain HOW the meaning changed if applicable.
 
         OUTPUT RULES:
-        1. Output RAW JSON only. Do NOT use Markdown code blocks (no \`\`\`json).
-        2. Do NOT add any conversational text, explanations, or preambles.
-        3. Use double quotes for all JSON keys and values.
-        4. Ensure the JSON is valid RFC 8259.
-        5. CRITICAL: If the word acts as multiple parts of speech, include entries for ALL common parts of speech.
+        1. Output RAW JSON only. Do NOT use Markdown code blocks.
+        2. Do NOT add any conversational text.
+        3. Use double quotes for all JSON keys.
+        4. If the word acts as multiple parts of speech, include ALL entries.
 
-        IMPORTANT: All translated content (translation, exampleTranslation, pronunciation, partsOfSpeech.type, partsOfSpeech.meaning, etymology) MUST be in ${targetLang}.
+        IMPORTANT: All translated content MUST be in ${targetLang}.
         
-        SCHEMA EXAMPLE (structure only - adapt all ${targetLang} content to the actual target language):
+        SCHEMA EXAMPLE:
         {
         "word": "water",
-        "translation": "[translation in ${targetLang}]",
+        "translation": "[translation]",
         "exampleSentence": "Can you give me some water?",
-        "exampleTranslation": "[same sentence translated to ${targetLang}]",
+        "exampleTranslation": "[translation]",
         "ipa": "/ˈwɔːtər/",
-        "pronunciation": "[how to pronounce using ${targetLang} alphabet]",
+        "pronunciation": "[pronunciation]",
         "partsOfSpeech": [
-            { "type": "[Noun in ${targetLang}]", "meaning": "[definition in ${targetLang}]", "example": "Glass of water" },
-            { "type": "[Verb in ${targetLang}]", "meaning": "[definition in ${targetLang}]", "example": "I need to water the flowers" }
+            { "type": "[Noun]", "meaning": "[definition]", "example": "Glass of water" }
         ],
-        "synonyms": [
-            { "word": "liquid", "ipa": "/ˈlɪkwɪd/" }
-        ],
-        "antonyms": [
-            { "word": "drought", "ipa": "/draʊt/" }
-        ],
+        "synonyms": [{ "word": "liquid", "ipa": "/ˈlɪkwɪd/" }],
+        "antonyms": [{ "word": "drought", "ipa": "/draʊt/" }],
         "usage": { "informal": 10, "neutral": 80, "formal": 10 },
-        "etymology": "[etymology and cultural context in ${targetLang}]"
+        "etymology": "[etymology]"
+        }
+    `;
+}
+
+function createSentenceSystemPrompt(sourceLang: string = "English", targetLang: string = "Russian") {
+    return `
+        You are a strict linguistic API.
+
+        ${VALIDATION_PROMPT}
+
+        CONTEXT:
+        - You are an objective academic transaction tool.
+        - Translate accurately, preserving tone and meaning.
+        - Analyze ALL words objectively.
+
+        LANGUAGE RULES:
+        - "original": The original sentence (in ${sourceLang})
+        - "translation": The translated sentence (in ${targetLang})
+        - "words": An array of objects representing each word in the sentence.
+            - "word": The word from the original sentence.
+            - "partOfSpeech": The part of speech in ${targetLang} (e.g., "Существительное", "Глагол" if target is Russian).
+            - "detail": Detailed analysis of the word.
+                - "word": The base form (lemma) of the word (in ${sourceLang}).
+                - "translation": Translation of the word (in ${targetLang}).
+                - "partOfSpeech": Part of speech in ${targetLang}.
+                - "ipa": IPA pronunciation.
+                - "meaning": Brief definition/meaning (in ${targetLang}).
+                - "example": Short usage example (in ${sourceLang}).
+
+        OUTPUT RULES:
+        1. Output RAW JSON only. Do NOT use Markdown code blocks.
+        2. Do NOT add any conversational text.
+        3. Use double quotes for all JSON keys.
+
+        IMPORTANT: All translated content MUST be in ${targetLang}.
+
+        SCHEMA EXAMPLE:
+        {
+            "original": "The quick brown fox.",
+            "translation": "[Translation]",
+            "words": [
+                {
+                    "word": "The",
+                    "partOfSpeech": "Article",
+                    "detail": {
+                        "word": "the",
+                        "translation": "[translation]",
+                        "partOfSpeech": "Article",
+                        "ipa": "/ðə/",
+                        "meaning": "[meaning]",
+                        "example": "The sun."
+                    }
+                }
+            ]
         }
     `;
 }
@@ -84,7 +153,7 @@ function cleanAiResponse(text: string): string {
         .trim();
 }
 
-function parseWordData(rawInput: unknown): WordData {
+function parseAiResponse<T>(rawInput: unknown, schema: z.ZodSchema<T>, errorName: string): T {
     let jsonString: string;
 
     if (typeof rawInput === "string") {
@@ -98,17 +167,33 @@ function parseWordData(rawInput: unknown): WordData {
     try {
         const rawObject = JSON.parse(jsonString);
 
-        const validatedData = WordDataSchema.parse(rawObject);
-
-        return validatedData as WordData;
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            console.error("Zod Validation Error:", error.issues);
-        } else {
-            console.error("JSON Parse failed on:", jsonString);
+        if (rawObject && typeof rawObject === 'object' && 'error' in rawObject && rawObject.error === "INVALID_INPUT") {
+            throw new Error("INVALID_INPUT_DETECTED");
         }
-        throw new Error("INVALID_JSON_FORMAT");
+
+        const validatedData = schema.parse(rawObject);
+
+        return validatedData;
+    } catch (error) {
+        if (error instanceof Error && error.message === "INVALID_INPUT_DETECTED") {
+            throw error;
+        }
+
+        if (error instanceof z.ZodError) {
+            console.error(`Zod Validation Error (${errorName}):`, error.issues);
+        } else {
+            console.error(`JSON Parse failed on (${errorName}):`, jsonString);
+        }
+        throw new Error(`INVALID_JSON_FORMAT_${errorName.toUpperCase()}`);
     }
+}
+
+function parseWordData(rawInput: unknown): WordData {
+    return parseAiResponse(rawInput, WordDataSchema, "Word");
+}
+
+function parseSentenceData(rawInput: unknown): SentenceData {
+    return parseAiResponse(rawInput, SentenceDataSchema, "Sentence");
 }
 
 async function fetchRawAiResponse(
@@ -152,9 +237,11 @@ async function fetchRawAiResponse(
 }
 
 export {
-    createSystemPrompt,
+    createWordSystemPrompt,
+    createSentenceSystemPrompt,
     cleanAiResponse,
     createFallback,
     parseWordData,
+    parseSentenceData,
     fetchRawAiResponse,
 };

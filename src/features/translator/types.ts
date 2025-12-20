@@ -10,16 +10,33 @@ interface WordData {
         meaning: string;
         example: string;
     }[];
-    synonyms: { word: string; ipa: string }[];
-    antonyms: { word: string; ipa: string }[];
+    synonyms: { word: string; ipa?: string }[];
+    antonyms: { word: string; ipa?: string }[];
     usage: { informal: number; neutral: number; formal: number };
     etymology: string;
 }
 
+interface SentenceData {
+    original: string;
+    translation: string;
+    words: {
+        word: string;
+        partOfSpeech: string;
+        detail: {
+            word: string;
+            translation: string;
+            partOfSpeech: string;
+            ipa: string;
+            meaning: string;
+            example: string;
+        };
+    }[];
+}
+
 interface ApiResponse {
     success: boolean;
-    data?: WordData;
+    data?: WordData | SentenceData;
     error?: string;
 }
 
-export type { WordData, ApiResponse };
+export type { WordData, SentenceData, ApiResponse };

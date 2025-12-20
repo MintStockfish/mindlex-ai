@@ -1,15 +1,48 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
-import type { WordData, ApiResponse } from "@/features/translator/types";
+import type { WordData, SentenceData, ApiResponse } from "@/features/translator/types";
 
 const STORAGE_KEY_SOURCE = "mindlex_sourceLang";
 const STORAGE_KEY_TARGET = "mindlex_targetLang";
 const STORAGE_KEY_PLACEHOLDER_SOURCE = "mindlex_placeholderSource";
 const STORAGE_KEY_PLACEHOLDER_TARGET = "mindlex_placeholderTarget";
 
+const MAX_INPUT_LENGTH = 100;
+
+async function performTranslationRequest(
+    prompt: string,
+    sourceLang: string,
+    targetLang: string,
+    mode: "word" | "sentence"
+): Promise<ApiResponse> {
+    const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            prompt,
+            sourceLang,
+            targetLang,
+            mode,
+        }),
+    });
+
+    if (response.status === 422) {
+        throw new Error("Разбор невозможен для данного ввода");
+    }
+
+    if (!response.ok) {
+        throw new Error("Ошибка сети или сервера");
+    }
+
+    return await response.json();
+}
+
 export function useTranslation() {
     const [query, setQuery] = useState("");
     const [wordData, setWordData] = useState<WordData | null>(null);
+    const [sentenceData, setSentenceData] = useState<SentenceData | null>(
+        null
+    );
     const [isLoading, setIsLoading] = useState(false);
     const [sourceLang, setSourceLangInternal] = useState("");
     const [targetLang, setTargetLangInternal] = useState("");
@@ -18,6 +51,8 @@ export function useTranslation() {
     const [analysisType, setAnalysisType] = useState<
         "word" | "sentence" | null
     >(null);
+
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -106,51 +141,85 @@ export function useTranslation() {
     }, [sourceLang, targetLang, sourcePlaceholder, targetPlaceholder]);
 
     const handleWordAnalysis = async (
-        searchQuery: string,
+        effectiveQuery: string,
         effectiveSource: string,
         effectiveTarget: string
     ) => {
         try {
-            const response = await fetch("/api/translate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    prompt: searchQuery,
-                    sourceLang: effectiveSource,
-                    targetLang: effectiveTarget,
-                }),
-            });
+            const result = await performTranslationRequest(
+                effectiveQuery,
+                effectiveSource,
+                effectiveTarget,
+                "word"
+            );
+            console.log("[TEST]: API Response (Word):", result);
 
-            if (!response.ok) throw new Error("Ошибка сети или сервера");
-
-            const result: ApiResponse = await response.json();
-            console.log("[TEST]: API Response:", result);
-
-            if (result.success && result.data) {
-                setWordData(result.data);
+            if (result.success && result.data && !("original" in result.data)) {
+                setWordData(result.data as WordData);
             } else {
                 throw new Error(
                     result.error || "Не удалось получить анализ слова"
                 );
             }
-        } catch (error) {
-            console.error("Analysis error:", error);
-            toast.error(
-                error instanceof Error ? error.message : "Ошибка анализа"
-            );
+        } catch (err) {
+            console.error("Analysis error:", err);
+            const message = err instanceof Error ? err.message : "Ошибка анализа";
+            
+            if (message !== "Разбор невозможен для данного ввода") {
+                toast.error(message);
+            }
+            setError(message);
             setAnalysisType(null);
         }
     };
 
-    const handleSentenceAnalysis = async (searchQuery: string) => {
-        // Тут будет логика для предложений
-        console.log("Analyzing sentence:", searchQuery);
+    const handleSentenceAnalysis = async (
+        effectiveQuery: string,
+        effectiveSource: string,
+        effectiveTarget: string
+    ) => {
+        try {
+            const result = await performTranslationRequest(
+                effectiveQuery,
+                effectiveSource,
+                effectiveTarget,
+                "sentence"
+            );
+            console.log("[TEST]: API Response (Sentence):", result);
+
+            if (result.success && result.data && "original" in result.data) {
+                setSentenceData(result.data as SentenceData);
+            } else {
+                throw new Error(
+                    result.error || "Не удалось получить перевод предложения"
+                );
+            }
+        } catch (err) {
+            console.error("Analysis error:", err);
+            const message = err instanceof Error ? err.message : "Ошибка анализа";
+            
+            if (message !== "Разбор невозможен для данного ввода") {
+                toast.error(message);
+            }
+            setError(message);
+            setAnalysisType(null);
+        }
     };
 
-    const search = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const searchQuery = query.trim();
-        if (!searchQuery) return;
+    const search = async (e?: React.FormEvent, overrideQuery?: string) => {
+        if (e) e.preventDefault();
+        const effectiveQuery = (overrideQuery || query).trim();
+        
+        if (!effectiveQuery) return;
+        
+        if (effectiveQuery.length > MAX_INPUT_LENGTH) {
+            toast.error(`Input exceeds ${MAX_INPUT_LENGTH} characters`);
+            return;
+        }
+
+        if (overrideQuery) {
+            setQuery(overrideQuery);
+        }
 
         const effectiveSource = sourceLang.trim() || sourcePlaceholder;
         let effectiveTarget = targetLang.trim() || targetPlaceholder;
@@ -173,24 +242,32 @@ export function useTranslation() {
 
         setIsLoading(true);
         setWordData(null);
+        setSentenceData(null);
+        setError(null);
         setAnalysisType(null);
 
         try {
-            const isSingleWord = searchQuery.split(/\s+/).length === 1;
+            const isSingleWord = effectiveQuery.split(/\s+/).length === 1;
             const type = isSingleWord ? "word" : "sentence";
             setAnalysisType(type);
 
             if (type === "word") {
                 await handleWordAnalysis(
-                    searchQuery.toLowerCase(),
+                    effectiveQuery.toLowerCase(),
                     effectiveSource,
                     effectiveTarget
                 );
             } else {
-                await handleSentenceAnalysis(searchQuery);
+                await handleSentenceAnalysis(
+                    effectiveQuery,
+                    effectiveSource,
+                    effectiveTarget
+                );
             }
-        } catch (error) {
-            toast.error(`Непредвиденная ошибка: ${error}`);
+        } catch (err) {
+            const message = `Непредвиденная ошибка: ${err}`;
+            toast.error(message);
+            setError(message);
         } finally {
             setIsLoading(false);
         }
@@ -200,7 +277,9 @@ export function useTranslation() {
         query,
         setQuery,
         wordData,
+        sentenceData,
         isLoading,
+        error,
         analysisType,
         search,
         sourceLang,

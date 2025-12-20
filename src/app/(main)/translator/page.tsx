@@ -1,6 +1,7 @@
 "use client";
 
 import { AILoader } from "@/components/ui/AILoader";
+import EmptyStateAnimation from "@/components/shared/EmptyState";
 import { WordAnalysis } from "@/features/translator/components/WordAnalysisCard";
 import { SentenceAnalysis } from "@/features/translator/components/SentenceAnalysis";
 import { useTranslation } from "@/features/translator/hooks/useTranslation";
@@ -15,7 +16,9 @@ export default function Translator() {
         query,
         setQuery,
         wordData,
+        sentenceData,
         isLoading,
+        error,
         analysisType,
         search,
         sourceLang,
@@ -53,18 +56,30 @@ export default function Translator() {
                         <AILoader />
                     ) : (
                         <>
-                            {analysisType === "word" && wordData && (
-                                <WordAnalysis
-                                    wordData={wordData}
-                                    onAddToCards={handleAddToCards}
-                                />
-                            )}
+                            {error ? (
+                                <EmptyStateAnimation />
+                            ) : (
+                                <>
+                                    {analysisType === "word" && wordData && (
+                                        <WordAnalysis
+                                            wordData={wordData}
+                                            onAddToCards={handleAddToCards}
+                                        />
+                                    )}
 
-                            {analysisType === "sentence" && (
-                                <SentenceAnalysis sentence={query} />
-                            )}
+                                    {analysisType === "sentence" && sentenceData && (
+                                        <SentenceAnalysis 
+                                            data={sentenceData} 
+                                            onAnalyzeWord={(word) => {
+                                                setQuery(word);
+                                                search(undefined, word);
+                                            }}
+                                        />
+                                    )}
 
-                            {!analysisType && <TranslatorWelcome />}
+                                    {!analysisType && <TranslatorWelcome />}
+                                </>
+                            )}
                         </>
                     )}
                 </div>
