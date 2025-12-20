@@ -1,42 +1,42 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    ReactNode,
+} from "react";
 import { toast } from "sonner";
 import type { Module, Word } from "@/features/flashcards/types";
 
 interface ModulesContextType {
     modules: Module[];
-    moduleTitle: string | null;
-    currentModuleWords: Word[];
-    setModuleId: (id: string) => void;
-    createModule: (data: { title: string; description?: string }) => string | null;
+    createModule: (data: {
+        title: string;
+        description?: string;
+    }) => string | null;
     addCard: (moduleId: string, cardData: Word) => void;
     deleteCard: (moduleId: string, cardId: string) => void;
+    isLoading: boolean;
 }
 
 const ModulesContext = createContext<ModulesContextType | undefined>(undefined);
 
-export function ModulesProvider({ children, id: initialId }: { children: ReactNode; id?: string }) {
+export function ModulesProvider({
+    children,
+}: {
+    children: ReactNode;
+}) {
     const [modules, setModules] = useState<Module[]>([]);
-    const [moduleId, setModuleId] = useState<string | undefined>(initialId);
-    const [moduleTitle, setModuleTitle] = useState<string | null>(null);
-    const [currentModuleWords, setCurrentModuleWords] = useState<Word[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const storedItem = localStorage.getItem("modules");
         const userModules: Module[] = storedItem ? JSON.parse(storedItem) : [];
         setModules(userModules);
+        setIsLoading(false);
     }, []);
-
-    useEffect(() => {
-        if (moduleId && modules.length > 0) {
-            const currentModule = modules.find((module) => module.id === moduleId);
-            if (currentModule) {
-                setModuleTitle(currentModule.title);
-                setCurrentModuleWords(currentModule.words);
-            }
-        }
-    }, [moduleId, modules]);
 
     const createModule = (data: {
         title: string;
@@ -134,12 +134,10 @@ export function ModulesProvider({ children, id: initialId }: { children: ReactNo
         <ModulesContext.Provider
             value={{
                 modules,
-                moduleTitle,
-                currentModuleWords,
-                setModuleId,
                 createModule,
                 addCard,
                 deleteCard,
+                isLoading,
             }}
         >
             {children}
@@ -150,7 +148,9 @@ export function ModulesProvider({ children, id: initialId }: { children: ReactNo
 export function useModulesContext() {
     const context = useContext(ModulesContext);
     if (context === undefined) {
-        throw new Error("useModulesContext must be used within a ModulesProvider");
+        throw new Error(
+            "useModulesContext must be used within a ModulesProvider"
+        );
     }
     return context;
 }

@@ -6,6 +6,7 @@ import {
     Shuffle,
     RotateCcw,
     Volume2,
+    Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -21,30 +22,27 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Props } from "../page";
 import type { Word } from "@/features/flashcards/types";
+import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
 
 export default function LearnModule({ params }: Props) {
     const navigate = useRouter();
     const { id } = use(params);
 
+    const { modules, isLoading } = useModulesContext();
+    const currentModule = modules.find((m) => m.id === id);
+
     const [moduleTitle, setModuleTitle] = useState("");
-
-    useEffect(() => {
-        const storedItem = localStorage.getItem("modules");
-        const userModules = storedItem ? JSON.parse(storedItem) : [];
-
-        const currentModule = userModules[+id - 1];
-
-        const moduleTitle = currentModule?.title;
-        const moduleWords = currentModule?.words;
-
-        setModuleTitle(moduleTitle);
-        setCards(moduleWords);
-    }, [id]);
-
     const [cards, setCards] = useState<Word[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
     const [disableTransition, setDisableTransition] = useState(false);
+
+    useEffect(() => {
+        if (currentModule) {
+            setModuleTitle(currentModule.title);
+            setCards(currentModule.words);
+        }
+    }, [currentModule]);
 
     const currentCard = cards[currentIndex];
     const progress = ((currentIndex + 1) / cards.length) * 100;
@@ -118,6 +116,19 @@ export default function LearnModule({ params }: Props) {
         window.addEventListener("keydown", handleKeyPress);
         return () => window.removeEventListener("keydown", handleKeyPress);
     }, [handlePrevious, handleNext, handleFlip]);
+
+    if (isLoading) {
+        return (
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl py-8 sm:py-12">
+                <div className="flex flex-col items-center justify-center min-h-[400px]">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <p className="mt-4 text-sm text-muted-foreground">
+                        Загрузка модулей...
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     if (!currentCard) {
         return (

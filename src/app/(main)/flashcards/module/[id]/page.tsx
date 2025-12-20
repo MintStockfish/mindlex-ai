@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { use } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -23,6 +23,7 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 import type { Word } from "@/features/flashcards/types";
 import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
@@ -36,17 +37,11 @@ export type Props = {
 export default function ModuleDetail({ params }: Props) {
     const navigate = useRouter();
     const { id } = use(params);
-    const {
-        moduleTitle,
-        currentModuleWords: cards,
-        addCard,
-        deleteCard,
-        setModuleId,
-    } = useModulesContext();
+    const { modules, addCard, deleteCard, isLoading } = useModulesContext();
 
-    useEffect(() => {
-        setModuleId(id);
-    }, [id, setModuleId]);
+    const currentModule = modules.find((m) => m.id === id);
+    const moduleTitle = currentModule?.title;
+    const cards = currentModule?.words ?? [];
 
     const [newCard, setNewCard] = useState({
         word: "",
@@ -78,6 +73,19 @@ export default function ModuleDetail({ params }: Props) {
     };
 
     const navigateToModules = () => navigate.push("/flashcards/");
+
+    if (isLoading) {
+        return (
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl py-8 sm:py-12">
+                <div className="flex flex-col items-center justify-center min-h-[400px]">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <p className="mt-4 text-sm text-muted-foreground">
+                        Загрузка модулей...
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-8 sm:py-12">
