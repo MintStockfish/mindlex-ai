@@ -51,10 +51,11 @@ export default function WordHeader({
         if (selectedModuleId) {
             addCard(selectedModuleId, newWord);
             setIsDialogOpen(false);
+            setSelectedModuleId("");
         } else if (title) {
-            const moduleId = createModule({ 
-                title, 
-                description: newModule.description 
+            const moduleId = createModule({
+                title,
+                description: newModule.description,
             });
 
             if (moduleId) {
@@ -119,6 +120,7 @@ export default function WordHeader({
                                     )?.title || ""
                                 }
                                 onChange={(title: string) => {
+                                    console.log("[TEST]: SELECTOR CHANGED");
                                     const mod = modules.find(
                                         (m) => m.title === title
                                     );
