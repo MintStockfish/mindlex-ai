@@ -23,11 +23,7 @@ interface ModulesContextType {
 
 const ModulesContext = createContext<ModulesContextType | undefined>(undefined);
 
-export function ModulesProvider({
-    children,
-}: {
-    children: ReactNode;
-}) {
+export function ModulesProvider({ children }: { children: ReactNode }) {
     const [modules, setModules] = useState<Module[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 

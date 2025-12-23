@@ -30,8 +30,6 @@ export default function Translator() {
         swapLanguages,
     } = useTranslation();
 
-    const handleAddToCards = () => {};
-
     return (
         <InputFocusProvider setQuery={setQuery}>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl py-8 sm:py-12">
@@ -61,21 +59,19 @@ export default function Translator() {
                             ) : (
                                 <>
                                     {analysisType === "word" && wordData && (
-                                        <WordAnalysis
-                                            wordData={wordData}
-                                            onAddToCards={handleAddToCards}
-                                        />
+                                        <WordAnalysis wordData={wordData} />
                                     )}
 
-                                    {analysisType === "sentence" && sentenceData && (
-                                        <SentenceAnalysis 
-                                            data={sentenceData} 
-                                            onAnalyzeWord={(word) => {
-                                                setQuery(word);
-                                                search(undefined, word);
-                                            }}
-                                        />
-                                    )}
+                                    {analysisType === "sentence" &&
+                                        sentenceData && (
+                                            <SentenceAnalysis
+                                                data={sentenceData}
+                                                onAnalyzeWord={(word) => {
+                                                    setQuery(word);
+                                                    search(undefined, word);
+                                                }}
+                                            />
+                                        )}
 
                                     {!analysisType && <TranslatorWelcome />}
                                 </>

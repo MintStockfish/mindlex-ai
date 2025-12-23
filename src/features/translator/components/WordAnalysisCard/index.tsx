@@ -11,10 +11,9 @@ import WordEtymology from "./WordEtymology";
 
 interface WordAnalysisProps {
     wordData: WordData | null;
-    onAddToCards: () => void;
 }
 
-export function WordAnalysis({ wordData, onAddToCards }: WordAnalysisProps) {
+export function WordAnalysis({ wordData }: WordAnalysisProps) {
     if (!wordData?.word || !wordData?.translation) {
         return <EmptyState />;
     }
@@ -27,7 +26,6 @@ export function WordAnalysis({ wordData, onAddToCards }: WordAnalysisProps) {
                         word={wordData.word}
                         translation={wordData.translation}
                         ipa={wordData.ipa}
-                        onAdd={onAddToCards}
                     />
 
                     <WordExample

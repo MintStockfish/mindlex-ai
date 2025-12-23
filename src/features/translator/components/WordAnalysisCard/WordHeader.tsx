@@ -22,12 +22,10 @@ export default function WordHeader({
     word,
     translation,
     ipa,
-    onAdd,
 }: {
     word: string;
     translation: string;
     ipa: string;
-    onAdd: () => void;
 }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
@@ -92,10 +90,7 @@ export default function WordHeader({
                 }}
             >
                 <DialogTrigger asChild>
-                    <Button
-                        onClick={onAdd}
-                        className="w-full sm:w-auto bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity shrink-0"
-                    >
+                    <Button className="w-full sm:w-auto bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity shrink-0">
                         <Plus className="h-4 w-4 mr-2" />В карточки
                     </Button>
                 </DialogTrigger>
