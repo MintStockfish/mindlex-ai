@@ -69,9 +69,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const register = async (
+        name: string,
         email: string,
-        password: string,
-        name: string
+        password: string
     ): Promise<boolean> => {
         await new Promise((resolve) => setTimeout(resolve, 800));
 
@@ -86,9 +86,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const newUser = {
             id: Date.now().toString(),
+            name,
             email,
             password,
-            name,
         };
 
         users.push(newUser);
@@ -96,8 +96,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const userData: User = {
             id: newUser.id,
-            email: newUser.email,
             name: newUser.name,
+            email: newUser.email,
         };
         setUser(userData);
         localStorage.setItem("mindlex_user", JSON.stringify(userData));

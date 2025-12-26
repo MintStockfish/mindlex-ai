@@ -4,9 +4,20 @@ import { useAuth } from "@/features/auth/context";
 import { FeatureCard } from "@/features/landing/FeatureCard";
 import { features, benefits } from "@/features/landing/constants";
 import Link from "next/link";
+import Loader from "@/components/shared/Loader";
 
 export default function Home() {
-    const { user } = useAuth();
+    const { user, isLoading } = useAuth();
+
+    if (isLoading) {
+        return (
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl py-8 sm:py-12">
+                <div className="text-center">
+                    <Loader />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl py-8 sm:py-12">

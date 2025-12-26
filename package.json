@@ -3,13 +3,13 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "npm run typegen && next dev",
-        "build": "npm run typegen && next build",
+        "dev": "pnpm typegen && next dev",
+        "build": "pnpm typegen && next build",
         "start": "next start",
         "lint": "next lint",
         "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
         "typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-        "build:prod": "npm run typegen && next build && opennextjs-cloudflare build",
+        "build:prod": "pnpm typegen && next build && opennextjs-cloudflare build",
         "deploy:prod": "opennextjs-cloudflare deploy"
     },
     "dependencies": {
