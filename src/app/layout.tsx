@@ -5,7 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { Toaster } from "@/components/shared/Toaster";
-import { AuthProvider } from "@/features/auth/context";
+import { AuthProvider } from "@/features/auth/contexts/context";
 import { ThemeScript } from "@/components/shared/ThemeScript";
 import { ModulesProvider } from "@/features/flashcards/contexts/ModulesContext";
 

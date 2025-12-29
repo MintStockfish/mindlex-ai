@@ -2,10 +2,10 @@
 
 import { use, useMemo } from "react";
 import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
-import Breadcrumbs from "@/features/flashcards/components/Module/Breadcrumbs";
-import ModuleHeader from "@/features/flashcards/components/Module/ModuleHeader";
-import AddCardForm from "@/features/flashcards/components/Module/AddCardForm";
-import CardsList from "@/features/flashcards/components/Module/CardsList";
+import Breadcrumbs from "@/features/flashcards/components/ModulePage/Breadcrumbs";
+import ModuleHeader from "@/features/flashcards/components/ModulePage/ModuleHeader";
+import AddCardForm from "@/features/flashcards/components/ModulePage/AddCardForm";
+import CardsList from "@/features/flashcards/components/ModulePage/CardsList";
 import Loader from "@/components/shared/Loader";
 
 export type Props = {

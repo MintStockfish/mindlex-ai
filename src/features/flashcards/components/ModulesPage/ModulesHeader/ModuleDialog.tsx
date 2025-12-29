@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useModulesContext } from "../../contexts/ModulesContext";
+import { useModulesContext } from "../../../contexts/ModulesContext";
 
 import {
     Dialog,
@@ -15,12 +15,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { FlashCardHeaderProps } from "../../types";
+import { ModulesHeaderProps } from "../../../types/types";
 
 export default function ModuleDialog({
     isDialogOpen,
     setIsDialogOpen,
-}: FlashCardHeaderProps) {
+}: ModulesHeaderProps) {
     const { createModule } = useModulesContext();
     const [newModule, setNewModule] = useState({
         title: "",

@@ -1,5 +1,5 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { WordData, SentenceData } from "@/features/translator/types";
+import { WordData, SentenceData } from "@/features/translator/types/types";
 import {
     createWordSystemPrompt,
     createSentenceSystemPrompt,
@@ -50,7 +50,11 @@ export async function POST(request: Request): Promise<Response> {
 
         const messages = [
             { role: "system", content: systemPrompt },
-            { role: "user", content: mode === "sentence" ? userWord : userWord.toLowerCase() },
+            {
+                role: "user",
+                content:
+                    mode === "sentence" ? userWord : userWord.toLowerCase(),
+            },
         ];
 
         const MAX_RETRIES = 3;
@@ -73,9 +77,12 @@ export async function POST(request: Request): Promise<Response> {
 
                 break;
             } catch (error) {
-                if (error instanceof Error && error.message === "INVALID_INPUT_DETECTED") {
+                if (
+                    error instanceof Error &&
+                    error.message === "INVALID_INPUT_DETECTED"
+                ) {
                     lastError = error;
-                    break; 
+                    break;
                 }
 
                 lastError = error;
@@ -87,8 +94,11 @@ export async function POST(request: Request): Promise<Response> {
         }
 
         if (!parsedData) {
-            if (lastError instanceof Error && lastError.message === "INVALID_INPUT_DETECTED") {
-                 return Response.json(
+            if (
+                lastError instanceof Error &&
+                lastError.message === "INVALID_INPUT_DETECTED"
+            ) {
+                return Response.json(
                     { success: false, error: "INVALID_INPUT" },
                     { status: 422 }
                 );

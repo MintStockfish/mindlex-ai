@@ -1,7 +1,11 @@
 import { Progress } from "@/components/ui/progress";
-import { WordData } from "@/features/translator/types";
+import { WordData } from "@/features/translator/types/types";
 
-export default function WordUsageStats({ usage }: { usage: WordData["usage"] }) {
+export default function WordUsageStats({
+    usage,
+}: {
+    usage: WordData["usage"];
+}) {
     const stats = [
         { label: "Неформальный", value: usage.informal },
         { label: "Нейтральный", value: usage.neutral },

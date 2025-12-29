@@ -1,5 +1,8 @@
-import { WordData, SentenceData } from "@/features/translator/types";
-import { WordDataSchema, SentenceDataSchema } from "@/features/translator/schemas";
+import { WordData, SentenceData } from "@/features/translator/types/types";
+import {
+    WordDataSchema,
+    SentenceDataSchema,
+} from "@/features/translator/validations/schemas";
 import { z } from "zod";
 
 const VALIDATION_PROMPT = `
@@ -17,7 +20,10 @@ const VALIDATION_PROMPT = `
         STEP 2: ANALYSIS
         Only if the input is valid (even if offensive/slang), proceed with the analysis.`;
 
-function createWordSystemPrompt(sourceLang: string = "English", targetLang: string = "Russian") {
+function createWordSystemPrompt(
+    sourceLang: string = "English",
+    targetLang: string = "Russian"
+) {
     return `
         You are a strict linguistic API.
         
@@ -70,7 +76,10 @@ function createWordSystemPrompt(sourceLang: string = "English", targetLang: stri
     `;
 }
 
-function createSentenceSystemPrompt(sourceLang: string = "English", targetLang: string = "Russian") {
+function createSentenceSystemPrompt(
+    sourceLang: string = "English",
+    targetLang: string = "Russian"
+) {
     return `
         You are a strict linguistic API.
 
@@ -153,7 +162,11 @@ function cleanAiResponse(text: string): string {
         .trim();
 }
 
-function parseAiResponse<T>(rawInput: unknown, schema: z.ZodSchema<T>, errorName: string): T {
+function parseAiResponse<T>(
+    rawInput: unknown,
+    schema: z.ZodSchema<T>,
+    errorName: string
+): T {
     let jsonString: string;
 
     if (typeof rawInput === "string") {
@@ -167,7 +180,12 @@ function parseAiResponse<T>(rawInput: unknown, schema: z.ZodSchema<T>, errorName
     try {
         const rawObject = JSON.parse(jsonString);
 
-        if (rawObject && typeof rawObject === 'object' && 'error' in rawObject && rawObject.error === "INVALID_INPUT") {
+        if (
+            rawObject &&
+            typeof rawObject === "object" &&
+            "error" in rawObject &&
+            rawObject.error === "INVALID_INPUT"
+        ) {
             throw new Error("INVALID_INPUT_DETECTED");
         }
 
@@ -175,7 +193,10 @@ function parseAiResponse<T>(rawInput: unknown, schema: z.ZodSchema<T>, errorName
 
         return validatedData;
     } catch (error) {
-        if (error instanceof Error && error.message === "INVALID_INPUT_DETECTED") {
+        if (
+            error instanceof Error &&
+            error.message === "INVALID_INPUT_DETECTED"
+        ) {
             throw error;
         }
 

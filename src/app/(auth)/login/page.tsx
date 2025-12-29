@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MindlexLogo } from "@/components/ui/MindlexLogo";
-import LoginForm from "@/features/auth/login/LoginForm";
+import LoginForm from "@/features/auth/components/login/LoginForm";
 
 export default function Login() {
     return (

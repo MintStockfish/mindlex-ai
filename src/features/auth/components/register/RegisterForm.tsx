@@ -12,10 +12,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useAuth } from "@/features/auth/context";
+import { useAuth } from "@/features/auth/contexts/context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { registerSchema } from "@/features/auth/schemas";
+import { registerSchema } from "@/features/auth/validations/schemas";
 import { z } from "zod";
 
 function RegisterForm() {

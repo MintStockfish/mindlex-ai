@@ -10,7 +10,7 @@ import {
 
 import { useRouter } from "next/navigation";
 
-import { Module } from "../../types";
+import { Module } from "@/features/flashcards/types/types";
 
 export default function ModulesList({ modules }: { modules: Module[] }) {
     const navigate = useRouter();

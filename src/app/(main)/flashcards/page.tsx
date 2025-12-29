@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
 
-import ZeroModule from "@/features/flashcards/components/ModulesGrid/ZeroModule";
-import ModulesList from "@/features/flashcards/components/ModulesGrid/ModulesList";
-import FlashCardHeader from "@/features/flashcards/components/FlashCardHeader";
+import ZeroModule from "@/features/flashcards/components/ModulesPage/ModulesGrid/ZeroModule";
+import ModulesList from "@/features/flashcards/components/ModulesPage/ModulesGrid/ModulesList";
+import ModulesHeader from "@/features/flashcards/components/ModulesPage/ModulesHeader";
 import Loader from "@/components/shared/Loader";
 
 export default function Cards() {
@@ -18,10 +18,12 @@ export default function Cards() {
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl py-8 sm:py-12">
-            <FlashCardHeader
+            <ModulesHeader
                 isDialogOpen={isDialogOpen}
                 setIsDialogOpen={setIsDialogOpen}
             />
+
+            {/*Modules List*/}
 
             {modules.length === 0 ? (
                 <ZeroModule setIsDialogOpen={setIsDialogOpen} />

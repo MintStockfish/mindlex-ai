@@ -1,6 +1,6 @@
 "use client";
 import { Sparkles } from "lucide-react";
-import { useAuth } from "@/features/auth/context";
+import { useAuth } from "@/features/auth/contexts/context";
 import { FeatureCard } from "@/features/landing/FeatureCard";
 import { features, benefits } from "@/features/landing/constants";
 import Link from "next/link";
@@ -10,13 +10,7 @@ export default function Home() {
     const { user, isLoading } = useAuth();
 
     if (isLoading) {
-        return (
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl py-8 sm:py-12">
-                <div className="text-center">
-                    <Loader />
-                </div>
-            </div>
-        );
+        return <Loader />;
     }
 
     return (

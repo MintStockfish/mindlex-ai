@@ -1,10 +1,16 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SentenceData } from "@/features/translator/types";
+import { SentenceData } from "@/features/translator/types/types";
 
 interface SentenceAnalysisProps {
     data: SentenceData;
@@ -25,7 +31,7 @@ function getPartOfSpeechColor(pos: string): string {
         return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400";
     if (lowerPos.includes("article") || lowerPos.includes("артикль"))
         return "bg-blue-500/10 text-blue-700 dark:text-blue-300";
-    
+
     return "bg-gray-500/10 text-gray-700 dark:text-gray-300";
 }
 
@@ -43,15 +49,20 @@ function getBadgeColor(pos: string): string {
         return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20";
     if (lowerPos.includes("article") || lowerPos.includes("артикль"))
         return "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20";
-    
+
     return "bg-gray-500/10 text-gray-700 dark:text-gray-300 border-gray-500/20";
 }
 
-export function SentenceAnalysis({ data, onAnalyzeWord }: SentenceAnalysisProps) {
-    const [selectedWord, setSelectedWord] = useState<SentenceData["words"][0]["detail"] | null>(null);
+export function SentenceAnalysis({
+    data,
+    onAnalyzeWord,
+}: SentenceAnalysisProps) {
+    const [selectedWord, setSelectedWord] = useState<
+        SentenceData["words"][0]["detail"] | null
+    >(null);
 
     const uniquePartsOfSpeech = useMemo(() => {
-        const parts = new Set(data.words.map(w => w.partOfSpeech));
+        const parts = new Set(data.words.map((w) => w.partOfSpeech));
         return Array.from(parts);
     }, [data.words]);
 
@@ -86,9 +97,7 @@ export function SentenceAnalysis({ data, onAnalyzeWord }: SentenceAnalysisProps)
                     <div className="space-y-3">
                         <h3>Перевод</h3>
                         <div className="bg-linear-to-r from-[#06b6d4]/10 to-[#3b82f6]/10 rounded-lg p-4">
-                            <p className="text-lg">
-                                {data.translation}
-                            </p>
+                            <p className="text-lg">{data.translation}</p>
                         </div>
                     </div>
 
@@ -108,8 +117,8 @@ export function SentenceAnalysis({ data, onAnalyzeWord }: SentenceAnalysisProps)
                                 ))}
                             </div>
                             <p className="text-sm text-muted-foreground">
-                                Нажмите на любое слово в предложении для детального
-                                разбора
+                                Нажмите на любое слово в предложении для
+                                детального разбора
                             </p>
                         </div>
                     )}
@@ -141,7 +150,7 @@ export function SentenceAnalysis({ data, onAnalyzeWord }: SentenceAnalysisProps)
                                         {selectedWord.partOfSpeech}
                                     </Badge>
                                 </div>
-                                <Button 
+                                <Button
                                     onClick={() => {
                                         if (onAnalyzeWord && selectedWord) {
                                             onAnalyzeWord(selectedWord.word);

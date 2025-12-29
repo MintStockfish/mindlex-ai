@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
 
-import { useAuth } from "@/features/auth/context";
+import { useAuth } from "@/features/auth/contexts/context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { loginSchema } from "@/features/auth/schemas";
+import { loginSchema } from "@/features/auth/validations/schemas";
 
 import {
     Card,

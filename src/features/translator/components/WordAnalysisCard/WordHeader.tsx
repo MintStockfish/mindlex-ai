@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Selector } from "@/components/ui/selector";
 import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
-import { Word } from "@/features/flashcards/types";
+import { Word } from "@/features/flashcards/types/types";
 
 export default function WordHeader({
     word,

@@ -1,7 +1,7 @@
 import { Trash2, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Word, Module } from "../../types";
+import { Word, Module } from "../../types/types";
 import { toast } from "sonner";
 
 interface CardsListProps {

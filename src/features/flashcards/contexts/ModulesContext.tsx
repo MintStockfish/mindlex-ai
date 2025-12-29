@@ -8,7 +8,7 @@ import {
     ReactNode,
 } from "react";
 import { toast } from "sonner";
-import type { Module, Word } from "@/features/flashcards/types";
+import type { Module, Word } from "@/features/flashcards/types/types";
 
 interface ModulesContextType {
     modules: Module[];

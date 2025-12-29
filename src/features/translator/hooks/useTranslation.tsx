@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
-import type { WordData, SentenceData, ApiResponse } from "@/features/translator/types";
+import type {
+    WordData,
+    SentenceData,
+    ApiResponse,
+} from "@/features/translator/types/types";
 
 const STORAGE_KEY_SOURCE = "mindlex_sourceLang";
 const STORAGE_KEY_TARGET = "mindlex_targetLang";
@@ -40,9 +44,7 @@ async function performTranslationRequest(
 export function useTranslation() {
     const [query, setQuery] = useState("");
     const [wordData, setWordData] = useState<WordData | null>(null);
-    const [sentenceData, setSentenceData] = useState<SentenceData | null>(
-        null
-    );
+    const [sentenceData, setSentenceData] = useState<SentenceData | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [sourceLang, setSourceLangInternal] = useState("");
     const [targetLang, setTargetLangInternal] = useState("");
@@ -163,8 +165,9 @@ export function useTranslation() {
             }
         } catch (err) {
             console.error("Analysis error:", err);
-            const message = err instanceof Error ? err.message : "Ошибка анализа";
-            
+            const message =
+                err instanceof Error ? err.message : "Ошибка анализа";
+
             if (message !== "Разбор невозможен для данного ввода") {
                 toast.error(message);
             }
@@ -196,8 +199,9 @@ export function useTranslation() {
             }
         } catch (err) {
             console.error("Analysis error:", err);
-            const message = err instanceof Error ? err.message : "Ошибка анализа";
-            
+            const message =
+                err instanceof Error ? err.message : "Ошибка анализа";
+
             if (message !== "Разбор невозможен для данного ввода") {
                 toast.error(message);
             }
@@ -209,9 +213,9 @@ export function useTranslation() {
     const search = async (e?: React.FormEvent, overrideQuery?: string) => {
         if (e) e.preventDefault();
         const effectiveQuery = (overrideQuery || query).trim();
-        
+
         if (!effectiveQuery) return;
-        
+
         if (effectiveQuery.length > MAX_INPUT_LENGTH) {
             toast.error(`Input exceeds ${MAX_INPUT_LENGTH} characters`);
             return;

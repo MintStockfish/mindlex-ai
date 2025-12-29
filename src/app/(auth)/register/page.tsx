@@ -1,5 +1,5 @@
 import Link from "next/link";
-import RegisterForm from "@/features/auth/register/RegisterForm";
+import RegisterForm from "@/features/auth/components/register/RegisterForm";
 
 import { MindlexLogo } from "@/components/ui/MindlexLogo";
 

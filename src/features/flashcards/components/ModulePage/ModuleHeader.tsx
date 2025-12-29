@@ -1,7 +1,7 @@
 import { ChevronLeft, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Word } from "../../types";
+import { Word } from "../../types/types";
 
 interface ModuleHeaderProps {
     id: string;

@@ -15,7 +15,7 @@ export interface Module {
     wordCount: number;
 }
 
-export interface FlashCardHeaderProps {
+export interface ModulesHeaderProps {
     isDialogOpen: boolean;
     setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }

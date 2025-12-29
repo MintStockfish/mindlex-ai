@@ -1,4 +1,4 @@
-import { WordData } from "@/features/translator/types";
+import { WordData } from "@/features/translator/types/types";
 import { Card, CardContent } from "@/components/ui/card";
 import EmptyState from "@/components/shared/EmptyState";
 import WordHeader from "./WordHeader";
