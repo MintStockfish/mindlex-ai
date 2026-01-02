@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
     Dialog,
@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SentenceData } from "@/features/translator/types/types";
+import { toast } from "sonner";
 
 interface SentenceAnalysisProps {
     data: SentenceData;
@@ -65,6 +66,52 @@ export function SentenceAnalysis({
         const parts = new Set(data.words.map((w) => w.partOfSpeech));
         return Array.from(parts);
     }, [data.words]);
+
+    useEffect(() => {
+        if (typeof window !== "undefined" && window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
+        }
+    }, []);
+
+    const playPronunciation = useCallback(
+        (text: string, lang: string = "en") => {
+            if (typeof window === "undefined") return;
+
+            const synth = window.speechSynthesis;
+            if (!synth) {
+                toast.error("TTS не поддерживается");
+                return;
+            }
+
+            synth.cancel();
+            const voices = synth.getVoices();
+
+            if (voices.length === 0) {
+                const onVoicesChanged = () => {
+                    synth.onvoiceschanged = null;
+                    playPronunciation(text, lang);
+                };
+                synth.onvoiceschanged = onVoicesChanged;
+                synth.getVoices();
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+
+            const targetVoice = voices.find((v) => v.lang.startsWith(lang));
+            if (targetVoice) {
+                utterance.voice = targetVoice;
+            }
+
+            utterance.onerror = (event) => {
+                console.error("Ошибка TTS:", event);
+            };
+
+            synth.speak(utterance);
+        },
+        []
+    );
 
     return (
         <>
@@ -176,6 +223,12 @@ export function SentenceAnalysis({
                                         variant="outline"
                                         size="sm"
                                         className="gap-2"
+                                        onClick={() =>
+                                            playPronunciation(
+                                                selectedWord.word,
+                                                selectedWord.languageCode
+                                            )
+                                        }
                                     >
                                         <Volume2 className="h-3 w-3" />
                                         Прослушать

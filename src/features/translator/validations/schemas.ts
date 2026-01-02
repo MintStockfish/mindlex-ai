@@ -19,6 +19,7 @@ const WordVariantSchema = z.object({
 
 export const WordDataSchema = z.object({
     word: z.string(),
+    languageCode: z.string(),
     translation: z.string(),
     exampleSentence: z.string(),
     exampleTranslation: z.string(),
@@ -33,6 +34,7 @@ export const WordDataSchema = z.object({
 
 const SentenceWordDetailSchema = z.object({
     word: z.string(),
+    languageCode: z.string(),
     translation: z.string(),
     partOfSpeech: z.string(),
     ipa: z.string(),

@@ -73,22 +73,7 @@ function AddCardForm({ moduleId, addCard }: AddCardFormProps) {
                         />
                     </div>
                 </div>
-                <div className="space-y-2 mb-4">
-                    <Label htmlFor="transcription">
-                        Транскрипция (опционально)
-                    </Label>
-                    <Input
-                        id="transcription"
-                        placeholder="/trænsˈkrɪpʃən/"
-                        value={newCard.transcription}
-                        onChange={(e) =>
-                            setNewCard({
-                                ...newCard,
-                                transcription: e.target.value,
-                            })
-                        }
-                    />
-                </div>
+
                 <Button
                     onClick={handleAdd}
                     className="w-full bg-linear-to-r from-[#06b6d4] to-[#3b82f6] hover:opacity-90 transition-opacity"

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Word, Module } from "../../types/types";
 import { toast } from "sonner";
+import { useEffect, useCallback } from "react";
 
 interface CardsListProps {
     module: Module;
@@ -16,10 +17,64 @@ function CardsList({ module, deleteCard }: CardsListProps) {
         deleteCard(module.id, cardId);
     };
 
-    const playPronunciation = (word: string) => {
-        console.log("Playing pronunciation for:", word);
-        toast.info("Воспроизведение произношения...");
-    };
+    useEffect(() => {
+        if (typeof window !== "undefined" && window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
+        }
+    }, []);
+
+    const playPronunciation = useCallback(
+        (text: string, lang: string = "en") => {
+            if (typeof window === "undefined") return;
+
+            const synth = window.speechSynthesis;
+            if (!synth) {
+                toast.error("TTS не поддерживается");
+                return;
+            }
+
+            synth.cancel();
+
+            const voices = synth.getVoices();
+
+            if (voices.length === 0) {
+                console.log(
+                    "Голоса еще не готовы, ждем события onvoiceschanged..."
+                );
+
+                const onVoicesChanged = () => {
+                    synth.onvoiceschanged = null;
+                    playPronunciation(text, lang);
+                };
+
+                synth.onvoiceschanged = onVoicesChanged;
+
+                synth.getVoices();
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+
+            const targetVoice = voices.find((v) => v.lang.startsWith(lang));
+
+            if (targetVoice) {
+                utterance.voice = targetVoice;
+            } else {
+                console.warn(
+                    `Голос для ${lang} не найден, использую дефолтный.`
+                );
+            }
+
+            utterance.onerror = (event) => {
+                console.error("Ошибка TTS:", event);
+                toast.error(`Ошибка TTS, ${event}`);
+            };
+
+            synth.speak(utterance);
+        },
+        []
+    );
 
     return (
         <div className="space-y-4">
@@ -52,7 +107,9 @@ function CardsList({ module, deleteCard }: CardsListProps) {
                                                         size="sm"
                                                         onClick={() =>
                                                             playPronunciation(
-                                                                card.name
+                                                                card.name,
+                                                                card.languageCode ||
+                                                                    "en"
                                                             )
                                                         }
                                                         className="h-8 w-8 p-0"

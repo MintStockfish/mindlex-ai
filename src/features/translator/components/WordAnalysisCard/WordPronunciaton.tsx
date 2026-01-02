@@ -1,15 +1,49 @@
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function WordPronunciation({
     ipa,
     pronunciation,
+    word,
+    languageCode,
 }: {
     ipa: string;
     pronunciation: string;
+    word: string;
+    languageCode?: string;
 }) {
     const playPronunciation = () => {
-        console.log("Playing pronunciation...");
+        if (typeof window === "undefined") return;
+
+        const synth = window.speechSynthesis;
+        if (!synth) {
+            toast.error("TTS не поддерживается");
+            return;
+        }
+
+        synth.cancel();
+        const voices = synth.getVoices();
+
+        if (voices.length === 0) {
+            console.warn("Голоса еще не подгрузились или недоступны.");
+            return;
+        }
+
+        const lang = languageCode || "en";
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = lang;
+
+        const targetVoice = voices.find((v) => v.lang.startsWith(lang));
+        if (targetVoice) {
+            utterance.voice = targetVoice;
+        }
+
+        utterance.onerror = (event) => {
+            console.error("Ошибка TTS:", event);
+        };
+
+        synth.speak(utterance);
     };
 
     return (

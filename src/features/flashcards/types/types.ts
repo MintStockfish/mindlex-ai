@@ -5,6 +5,7 @@ export interface Word {
     name: string;
     translation: string;
     ipa: string;
+    languageCode?: string;
 }
 
 export interface Module {

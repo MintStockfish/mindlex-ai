@@ -8,6 +8,7 @@ interface FlashCardProps {
         name: string;
         ipa?: string;
         translation: string;
+        languageCode?: string;
     };
     handleFlip: () => void;
     isFlipped: boolean;
@@ -20,9 +21,36 @@ function FlashCard({
     isFlipped,
     disableTransition,
 }: FlashCardProps) {
-    const playPronunciation = (word: string) => {
-        console.log("Playing pronunciation for:", word);
-        toast.info("Воспроизведение произношения...");
+    const playPronunciation = (word: string, lang: string) => {
+        if (typeof window === "undefined") return;
+
+        const synth = window.speechSynthesis;
+        if (!synth) {
+            toast.error("TTS не поддерживается");
+            return;
+        }
+
+        synth.cancel();
+        const voices = synth.getVoices();
+
+        if (voices.length === 0) {
+            console.warn("Голоса еще не подгрузились или недоступны.");
+            return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = lang;
+
+        const targetVoice = voices.find((v) => v.lang.startsWith(lang));
+        if (targetVoice) {
+            utterance.voice = targetVoice;
+        }
+
+        utterance.onerror = (event) => {
+            console.error("Ошибка TTS:", event);
+        };
+
+        synth.speak(utterance);
     };
 
     return (
@@ -69,7 +97,10 @@ function FlashCard({
                                     size="sm"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        playPronunciation(currentCard.name);
+                                        playPronunciation(
+                                            currentCard.name,
+                                            currentCard.languageCode || "en"
+                                        );
                                     }}
                                     className="h-9 w-9 p-0"
                                 >

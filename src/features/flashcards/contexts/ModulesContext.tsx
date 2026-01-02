@@ -83,6 +83,7 @@ export function ModulesProvider({ children }: { children: ReactNode }) {
             name: cardData.name,
             translation: cardData.translation,
             ipa: cardData.ipa || "",
+            languageCode: cardData.languageCode,
         };
 
         setModules((prevModules) => {

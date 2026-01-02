@@ -22,10 +22,12 @@ export default function WordHeader({
     word,
     translation,
     ipa,
+    languageCode,
 }: {
     word: string;
     translation: string;
     ipa: string;
+    languageCode?: string;
 }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
@@ -42,6 +44,7 @@ export default function WordHeader({
             name: word,
             translation,
             ipa,
+            languageCode,
         };
 
         const title = newModule.title.trim();

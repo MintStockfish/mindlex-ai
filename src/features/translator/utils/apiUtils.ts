@@ -36,6 +36,7 @@ function createWordSystemPrompt(
         
         LANGUAGE RULES:
         - "word": The original word (in ${sourceLang})
+        - "languageCode": Two-letter ISO 639-1 code for ${sourceLang} (e.g., "en", "es", "fr", "ru", "ja"). Detect the language automatically.
         - "translation": Translation of the word (in ${targetLang})
         - "exampleSentence": An example sentence using the original word (in ${sourceLang})
         - "exampleTranslation": The same sentence translated (in ${targetLang})
@@ -60,6 +61,7 @@ function createWordSystemPrompt(
         SCHEMA EXAMPLE:
         {
         "word": "water",
+        "languageCode": "en",
         "translation": "[translation]",
         "exampleSentence": "Can you give me some water?",
         "exampleTranslation": "[translation]",
@@ -98,6 +100,7 @@ function createSentenceSystemPrompt(
             - "partOfSpeech": The part of speech in ${targetLang} (e.g., "Существительное", "Глагол" if target is Russian).
             - "detail": Detailed analysis of the word.
                 - "word": The base form (lemma) of the word (in ${sourceLang}).
+                - "languageCode": Two-letter ISO 639-1 code for ${sourceLang} (e.g., "en", "es", "fr", "ru", "ja"). Detect the language automatically.
                 - "translation": Translation of the word (in ${targetLang}).
                 - "partOfSpeech": Part of speech in ${targetLang}.
                 - "ipa": IPA pronunciation.
@@ -121,6 +124,7 @@ function createSentenceSystemPrompt(
                     "partOfSpeech": "Article",
                     "detail": {
                         "word": "the",
+                        "languageCode": "en",
                         "translation": "[translation]",
                         "partOfSpeech": "Article",
                         "ipa": "/ðə/",
@@ -136,6 +140,7 @@ function createSentenceSystemPrompt(
 function createFallback(word: string): WordData {
     return {
         word: word,
+        languageCode: "en",
         translation: "Translation unavailable",
         exampleSentence: "Unavailable",
         exampleTranslation: "Unavailable",

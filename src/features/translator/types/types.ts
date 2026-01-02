@@ -1,5 +1,6 @@
 interface WordData {
     word: string;
+    languageCode: string;
     translation: string;
     exampleSentence: string;
     exampleTranslation: string;
@@ -24,6 +25,7 @@ interface SentenceData {
         partOfSpeech: string;
         detail: {
             word: string;
+            languageCode: string;
             translation: string;
             partOfSpeech: string;
             ipa: string;

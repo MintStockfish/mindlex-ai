@@ -26,6 +26,7 @@ export function WordAnalysis({ wordData }: WordAnalysisProps) {
                         word={wordData.word}
                         translation={wordData.translation}
                         ipa={wordData.ipa}
+                        languageCode={wordData.languageCode}
                     />
 
                     <WordExample
@@ -36,6 +37,8 @@ export function WordAnalysis({ wordData }: WordAnalysisProps) {
                     <WordPronunciation
                         ipa={wordData.ipa}
                         pronunciation={wordData.pronunciation}
+                        word={wordData.word}
+                        languageCode={wordData.languageCode}
                     />
                 </div>
 
