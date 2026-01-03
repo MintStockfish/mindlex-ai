@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
 import { useCallback, useEffect } from "react";
-import { tts } from "@/features/translator/utils/ttsUtil";
+import { tts } from "@/lib/ttsUtil";
 
 interface FlashCardProps {
     currentCard: {

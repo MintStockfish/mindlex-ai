@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Word, Module } from "../../types/types";
 import { useEffect } from "react";
-import { tts } from "@/features/translator/utils/ttsUtil";
+import { tts } from "@/lib/ttsUtil";
 
 interface CardsListProps {
     module: Module;

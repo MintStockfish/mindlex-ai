@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
-import { tts } from "../../utils/ttsUtil";
+import { tts } from "../../../../lib/ttsUtil";
 import { useEffect, useCallback } from "react";
 
 export default function WordPronunciation({
