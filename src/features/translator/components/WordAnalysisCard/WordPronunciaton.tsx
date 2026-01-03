@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Volume2 } from "lucide-react";
-import { toast } from "sonner";
+import { tts } from "../../utils/ttsUtil";
+import { useEffect, useCallback } from "react";
 
 export default function WordPronunciation({
     ipa,
@@ -13,38 +14,21 @@ export default function WordPronunciation({
     word: string;
     languageCode?: string;
 }) {
-    const playPronunciation = () => {
-        if (typeof window === "undefined") return;
-
-        const synth = window.speechSynthesis;
-        if (!synth) {
-            toast.error("TTS не поддерживается");
-            return;
+    useEffect(() => {
+        if (typeof window !== "undefined" && window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
         }
 
-        synth.cancel();
-        const voices = synth.getVoices();
-
-        if (voices.length === 0) {
-            console.warn("Голоса еще не подгрузились или недоступны.");
-            return;
-        }
-
-        const lang = languageCode || "en";
-        const utterance = new SpeechSynthesisUtterance(word);
-        utterance.lang = lang;
-
-        const targetVoice = voices.find((v) => v.lang.startsWith(lang));
-        if (targetVoice) {
-            utterance.voice = targetVoice;
-        }
-
-        utterance.onerror = (event) => {
-            console.error("Ошибка TTS:", event);
+        return () => {
+            if (typeof window !== "undefined") {
+                window.speechSynthesis.cancel();
+            }
         };
+    }, []);
 
-        synth.speak(utterance);
-    };
+    const playPronunciation = useCallback(() => {
+        tts(word, languageCode);
+    }, [word, languageCode]);
 
     return (
         <div className="space-y-3 w-full">

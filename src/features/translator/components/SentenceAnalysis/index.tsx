@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SentenceData } from "@/features/translator/types/types";
-import { toast } from "sonner";
+import { tts } from "../../utils/ttsUtil";
 
 interface SentenceAnalysisProps {
     data: SentenceData;
@@ -71,47 +71,18 @@ export function SentenceAnalysis({
         if (typeof window !== "undefined" && window.speechSynthesis) {
             window.speechSynthesis.getVoices();
         }
+
+        return () => {
+            if (typeof window !== "undefined") {
+                window.speechSynthesis.cancel();
+            }
+        };
     }, []);
 
-    const playPronunciation = useCallback(
-        (text: string, lang: string = "en") => {
-            if (typeof window === "undefined") return;
-
-            const synth = window.speechSynthesis;
-            if (!synth) {
-                toast.error("TTS не поддерживается");
-                return;
-            }
-
-            synth.cancel();
-            const voices = synth.getVoices();
-
-            if (voices.length === 0) {
-                const onVoicesChanged = () => {
-                    synth.onvoiceschanged = null;
-                    playPronunciation(text, lang);
-                };
-                synth.onvoiceschanged = onVoicesChanged;
-                synth.getVoices();
-                return;
-            }
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = lang;
-
-            const targetVoice = voices.find((v) => v.lang.startsWith(lang));
-            if (targetVoice) {
-                utterance.voice = targetVoice;
-            }
-
-            utterance.onerror = (event) => {
-                console.error("Ошибка TTS:", event);
-            };
-
-            synth.speak(utterance);
-        },
-        []
-    );
+    const playPronunciation = useCallback(tts, [
+        selectedWord?.word,
+        selectedWord?.languageCode,
+    ]);
 
     return (
         <>
