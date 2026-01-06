@@ -63,6 +63,7 @@ export default function TranslatorSearch({
                         onChange={setSourceLang}
                         label={sourcePlaceholder}
                         disabled={isLoading}
+                        options={LANGUAGES}
                     />
                 </div>
 
