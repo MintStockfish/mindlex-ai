@@ -262,6 +262,89 @@ async function fetchRawAiResponse(
     return String(result);
 }
 
+const ChatRequestSchema = z
+    .object({
+        prompt: z.string().optional(),
+        word: z.string().optional(),
+
+        sourceLang: z.string().default("English"),
+        targetLang: z.string().default("Russian"),
+        mode: z.enum(["word", "sentence"]).default("word"),
+    })
+    .transform((data) => {
+        const userWord = (data.prompt || data.word || "").trim();
+        return {
+            ...data,
+            userWord,
+        };
+    })
+    .refine((data) => data.userWord.length > 0, {
+        message: "Word/Sentence is required",
+        path: ["word"],
+    });
+
+type ChatRequest = z.infer<typeof ChatRequestSchema>;
+
+async function withRetries<T>(
+    fn: () => Promise<T>,
+    maxRetries: number = 3
+): Promise<T> {
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            if (attempt > 1)
+                console.warn(`[API] Retry attempt ${attempt}/${maxRetries}...`);
+            return await fn();
+        } catch (error) {
+            lastError = error;
+            if (
+                error instanceof Error &&
+                error.message === "INVALID_INPUT_DETECTED"
+            ) {
+                throw error;
+            }
+            console.warn(`[API] Attempt ${attempt} failed:`, error);
+        }
+    }
+    throw lastError || new Error("MAX_RETRIES_EXCEEDED");
+}
+
+function prepareTranslationRequest(body: unknown) {
+    const result = ChatRequestSchema.safeParse(body);
+
+    if (!result.success) {
+        const errorMessage = result.error.issues
+            .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+            .join("; ");
+        throw new Error(`VALIDATION_ERROR: ${errorMessage}`);
+    }
+
+    const data = result.data;
+
+    const systemPrompt =
+        data.mode === "sentence"
+            ? createSentenceSystemPrompt(data.sourceLang, data.targetLang)
+            : createWordSystemPrompt(data.sourceLang, data.targetLang);
+
+    const messages = [
+        { role: "system", content: systemPrompt },
+        {
+            role: "user",
+            content:
+                data.mode === "sentence"
+                    ? data.userWord
+                    : data.userWord.toLowerCase(),
+        },
+    ];
+
+    return {
+        userWord: data.userWord,
+        mode: data.mode,
+        messages,
+    };
+}
+
 export {
     createWordSystemPrompt,
     createSentenceSystemPrompt,
@@ -270,4 +353,7 @@ export {
     parseWordData,
     parseSentenceData,
     fetchRawAiResponse,
+    type ChatRequest,
+    prepareTranslationRequest,
+    withRetries,
 };
