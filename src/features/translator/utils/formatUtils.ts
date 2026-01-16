@@ -98,7 +98,7 @@ function parseSentenceData(rawInput: unknown): SentenceData {
     return parseAiResponse(rawInput, SentenceDataSchema, "Sentence");
 }
 
-const ChatRequestSchema = z
+export const ChatRequestSchema = z
     .object({
         prompt: z.string().optional(),
         word: z.string().optional(),
@@ -159,6 +159,7 @@ function prepareTranslationRequest(body: unknown) {
 export {
     cleanAiResponse,
     createFallback,
+    parseAiResponse,
     parseWordData,
     parseSentenceData,
     prepareTranslationRequest,

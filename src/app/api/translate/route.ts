@@ -1,10 +1,11 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+
 import {
     parseWordData,
     parseSentenceData,
     createFallback,
-    type ChatRequest,
     prepareTranslationRequest,
+    type ChatRequest,
 } from "@/features/translator/utils/formatUtils";
 
 import {
