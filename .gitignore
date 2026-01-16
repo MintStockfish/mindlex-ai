@@ -45,5 +45,5 @@ next-env.d.ts
 
 cloudflare-env.d.ts
 
-HAVETOKNOW.md
-Greeting User
+# SWC cache
+.swc/

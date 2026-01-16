@@ -3,11 +3,14 @@ import {
     parseWordData,
     parseSentenceData,
     createFallback,
-    fetchRawAiResponse,
     type ChatRequest,
     prepareTranslationRequest,
+} from "@/features/translator/utils/formatUtils";
+
+import {
+    fetchRawAiResponse,
     withRetries,
-} from "@/features/translator/utils/apiUtils";
+} from "@/features/translator/utils/aiUtils";
 
 export async function POST(request: Request): Promise<Response> {
     let userWordForFallback = "";

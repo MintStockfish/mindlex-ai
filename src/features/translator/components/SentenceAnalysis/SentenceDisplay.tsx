@@ -1,4 +1,4 @@
-import { getPartOfSpeechColor } from "../../utils/colorizeUtil";
+import { getPartOfSpeechColor } from "../../utils/colorizeUtils";
 
 import { SentenceData } from "../../types/types";
 
