@@ -46,7 +46,7 @@ function cleanAiResponse(text: string): string {
 function parseAiResponse<T>(
     rawInput: unknown,
     schema: z.ZodSchema<T>,
-    errorName: string
+    errorName: string,
 ): T {
     let jsonString: string;
 

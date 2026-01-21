@@ -45,7 +45,7 @@ export async function POST(request: Request): Promise<Response> {
                     success: false,
                     error: error.message.replace("VALIDATION_ERROR: ", ""),
                 },
-                { status: 400 }
+                { status: 400 },
             );
         }
 
@@ -58,16 +58,19 @@ export async function POST(request: Request): Promise<Response> {
             errorMessage.includes("JSON");
 
         if (isAiFailure && userWordForFallback) {
-            return Response.json({
-                success: false,
-                data: createFallback(userWordForFallback),
-                error: `AI unavailable (${errorMessage}), using fallback`,
-            });
+            return Response.json(
+                {
+                    success: false,
+                    data: createFallback(userWordForFallback),
+                    error: `AI unavailable (${errorMessage}), using fallback`,
+                },
+                { status: 502 },
+            );
         }
 
         return Response.json(
             { success: false, error: "Internal server error" },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }

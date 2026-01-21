@@ -1,4 +1,5 @@
 import { withRetries } from "./aiUtils";
+
 describe("withRetries", () => {
     let consoleSpy: jest.SpyInstance;
 
@@ -30,7 +31,7 @@ describe("withRetries", () => {
         expect(foo).toHaveBeenCalledTimes(1);
     });
 
-    test("should calls function three if fails", async () => {
+    test("should calls function three times if it fails", async () => {
         const foo = jest.fn();
 
         foo.mockRejectedValue(new Error("MAX_RETRIES_EXCEEDED"));
