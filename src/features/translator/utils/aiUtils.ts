@@ -3,7 +3,7 @@ async function fetchRawAiResponse(
     messages: {
         role: string;
         content: string;
-    }[]
+    }[],
 ): Promise<string> {
     const result = (await env.AI.run("@cf/openai/gpt-oss-120b", {
         input: messages,
@@ -28,7 +28,7 @@ async function fetchRawAiResponse(
         if (messageOutput?.content?.[0]?.text) {
             return messageOutput.content[0].text;
         }
-        throw new Error("UNEXPECTED_AI_RESPONSE_FORMAT_Deep");
+        throw new Error("UNEXPECTED_AI_RESPONSE_FORMAT");
     }
 
     if (typeof result === "object" && result !== null && "response" in result) {
@@ -40,7 +40,7 @@ async function fetchRawAiResponse(
 
 async function withRetries<T>(
     fn: () => Promise<T>,
-    maxRetries: number = 3
+    maxRetries: number = 3,
 ): Promise<T> {
     let lastError: unknown;
 

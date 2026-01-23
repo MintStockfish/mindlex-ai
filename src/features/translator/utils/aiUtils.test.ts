@@ -1,4 +1,17 @@
-import { withRetries } from "./aiUtils";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { fetchRawAiResponse, withRetries } from "./aiUtils";
+
+const mockAiRun = jest.fn();
+
+jest.mock("@opennextjs/cloudflare", () => ({
+    getCloudflareContext: jest.fn(() => ({
+        env: {
+            AI: {
+                run: mockAiRun,
+            },
+        },
+    })),
+}));
 
 describe("withRetries", () => {
     let consoleSpy: jest.SpyInstance;
@@ -31,7 +44,7 @@ describe("withRetries", () => {
         expect(foo).toHaveBeenCalledTimes(1);
     });
 
-    test("should calls function three times if it fails", async () => {
+    test("should retry exactly 3 times before giving up", async () => {
         const foo = jest.fn();
 
         foo.mockRejectedValue(new Error("MAX_RETRIES_EXCEEDED"));
@@ -52,5 +65,63 @@ describe("withRetries", () => {
 
         expect(foo).toHaveBeenCalledTimes(3);
         expect(result).toEqual(successData);
+    });
+});
+
+describe("fetchRawAiResponse", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test("should end successfully if everything is fine", async () => {
+        mockAiRun.mockResolvedValue({
+            output: [{ type: "message", content: [{ text: "hey!" }] }],
+        });
+
+        await expect(
+            fetchRawAiResponse(getCloudflareContext().env, [
+                {
+                    role: "role",
+                    content: "text",
+                },
+            ]),
+        ).resolves.toBe("hey!");
+    });
+
+    test("should handle simple response format", async () => {
+        mockAiRun.mockResolvedValue({
+            response: "Simple answer",
+        });
+
+        await expect(
+            fetchRawAiResponse(getCloudflareContext().env, [
+                { role: "user", content: "test" },
+            ]),
+        ).resolves.toBe("Simple answer");
+    });
+
+    test("should convert primitive result to string", async () => {
+        mockAiRun.mockResolvedValue("raw string response");
+
+        await expect(
+            fetchRawAiResponse(getCloudflareContext().env, [
+                { role: "user", content: "test" },
+            ]),
+        ).resolves.toBe("raw string response");
+    });
+
+    test("should fail if AI output is incorrect", async () => {
+        mockAiRun.mockResolvedValue({
+            output: [{ type: "message", content: [] }],
+        });
+
+        await expect(
+            fetchRawAiResponse(getCloudflareContext().env, [
+                {
+                    role: "user",
+                    content: "text",
+                },
+            ]),
+        ).rejects.toThrow("UNEXPECTED_AI_RESPONSE_FORMAT");
     });
 });
