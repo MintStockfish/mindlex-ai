@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Moon, Sun, LogOut, LogIn } from "lucide-react";
@@ -8,10 +9,56 @@ import { MindlexLogo } from "@/components/ui/MindlexLogo";
 import { useAuth } from "@/features/auth/contexts/context";
 import { useTheme } from "@/components/shared/ThemeProvider";
 
+const MOBILE_BREAKPOINT = 768;
+const SCROLL_THRESHOLD = 80;
+
 export function Header() {
     const pathname = usePathname();
     const { user, logout } = useAuth();
     const { theme, toggleTheme } = useTheme();
+
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+
+    useEffect(() => {
+        let ticking = false;
+
+        const handleScroll = () => {
+            if (ticking) return;
+
+            ticking = true;
+            window.requestAnimationFrame(() => {
+                const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+                const currentScrollY = window.scrollY;
+
+                if (!isMobile) {
+                    setIsVisible((prev) => (prev ? prev : true));
+                } else {
+                    const shouldHide =
+                        currentScrollY > lastScrollY &&
+                        currentScrollY > SCROLL_THRESHOLD;
+                    setIsVisible(() => (shouldHide ? false : true));
+                }
+
+                setLastScrollY(currentScrollY);
+                ticking = false;
+            });
+        };
+
+        const handleResize = () => {
+            if (window.innerWidth >= MOBILE_BREAKPOINT) {
+                setIsVisible(true);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        window.addEventListener("resize", handleResize, { passive: true });
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("resize", handleResize);
+        };
+    }, [lastScrollY]);
 
     const isActive = (path: string) => pathname === path;
 
@@ -20,7 +67,11 @@ export function Header() {
     }
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <header
+            className={`sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur transition-transform duration-300 supports-backdrop-filter:bg-background/60 ${
+                isVisible ? "translate-y-0" : "-translate-y-full"
+            }`}
+        >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
@@ -114,7 +165,7 @@ export function Header() {
                     <Link
                         href="/flashcards"
                         className={`relative transition-colors hover:text-foreground/80 ${
-                            isActive("/cards") ||
+                            isActive("/flashcards") ||
                             pathname.startsWith("/module/")
                                 ? "text-foreground"
                                 : "text-foreground/60"
