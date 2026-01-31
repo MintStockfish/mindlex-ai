@@ -5,13 +5,21 @@ import { InputFocusProvider } from "@/features/translator/contexts/context";
 import { JSX } from "react";
 
 export const setupLocalStorage = (): void => {
-    const localStorageMock: Storage = {
-        getItem: jest.fn<string | null, [string]>(() => "[]"),
-        setItem: jest.fn<void, [string, string]>(),
-        removeItem: jest.fn<void, [string]>(),
-        clear: jest.fn<void, []>(),
+    let store: Record<string, string> = {};
+
+    const localStorageMock = {
+        getItem: jest.fn((key: string) => store[key] || null),
+        setItem: jest.fn((key: string, value: string) => {
+            store[key] = value.toString();
+        }),
+        removeItem: jest.fn((key: string) => {
+            delete store[key];
+        }),
+        clear: jest.fn(() => {
+            store = {};
+        }),
         length: 0,
-        key: jest.fn<string | null, [number]>(() => null),
+        key: jest.fn(),
     };
 
     Object.defineProperty(global, "localStorage", {

@@ -62,7 +62,7 @@ function CardsList({ module, deleteCard }: CardsListProps) {
                                                             tts(
                                                                 card.name,
                                                                 card.languageCode ||
-                                                                    "en"
+                                                                    "en",
                                                             )
                                                         }
                                                         className="h-8 w-8 p-0"
@@ -80,7 +80,7 @@ function CardsList({ module, deleteCard }: CardsListProps) {
                                         variant="ghost"
                                         size="icon"
                                         onClick={() =>
-                                            handleDeleteCard(card.id)
+                                            handleDeleteCard(card.id!)
                                         }
                                         className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity hover:text-destructive"
                                     >

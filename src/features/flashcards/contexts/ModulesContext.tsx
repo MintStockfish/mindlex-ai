@@ -21,7 +21,9 @@ interface ModulesContextType {
     isLoading: boolean;
 }
 
-const ModulesContext = createContext<ModulesContextType | undefined>(undefined);
+export const ModulesContext = createContext<ModulesContextType | undefined>(
+    undefined,
+);
 
 export function ModulesProvider({ children }: { children: ReactNode }) {
     const [modules, setModules] = useState<Module[]>([]);
@@ -146,7 +148,7 @@ export function useModulesContext() {
     const context = useContext(ModulesContext);
     if (context === undefined) {
         throw new Error(
-            "useModulesContext must be used within a ModulesProvider"
+            "useModulesContext must be used within a ModulesProvider",
         );
     }
     return context;

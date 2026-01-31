@@ -5,7 +5,7 @@ import { tts } from "@/lib/ttsUtil";
 
 interface FlashCardProps {
     currentCard: {
-        id: string | number;
+        id?: string | number;
         name: string;
         ipa?: string;
         translation: string;

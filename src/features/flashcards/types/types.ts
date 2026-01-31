@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 export interface Word {
-    id: string;
+    id?: string;
     name: string;
     translation: string;
     ipa: string;
