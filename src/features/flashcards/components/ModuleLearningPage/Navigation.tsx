@@ -16,7 +16,7 @@ function Navigation({
     cards,
 }: NavigationProps) {
     return (
-        <div className="flex items-center justify-between gap-4 max-w-2xl mx-auto">
+        <div className="flex items-center justify-between gap-4 max-w-2xl mx-auto ">
             <Button
                 variant="outline"
                 onClick={handlePrevious}

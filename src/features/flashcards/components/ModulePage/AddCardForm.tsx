@@ -14,7 +14,7 @@ type AddCardFormProps = {
             name: string;
             translation: string;
             ipa: string;
-        }
+        },
     ) => void;
 };
 
@@ -40,7 +40,7 @@ function AddCardForm({ moduleId, addCard }: AddCardFormProps) {
     };
 
     return (
-        <Card className="mb-8 border-2 border-dashed hover:border-[#06b6d4]/50 transition-colors">
+        <Card className="mb-8 border-2 border-dashed hover:border-[#06b6d4]/50 transition-[box-shadow,transform,border-color]">
             <CardContent className="pt-6">
                 <h3 className="mb-4">Добавить новую карточку</h3>
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">

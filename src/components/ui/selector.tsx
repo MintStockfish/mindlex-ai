@@ -93,11 +93,11 @@ export function Selector({
                     placeholder={label}
                     disabled={disabled}
                     className={cn(
-                        "w-full pr-10 py-6 text-base bg-card border-2 transition-colors",
+                        "w-full pr-10 py-6 text-base bg-card border-2 transition-[box-shadow,transform,border-color]",
                         "border-slate-300 dark:border-slate-700",
                         "hover:border-[#06b6d4]/50 dark:hover:border-[#06b6d4]/50",
                         "focus-visible:border-[#06b6d4]",
-                        isOpen && "border-[#06b6d4] ring-1 ring-[#06b6d4]"
+                        isOpen && "border-[#06b6d4] ring-1 ring-[#06b6d4]",
                     )}
                 />
                 <div
@@ -107,7 +107,7 @@ export function Selector({
                     <ChevronDown
                         className={cn(
                             "h-5 w-5 transition-transform duration-200",
-                            isOpen && "rotate-180"
+                            isOpen && "rotate-180",
                         )}
                     />
                 </div>
@@ -127,7 +127,7 @@ export function Selector({
                                             "w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors",
                                             "hover:bg-accent hover:text-accent-foreground",
                                             value === opt &&
-                                                "bg-accent/50 text-accent-foreground font-medium"
+                                                "bg-accent/50 text-accent-foreground font-medium",
                                         )}
                                     >
                                         {opt}

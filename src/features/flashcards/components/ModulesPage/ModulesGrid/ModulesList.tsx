@@ -20,7 +20,7 @@ export default function ModulesList({ modules }: { modules: Module[] }) {
             {modules.map((module) => (
                 <Card
                     key={module.id}
-                    className="group cursor-pointer hover:shadow-lg hover:border-[#06b6d4]/50 transition-all duration-300 hover:-translate-y-1"
+                    className="group cursor-pointer hover:shadow-lg hover:border-[#06b6d4]/50 transition-transform duration-300 hover:-translate-y-1"
                     onClick={() =>
                         navigate.push(`flashcards/module/${module.id}`)
                     }

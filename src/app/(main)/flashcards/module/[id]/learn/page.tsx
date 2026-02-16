@@ -49,14 +49,14 @@ export default function LearnModule({ params }: Props) {
                 window.setTimeout(() => {
                     setCurrentIndex(newIndex);
                     window.requestAnimationFrame(() =>
-                        setDisableTransition(false)
+                        setDisableTransition(false),
                     );
                 }, 20);
             } else {
                 setCurrentIndex(newIndex);
             }
         },
-        [isFlipped]
+        [isFlipped],
     );
 
     const handleNext = useCallback(() => {
@@ -143,8 +143,6 @@ export default function LearnModule({ params }: Props) {
                 handleNext={handleNext}
                 handlePrevious={handlePrevious}
             />
-
-            {/* Completion Message */}
 
             {currentIndex === cards.length - 1 && isFlipped && (
                 <CompletionMessage handleReset={handleReset} id={id} />

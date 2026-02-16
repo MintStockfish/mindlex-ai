@@ -103,10 +103,10 @@ export default function TranslatorSearch({
                         disabled={isLoading}
                         ref={inputRef}
                         className={cn(
-                            "pl-12 pr-4 h-full text-xl bg-card border-2 transition-colors w-full",
+                            "pl-12 pr-4 h-full text-xl bg-card border-2 transition-[box-shadow,transform,border-color] w-full",
                             "border-slate-300 dark:border-slate-700",
                             "hover:border-[#06b6d4]/50 dark:hover:border-[#06b6d4]/50",
-                            "focus-visible:border-[#06b6d4]"
+                            "focus-visible:border-[#06b6d4]",
                         )}
                     />
                 </div>
