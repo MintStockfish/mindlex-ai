@@ -1,13 +1,16 @@
-import { WordData, SentenceData } from "@/features/translator/types/types";
-import {
-    WordDataSchema,
-    SentenceDataSchema,
-} from "@/features/translator/validations/schemas";
-import {
-    createWordSystemPrompt,
-    createSentenceSystemPrompt,
-} from "./promptUtils";
 import { z } from "zod";
+
+import {
+    SentenceDataSchema,
+    WordDataSchema,
+} from "@/features/translator/validations/schemas";
+
+import {
+    createSentenceSystemPrompt,
+    createWordSystemPrompt,
+} from "./promptUtils";
+
+import { SentenceData, WordData } from "@/features/translator/types/types";
 
 function createFallback(word: string): WordData {
     return {
@@ -157,11 +160,11 @@ function prepareTranslationRequest(body: unknown) {
 }
 
 export {
+    type ChatRequest,
     cleanAiResponse,
     createFallback,
     parseAiResponse,
-    parseWordData,
     parseSentenceData,
+    parseWordData,
     prepareTranslationRequest,
-    type ChatRequest,
 };

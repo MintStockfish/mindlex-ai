@@ -1,15 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { z } from "zod";
 
-import { useAuth } from "@/features/auth/contexts/context";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { loginSchema } from "@/features/auth/validations/schemas";
-
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -17,10 +15,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/features/auth/contexts/context";
+import { loginSchema } from "@/features/auth/validations/schemas";
 
 function LoginForm() {
     const navigate = useRouter();

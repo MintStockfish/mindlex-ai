@@ -2,11 +2,12 @@
 
 import React, {
     createContext,
-    useContext,
-    useState,
-    useEffect,
     useCallback,
+    useContext,
+    useEffect,
+    useState,
 } from "react";
+
 import { HistoryItem } from "../types/types";
 
 const HISTORY_STORAGE_KEY = "mindlex_history";

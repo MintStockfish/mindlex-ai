@@ -1,8 +1,9 @@
-import { render, RenderOptions } from "@testing-library/react";
 import { ReactElement, ReactNode } from "react";
+import { JSX } from "react";
+import { render, RenderOptions } from "@testing-library/react";
+
 import { ModulesProvider } from "@/features/flashcards/contexts/ModulesContext";
 import { InputFocusProvider } from "@/features/translator/contexts/InputContext";
-import { JSX } from "react";
 
 export const setupLocalStorage = (): void => {
     let store: Record<string, string> = {};

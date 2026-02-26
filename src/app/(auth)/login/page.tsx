@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { MindlexLogo } from "@/components/ui/MindlexLogo";
 import LoginForm from "@/features/auth/components/login/LoginForm";
 

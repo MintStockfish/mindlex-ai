@@ -2,9 +2,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
     Card,
     CardContent,
@@ -12,11 +14,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useAuth } from "@/features/auth/contexts/context";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
 import { registerSchema } from "@/features/auth/validations/schemas";
-import { z } from "zod";
 
 function RegisterForm() {
     const navigate = useRouter();
@@ -54,7 +55,7 @@ function RegisterForm() {
         const success = await register(
             result.data.name,
             result.data.email,
-            result.data.password
+            result.data.password,
         );
         setIsLoading(false);
 

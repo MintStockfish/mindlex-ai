@@ -1,7 +1,8 @@
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
-import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -13,9 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Selector } from "@/components/ui/selector";
+import { Textarea } from "@/components/ui/textarea";
 import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
+
 import { Word } from "@/features/flashcards/types/types";
 
 export default function WordHeader({
@@ -114,13 +116,13 @@ export default function WordHeader({
                             <Selector
                                 value={
                                     modules.find(
-                                        (m) => m.id === selectedModuleId
+                                        (m) => m.id === selectedModuleId,
                                     )?.title || ""
                                 }
                                 onChange={(title: string) => {
                                     console.log("[TEST]: SELECTOR CHANGED");
                                     const mod = modules.find(
-                                        (m) => m.title === title
+                                        (m) => m.title === title,
                                     );
                                     if (mod) setSelectedModuleId(mod.id);
                                 }}

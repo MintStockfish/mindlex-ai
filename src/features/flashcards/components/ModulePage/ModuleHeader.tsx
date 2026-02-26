@@ -1,6 +1,8 @@
-import { ChevronLeft, GraduationCap } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ChevronLeft, GraduationCap } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+
 import { Word } from "../../types/types";
 
 interface ModuleHeaderProps {

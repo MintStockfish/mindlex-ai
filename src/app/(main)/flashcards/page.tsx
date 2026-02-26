@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
 
-import ZeroModule from "@/features/flashcards/components/ModulesPage/ModulesGrid/ZeroModule";
-import ModulesList from "@/features/flashcards/components/ModulesPage/ModulesGrid/ModulesList";
-import ModulesHeader from "@/features/flashcards/components/ModulesPage/ModulesHeader";
 import Loader from "@/components/shared/Loader";
+import ModulesList from "@/features/flashcards/components/ModulesPage/ModulesGrid/ModulesList";
+import ZeroModule from "@/features/flashcards/components/ModulesPage/ModulesGrid/ZeroModule";
+import ModulesHeader from "@/features/flashcards/components/ModulesPage/ModulesHeader";
+import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
 
 export default function Cards() {
     const { modules, isLoading } = useModulesContext();

@@ -1,17 +1,19 @@
 "use client";
-import { useState, useEffect, use, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { Props } from "../page";
-import type { Word } from "@/features/flashcards/types/types";
-import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
-import Loader from "@/components/shared/Loader";
+import { use, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
+
+import Loader from "@/components/shared/Loader";
+import { Button } from "@/components/ui/button";
 import Breadcrumbs from "@/features/flashcards/components/ModuleLearningPage/Breadcrumbs";
-import LearnModuleHeader from "@/features/flashcards/components/ModuleLearningPage/LearnModuleHeader";
-import FlashCard from "@/features/flashcards/components/ModuleLearningPage/FlashCard";
 import CompletionMessage from "@/features/flashcards/components/ModuleLearningPage/CompletionMessage";
+import FlashCard from "@/features/flashcards/components/ModuleLearningPage/FlashCard";
+import LearnModuleHeader from "@/features/flashcards/components/ModuleLearningPage/LearnModuleHeader";
 import Navigation from "@/features/flashcards/components/ModuleLearningPage/Navigation";
+import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
+import type { Word } from "@/features/flashcards/types/types";
+
+import { Props } from "../page";
 
 export default function LearnModule({ params }: Props) {
     const { id } = use(params);

@@ -1,10 +1,11 @@
 "use client";
-import { Sparkles } from "lucide-react";
-import { useAuth } from "@/features/auth/contexts/context";
-import { FeatureCard } from "@/features/landing/FeatureCard";
-import { features, benefits } from "@/features/landing/constants";
 import Link from "next/link";
+import { Sparkles } from "lucide-react";
+
 import Loader from "@/components/shared/Loader";
+import { useAuth } from "@/features/auth/contexts/context";
+import { benefits, features } from "@/features/landing/constants";
+import { FeatureCard } from "@/features/landing/FeatureCard";
 
 export default function Home() {
     const { user, isLoading } = useAuth();

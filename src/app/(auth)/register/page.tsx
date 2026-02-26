@@ -1,7 +1,7 @@
 import Link from "next/link";
-import RegisterForm from "@/features/auth/components/register/RegisterForm";
 
 import { MindlexLogo } from "@/components/ui/MindlexLogo";
+import RegisterForm from "@/features/auth/components/register/RegisterForm";
 
 export default function Register() {
     return (

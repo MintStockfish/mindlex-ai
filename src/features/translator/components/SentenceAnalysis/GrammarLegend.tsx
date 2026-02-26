@@ -1,5 +1,6 @@
-import { getBadgeColor } from "../../utils/colorizeUtils";
 import { Badge } from "@/components/ui/badge";
+
+import { getBadgeColor } from "../../utils/colorizeUtils";
 
 export const GrammarLegend = ({
     partsOfSpeech,

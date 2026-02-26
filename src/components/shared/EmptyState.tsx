@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { cn } from "@/lib/utils";
 
 export default function EmptyStateAnimation() {
@@ -19,7 +20,7 @@ export default function EmptyStateAnimation() {
                     "text-3xl sm:text-4xl bg-linear-to-r from-[#900429] to-[#3b82f6] bg-clip-text text-transparent mb-2 text-center transition-all duration-700 ease-in-out",
                     showMainMessage
                         ? "opacity-100 translate-y-0 blur-none"
-                        : "opacity-0 translate-y-8 blur-sm"
+                        : "opacity-0 translate-y-8 blur-sm",
                 )}
             >
                 Looks like your input is not worth to translate.
@@ -32,7 +33,7 @@ export default function EmptyStateAnimation() {
                     "text-1xl text-[#ff039f]/50 mb-2 text-center transition-all duration-700 ease-in-out",
                     !showMainMessage
                         ? "opacity-100 translate-y-0 blur-none"
-                        : "opacity-0 translate-y-8 blur-sm"
+                        : "opacity-0 translate-y-8 blur-sm",
                 )}
             >
                 Or maybe it&apos;s on me.

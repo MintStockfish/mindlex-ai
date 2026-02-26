@@ -1,13 +1,16 @@
-import { Search, ArrowRightLeft } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { useInputFocus } from "@/features/translator/contexts/InputContext";
-import { Button } from "@/components/ui/button";
-import { GenerateButton } from "@/components/ui/translateButton";
-import { Selector } from "@/components/ui/selector";
-import { HistoryButton } from "@/components/ui/historyButton";
 import { useState } from "react";
+import { ArrowRightLeft, Search } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { HistoryButton } from "@/components/ui/historyButton";
+import { Input } from "@/components/ui/input";
+import { Selector } from "@/components/ui/selector";
+import { GenerateButton } from "@/components/ui/translateButton";
+import { useInputFocus } from "@/features/translator/contexts/InputContext";
+import { cn } from "@/lib/utils";
+
 import HistoryDialog from "../History/HistoryDialog";
+
 import { HistoryItem } from "@/features/translator/types/types";
 
 interface TranslatorSearchProps {

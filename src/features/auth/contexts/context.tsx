@@ -2,10 +2,10 @@
 
 import {
     createContext,
-    useContext,
-    useState,
-    useEffect,
     ReactNode,
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 
 interface User {
@@ -21,7 +21,7 @@ interface AuthContextType {
     register: (
         email: string,
         password: string,
-        name: string
+        name: string,
     ) => Promise<boolean>;
     logout: () => void;
     isLoading: boolean;
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const users = JSON.parse(localStorage.getItem("mindlex_users") || "[]");
         const foundUser: User = users.find(
-            (u: User) => u.email === email && u.password === password
+            (u: User) => u.email === email && u.password === password,
         );
 
         if (foundUser) {
@@ -71,12 +71,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const register = async (
         name: string,
         email: string,
-        password: string
+        password: string,
     ): Promise<boolean> => {
         await new Promise((resolve) => setTimeout(resolve, 800));
 
         const users: User[] = JSON.parse(
-            localStorage.getItem("mindlex_users") || "[]"
+            localStorage.getItem("mindlex_users") || "[]",
         );
         const existingUser = users.find((u: User) => u.email === email);
 

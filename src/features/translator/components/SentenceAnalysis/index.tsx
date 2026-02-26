@@ -1,9 +1,11 @@
+import { useEffect, useMemo, useState } from "react";
+
 import { Card, CardContent } from "@/components/ui/card";
-import { SentenceDisplay } from "./SentenceDisplay";
+
 import { GrammarLegend } from "./GrammarLegend";
+import { SentenceDisplay } from "./SentenceDisplay";
 import { TranslationDisplay } from "./TranslationDisplay";
 import { WordDetailModal } from "./WordDetailModal";
-import { useEffect, useMemo, useState } from "react";
 
 import { SentenceData } from "../../types/types";
 

@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Volume2 } from "lucide-react";
 import { useCallback, useEffect } from "react";
+import { Volume2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import { tts } from "@/lib/ttsUtil";
 
 interface FlashCardProps {

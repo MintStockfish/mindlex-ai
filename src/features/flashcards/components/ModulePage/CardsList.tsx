@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import { Trash2, Volume2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Word, Module } from "../../types/types";
-import { useEffect } from "react";
 import { tts } from "@/lib/ttsUtil";
+
+import { Module, Word } from "../../types/types";
 
 interface CardsListProps {
     module: Module;

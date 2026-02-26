@@ -1,4 +1,5 @@
 import { Progress } from "@/components/ui/progress";
+
 import { WordData } from "@/features/translator/types/types";
 
 export default function WordUsageStats({

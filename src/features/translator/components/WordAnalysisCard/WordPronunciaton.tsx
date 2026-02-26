@@ -1,7 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { useCallback, useEffect } from "react";
 import { Volume2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+
 import { tts } from "../../../../lib/ttsUtil";
-import { useEffect, useCallback } from "react";
 
 export default function WordPronunciation({
     ipa,

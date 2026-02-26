@@ -1,17 +1,16 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 import {
-    parseWordData,
-    parseSentenceData,
-    createFallback,
-    prepareTranslationRequest,
-    type ChatRequest,
-} from "@/features/translator/utils/formatUtils";
-
-import {
     fetchRawAiResponse,
     withRetries,
 } from "@/features/translator/utils/aiUtils";
+import {
+    type ChatRequest,
+    createFallback,
+    parseSentenceData,
+    parseWordData,
+    prepareTranslationRequest,
+} from "@/features/translator/utils/formatUtils";
 
 export async function POST(request: Request): Promise<Response> {
     let userWordForFallback = "";

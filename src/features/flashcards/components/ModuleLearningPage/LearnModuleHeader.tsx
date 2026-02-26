@@ -1,10 +1,12 @@
-import { Progress } from "@/components/ui/progress";
+import { Dispatch, SetStateAction } from "react";
+import Link from "next/link";
 import { Shuffle } from "lucide-react";
 import { ChevronLeft, RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import Link from "next/link";
-import { Dispatch, SetStateAction } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+
 import { Word } from "../../types/types";
 
 interface LearnModuleHeaderProps {
@@ -35,7 +37,6 @@ function LearnModuleHeader({
         setIsFlipped(false);
         toast.success("Карточки перемешаны");
     };
-
 
     return (
         <div className="mb-8">

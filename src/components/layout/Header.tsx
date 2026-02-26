@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Moon, Sun, LogOut, LogIn } from "lucide-react";
+import { LogIn, LogOut, Moon, Sun } from "lucide-react";
+
+import { useTheme } from "@/components/shared/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import { MindlexLogo } from "@/components/ui/MindlexLogo";
 import { useAuth } from "@/features/auth/contexts/context";
-import { useTheme } from "@/components/shared/ThemeProvider";
 
 const MOBILE_BREAKPOINT = 768;
 const SCROLL_THRESHOLD = 80;

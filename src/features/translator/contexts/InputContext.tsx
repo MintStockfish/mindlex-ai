@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useRef } from "react";
+import { createContext, ReactNode, useContext, useRef } from "react";
 
 interface InputFocusContextType {
     inputRef: React.RefObject<HTMLInputElement | null>;
@@ -6,7 +6,7 @@ interface InputFocusContextType {
 }
 
 const InputFocusContext = createContext<InputFocusContextType | undefined>(
-    undefined
+    undefined,
 );
 
 export function InputFocusProvider({
@@ -34,7 +34,7 @@ export function useInputFocus() {
     const context = useContext(InputFocusContext);
     if (context === undefined) {
         throw new Error(
-            "useInputFocus must be used within an InputFocusProvider"
+            "useInputFocus must be used within an InputFocusProvider",
         );
     }
     return context;

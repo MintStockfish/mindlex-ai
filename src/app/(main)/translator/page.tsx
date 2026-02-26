@@ -1,15 +1,14 @@
 "use client";
 
-import { AILoader } from "@/components/ui/AILoader";
 import EmptyStateAnimation from "@/components/shared/EmptyState";
-import { WordAnalysis } from "@/features/translator/components/WordAnalysisCard";
+import { AILoader } from "@/components/ui/AILoader";
 import { SentenceAnalysis } from "@/features/translator/components/SentenceAnalysis";
-import { useTranslation } from "@/features/translator/hooks/useTranslation";
-import { InputFocusProvider } from "@/features/translator/contexts/InputContext";
-
 import TranslatorHero from "@/features/translator/components/TranslatorPage/TranslatorHero";
 import TranslatorSearch from "@/features/translator/components/TranslatorPage/TranslatorSearch";
 import TranslatorWelcome from "@/features/translator/components/TranslatorPage/TranslatorWelcome";
+import { WordAnalysis } from "@/features/translator/components/WordAnalysisCard";
+import { InputFocusProvider } from "@/features/translator/contexts/InputContext";
+import { useTranslation } from "@/features/translator/hooks/useTranslation";
 
 export default function Translator() {
     const {

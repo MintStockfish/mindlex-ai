@@ -1,6 +1,7 @@
-import { Plus, BookOpen } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
+import { BookOpen, Plus } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 export default function ZeroModule({
     setIsDialogOpen,

@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { BookOpen, ChevronRight } from "lucide-react";
 
 import {
@@ -7,8 +8,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-
-import { useRouter } from "next/navigation";
 
 import { Module } from "@/features/flashcards/types/types";
 

@@ -1,12 +1,13 @@
 "use client";
 
 import { use, useMemo } from "react";
-import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
-import Breadcrumbs from "@/features/flashcards/components/ModulePage/Breadcrumbs";
-import ModuleHeader from "@/features/flashcards/components/ModulePage/ModuleHeader";
-import AddCardForm from "@/features/flashcards/components/ModulePage/AddCardForm";
-import CardsList from "@/features/flashcards/components/ModulePage/CardsList";
+
 import Loader from "@/components/shared/Loader";
+import AddCardForm from "@/features/flashcards/components/ModulePage/AddCardForm";
+import Breadcrumbs from "@/features/flashcards/components/ModulePage/Breadcrumbs";
+import CardsList from "@/features/flashcards/components/ModulePage/CardsList";
+import ModuleHeader from "@/features/flashcards/components/ModulePage/ModuleHeader";
+import { useModulesContext } from "@/features/flashcards/contexts/ModulesContext";
 
 export type Props = {
     params: Promise<{
@@ -20,7 +21,7 @@ export default function ModuleDetail({ params }: Props) {
 
     const currentModule = useMemo(
         () => modules.find((m) => m.id === id),
-        [modules, id]
+        [modules, id],
     );
 
     if (isLoading) {

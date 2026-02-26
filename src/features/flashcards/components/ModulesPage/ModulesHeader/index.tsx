@@ -1,5 +1,6 @@
-import CreateModuleDialog from "@/features/flashcards/components/ModulesPage/ModulesHeader/ModuleDialog";
 import HeaderText from "@/features/flashcards/components/ModulesPage/ModulesHeader/HeaderText";
+import CreateModuleDialog from "@/features/flashcards/components/ModulesPage/ModulesHeader/ModuleDialog";
+
 import { DialogHeaderProps } from "@/features/flashcards/types/types";
 
 export default function ModulesHeader({

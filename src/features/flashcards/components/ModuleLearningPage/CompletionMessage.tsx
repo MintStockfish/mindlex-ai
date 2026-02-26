@@ -1,5 +1,6 @@
-import { RotateCcw } from "lucide-react";
 import Link from "next/link";
+import { RotateCcw } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 
 interface CompletionMessageProps {
@@ -15,7 +16,11 @@ function CompletionMessage({ handleReset, id }: CompletionMessageProps) {
                 Вы просмотрели все карточки в этом модуле
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
-                <Button onClick={handleReset} variant="outline" className="cursor-pointer">
+                <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    className="cursor-pointer"
+                >
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Начать сначала
                 </Button>

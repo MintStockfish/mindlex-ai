@@ -1,11 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
-import { useHistory } from "../contexts/ContextHistory";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+
 import type {
-    WordData,
-    SentenceData,
     ApiResponse,
+    SentenceData,
+    WordData,
 } from "@/features/translator/types/types";
+
+import { useHistory } from "../contexts/ContextHistory";
+
 import { HistoryItem } from "@/features/translator/types/types";
 
 const STORAGE_KEY_SOURCE = "mindlex_sourceLang";

@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useModulesContext } from "../../../contexts/ModulesContext";
 
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -15,6 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+
+import { useModulesContext } from "../../../contexts/ModulesContext";
+
 import { DialogHeaderProps } from "@/features/flashcards/types/types";
 
 export default function ModuleDialog({

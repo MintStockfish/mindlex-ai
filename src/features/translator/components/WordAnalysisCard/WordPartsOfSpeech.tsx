@@ -1,4 +1,5 @@
-import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { WordData } from "@/features/translator/types/types";
 
 export default function WordPartsOfSpeech({

@@ -1,6 +1,8 @@
+import { act, renderHook } from "@testing-library/react";
+
 import { setupLocalStorage } from "@/__tests__/render-with-providers";
+
 import { ModulesProvider, useModulesContext } from "./ModulesContext";
-import { renderHook, act } from "@testing-library/react";
 
 jest.mock("sonner", () => ({
     toast: {

@@ -1,19 +1,21 @@
 "use client";
 
-import { Trash2, ArrowRight, FileText } from "lucide-react";
+import { ArrowRight, FileText, Trash2 } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { useHistory } from "@/features/translator/contexts/ContextHistory";
-import { HistoryItem } from "@/features/translator/types/types";
 import { cn } from "@/lib/utils";
+
+import { HistoryItem } from "@/features/translator/types/types";
 
 interface HistoryDialogProps {
     open: boolean;

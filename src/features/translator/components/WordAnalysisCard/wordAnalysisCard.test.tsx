@@ -1,7 +1,11 @@
-import { renderWithProviders } from "@/__tests__/render-with-providers";
 import { screen } from "@testing-library/react";
+
+import { renderWithProviders } from "@/__tests__/render-with-providers";
+
 import { WordAnalysis } from "./index";
+
 import { WordData } from "../../types/types";
+
 import "@testing-library/jest-dom";
 
 const mockWordData: WordData = {

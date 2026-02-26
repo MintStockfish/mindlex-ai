@@ -51,4 +51,4 @@ interface HistoryItem {
     timestamp: number;
 }
 
-export type { WordData, SentenceData, ApiResponse, HistoryItem };
+export type { ApiResponse, HistoryItem, SentenceData, WordData };
