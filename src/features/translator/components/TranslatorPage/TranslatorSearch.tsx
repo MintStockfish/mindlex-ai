@@ -1,10 +1,14 @@
 import { Search, ArrowRightLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useInputFocus } from "@/features/translator/contexts/context";
+import { useInputFocus } from "@/features/translator/contexts/InputContext";
 import { Button } from "@/components/ui/button";
 import { GenerateButton } from "@/components/ui/translateButton";
 import { Selector } from "@/components/ui/selector";
+import { HistoryButton } from "@/components/ui/historyButton";
+import { useState } from "react";
+import HistoryDialog from "../History/HistoryDialog";
+import { HistoryItem } from "@/features/translator/types/types";
 
 interface TranslatorSearchProps {
     value: string;
@@ -18,6 +22,7 @@ interface TranslatorSearchProps {
     sourcePlaceholder: string;
     targetPlaceholder: string;
     swapLanguages: () => void;
+    onHistorySelect: (item: HistoryItem) => void;
 }
 
 const LANGUAGES = [
@@ -50,8 +55,14 @@ export default function TranslatorSearch({
     sourcePlaceholder,
     targetPlaceholder,
     swapLanguages,
+    onHistorySelect,
 }: TranslatorSearchProps) {
     const { inputRef } = useInputFocus();
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const openHistory = () => {
+        setIsDialogOpen(true);
+    };
 
     return (
         <form onSubmit={onSubmit} className="mb-8 space-y-4">
@@ -91,6 +102,7 @@ export default function TranslatorSearch({
             </div>
 
             <div className="flex gap-2 relative z-10 h-[60px]">
+                <HistoryButton onClick={openHistory} className="h-full" />
                 <div className="relative flex-1 h-full">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
                     <Input
@@ -116,6 +128,12 @@ export default function TranslatorSearch({
                     className="h-full"
                 />
             </div>
+
+            <HistoryDialog
+                open={isDialogOpen}
+                onOpenChange={setIsDialogOpen}
+                onSelect={onHistorySelect}
+            />
         </form>
     );
 }

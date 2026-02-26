@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
+import { useHistory } from "../contexts/ContextHistory";
 import { toast } from "sonner";
 import type {
     WordData,
     SentenceData,
     ApiResponse,
 } from "@/features/translator/types/types";
+import { HistoryItem } from "@/features/translator/types/types";
 
 const STORAGE_KEY_SOURCE = "mindlex_sourceLang";
 const STORAGE_KEY_TARGET = "mindlex_targetLang";
@@ -17,7 +19,7 @@ async function performTranslationRequest(
     prompt: string,
     sourceLang: string,
     targetLang: string,
-    mode: "word" | "sentence"
+    mode: "word" | "sentence",
 ): Promise<ApiResponse> {
     const response = await fetch("/api/translate", {
         method: "POST",
@@ -54,6 +56,8 @@ export function useTranslation() {
         "word" | "sentence" | null
     >(null);
 
+    const { addToHistory } = useHistory();
+
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -61,10 +65,10 @@ export function useTranslation() {
             const savedSource = localStorage.getItem(STORAGE_KEY_SOURCE);
             const savedTarget = localStorage.getItem(STORAGE_KEY_TARGET);
             const savedPlaceholderSource = localStorage.getItem(
-                STORAGE_KEY_PLACEHOLDER_SOURCE
+                STORAGE_KEY_PLACEHOLDER_SOURCE,
             );
             const savedPlaceholderTarget = localStorage.getItem(
-                STORAGE_KEY_PLACEHOLDER_TARGET
+                STORAGE_KEY_PLACEHOLDER_TARGET,
             );
 
             if (savedSource) setSourceLangInternal(savedSource);
@@ -133,11 +137,11 @@ export function useTranslation() {
             localStorage.setItem(STORAGE_KEY_TARGET, finalTarget);
             localStorage.setItem(
                 STORAGE_KEY_PLACEHOLDER_SOURCE,
-                nextSourcePlaceholder
+                nextSourcePlaceholder,
             );
             localStorage.setItem(
                 STORAGE_KEY_PLACEHOLDER_TARGET,
-                nextTargetPlaceholder
+                nextTargetPlaceholder,
             );
         }
     }, [sourceLang, targetLang, sourcePlaceholder, targetPlaceholder]);
@@ -145,22 +149,30 @@ export function useTranslation() {
     const handleWordAnalysis = async (
         effectiveQuery: string,
         effectiveSource: string,
-        effectiveTarget: string
+        effectiveTarget: string,
     ) => {
         try {
             const result = await performTranslationRequest(
                 effectiveQuery,
                 effectiveSource,
                 effectiveTarget,
-                "word"
+                "word",
             );
             console.log("[TEST]: API Response (Word):", result);
 
             if (result.success && result.data && !("original" in result.data)) {
-                setWordData(result.data as WordData);
+                const data = result.data as WordData;
+                setWordData(data);
+                addToHistory({
+                    query: effectiveQuery,
+                    sourceLang: effectiveSource,
+                    targetLang: effectiveTarget,
+                    type: "word",
+                    data: data,
+                });
             } else {
                 throw new Error(
-                    result.error || "Не удалось получить анализ слова"
+                    result.error || "Не удалось получить анализ слова",
                 );
             }
         } catch (err) {
@@ -179,22 +191,31 @@ export function useTranslation() {
     const handleSentenceAnalysis = async (
         effectiveQuery: string,
         effectiveSource: string,
-        effectiveTarget: string
+        effectiveTarget: string,
     ) => {
         try {
             const result = await performTranslationRequest(
                 effectiveQuery,
                 effectiveSource,
                 effectiveTarget,
-                "sentence"
+                "sentence",
             );
             console.log("[TEST]: API Response (Sentence):", result);
 
             if (result.success && result.data && "original" in result.data) {
-                setSentenceData(result.data as SentenceData);
+                const data = result.data as SentenceData;
+                setSentenceData(data);
+
+                addToHistory({
+                    query: effectiveQuery,
+                    sourceLang: effectiveSource,
+                    targetLang: effectiveTarget,
+                    type: "sentence",
+                    data: data,
+                });
             } else {
                 throw new Error(
-                    result.error || "Не удалось получить перевод предложения"
+                    result.error || "Не удалось получить перевод предложения",
                 );
             }
         } catch (err) {
@@ -233,13 +254,13 @@ export function useTranslation() {
                 setTargetLang("Russian");
                 effectiveTarget = "Russian";
                 toast.info(
-                    "Target switched to Russian. I can't translate from English to English. Sorry."
+                    "Target switched to Russian. I can't translate from English to English. Sorry.",
                 );
             } else {
                 setTargetLang("English");
                 effectiveTarget = "English";
                 toast.info(
-                    "Source language and target language are the same. Target switched to English."
+                    "Source language and target language are the same. Target switched to English.",
                 );
             }
         }
@@ -259,13 +280,13 @@ export function useTranslation() {
                 await handleWordAnalysis(
                     effectiveQuery.toLowerCase(),
                     effectiveSource,
-                    effectiveTarget
+                    effectiveTarget,
                 );
             } else {
                 await handleSentenceAnalysis(
                     effectiveQuery,
                     effectiveSource,
-                    effectiveTarget
+                    effectiveTarget,
                 );
             }
         } catch (err) {
@@ -274,6 +295,25 @@ export function useTranslation() {
             setError(message);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const restoreHistoryItem = (item: HistoryItem) => {
+        setQuery(item.query);
+
+        setSourceLangInternal(item.sourceLang);
+        setTargetLangInternal(item.targetLang);
+
+        setWordData(null);
+        setSentenceData(null);
+        setError(null);
+
+        setAnalysisType(item.type);
+
+        if (item.type === "word") {
+            setWordData(item.data as WordData);
+        } else {
+            setSentenceData(item.data as SentenceData);
         }
     };
 
@@ -293,5 +333,6 @@ export function useTranslation() {
         sourcePlaceholder,
         targetPlaceholder,
         swapLanguages,
+        restoreHistoryItem,
     };
 }

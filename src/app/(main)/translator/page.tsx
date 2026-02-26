@@ -5,7 +5,7 @@ import EmptyStateAnimation from "@/components/shared/EmptyState";
 import { WordAnalysis } from "@/features/translator/components/WordAnalysisCard";
 import { SentenceAnalysis } from "@/features/translator/components/SentenceAnalysis";
 import { useTranslation } from "@/features/translator/hooks/useTranslation";
-import { InputFocusProvider } from "@/features/translator/contexts/context";
+import { InputFocusProvider } from "@/features/translator/contexts/InputContext";
 
 import TranslatorHero from "@/features/translator/components/TranslatorPage/TranslatorHero";
 import TranslatorSearch from "@/features/translator/components/TranslatorPage/TranslatorSearch";
@@ -28,6 +28,7 @@ export default function Translator() {
         sourcePlaceholder,
         targetPlaceholder,
         swapLanguages,
+        restoreHistoryItem,
     } = useTranslation();
 
     return (
@@ -47,6 +48,7 @@ export default function Translator() {
                     sourcePlaceholder={sourcePlaceholder}
                     targetPlaceholder={targetPlaceholder}
                     swapLanguages={swapLanguages}
+                    onHistorySelect={restoreHistoryItem}
                 />
 
                 <div className="min-h-[400px]">

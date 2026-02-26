@@ -16,7 +16,7 @@ export interface Module {
     wordCount: number;
 }
 
-export interface ModulesHeaderProps {
+export interface DialogHeaderProps {
     isDialogOpen: boolean;
     setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }

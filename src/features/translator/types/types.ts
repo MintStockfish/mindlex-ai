@@ -41,4 +41,14 @@ interface ApiResponse {
     error?: string;
 }
 
-export type { WordData, SentenceData, ApiResponse };
+interface HistoryItem {
+    id: string;
+    query: string;
+    sourceLang: string;
+    targetLang: string;
+    type: "word" | "sentence";
+    data: WordData | SentenceData;
+    timestamp: number;
+}
+
+export type { WordData, SentenceData, ApiResponse, HistoryItem };

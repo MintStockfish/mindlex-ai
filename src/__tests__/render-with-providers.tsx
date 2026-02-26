@@ -1,7 +1,7 @@
 import { render, RenderOptions } from "@testing-library/react";
 import { ReactElement, ReactNode } from "react";
 import { ModulesProvider } from "@/features/flashcards/contexts/ModulesContext";
-import { InputFocusProvider } from "@/features/translator/contexts/context";
+import { InputFocusProvider } from "@/features/translator/contexts/InputContext";
 import { JSX } from "react";
 
 export const setupLocalStorage = (): void => {

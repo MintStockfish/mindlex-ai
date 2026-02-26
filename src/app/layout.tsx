@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { Toaster } from "@/components/shared/Toaster";
 import { AuthProvider } from "@/features/auth/contexts/context";
+import { HistoryProvider } from "@/features/translator/contexts/ContextHistory";
 import { ThemeScript } from "@/components/shared/ThemeScript";
 import { ModulesProvider } from "@/features/flashcards/contexts/ModulesContext";
 
@@ -39,12 +40,14 @@ export default function RootLayout({
             >
                 <AuthProvider>
                     <ModulesProvider>
-                        <ThemeProvider>
-                            <Header />
-                            <main className="flex-1">{children}</main>
-                            <Footer />
-                            <Toaster />
-                        </ThemeProvider>
+                        <HistoryProvider>
+                            <ThemeProvider>
+                                <Header />
+                                <main className="flex-1">{children}</main>
+                                <Footer />
+                                <Toaster />
+                            </ThemeProvider>
+                        </HistoryProvider>
                     </ModulesProvider>
                 </AuthProvider>
             </body>

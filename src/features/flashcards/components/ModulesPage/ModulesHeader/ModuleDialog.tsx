@@ -15,12 +15,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ModulesHeaderProps } from "../../../types/types";
+import { DialogHeaderProps } from "@/features/flashcards/types/types";
 
 export default function ModuleDialog({
     isDialogOpen,
     setIsDialogOpen,
-}: ModulesHeaderProps) {
+}: DialogHeaderProps) {
     const { createModule } = useModulesContext();
     const [newModule, setNewModule] = useState({
         title: "",

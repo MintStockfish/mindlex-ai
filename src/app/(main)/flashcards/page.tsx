@@ -23,8 +23,6 @@ export default function Cards() {
                 setIsDialogOpen={setIsDialogOpen}
             />
 
-            {/*Modules List*/}
-
             {modules.length === 0 ? (
                 <ZeroModule setIsDialogOpen={setIsDialogOpen} />
             ) : (
