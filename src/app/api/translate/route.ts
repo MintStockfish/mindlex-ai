@@ -1,67 +1,34 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
+import { TransaltionService } from "@/features/translator/services/TranslationService";
 import {
-    fetchRawAiResponse,
-    withRetries,
-} from "@/features/translator/utils/aiUtils";
+    AiServiceError,
+    ValidationError,
+} from "@/features/translator/utils/errors";
 import {
     type ChatRequest,
     createFallback,
-    parseSentenceData,
-    parseWordData,
-    prepareTranslationRequest,
 } from "@/features/translator/utils/formatUtils";
 
 export async function POST(request: Request): Promise<Response> {
-    let userWordForFallback = "";
-
     try {
         const { env } = getCloudflareContext();
         const body: ChatRequest = await request.json();
 
-        const { userWord, mode, messages } = prepareTranslationRequest(body);
-        userWordForFallback = userWord;
-
-        const data = await withRetries(async () => {
-            const rawResponse = await fetchRawAiResponse(env, messages);
-
-            if (mode === "sentence") {
-                return parseSentenceData(rawResponse);
-            }
-            return parseWordData(rawResponse);
-        }, 3);
+        const translatorService = new TransaltionService(env);
+        const data = await translatorService.translate(body);
 
         return Response.json({ success: true, data });
     } catch (error: unknown) {
         console.error("[API] Handler Error:", error);
 
-        if (
-            error instanceof Error &&
-            error.message.startsWith("VALIDATION_ERROR")
-        ) {
+        if (error instanceof ValidationError) {
+            return Response.json({ error: error.message }, { status: 400 });
+        } else if (error instanceof AiServiceError) {
             return Response.json(
                 {
-                    success: false,
-                    error: error.message.replace("VALIDATION_ERROR: ", ""),
-                },
-                { status: 400 },
-            );
-        }
-
-        const errorMessage =
-            error instanceof Error ? error.message : String(error);
-
-        const isAiFailure =
-            errorMessage === "MAX_RETRIES_EXCEEDED" ||
-            errorMessage.includes("AI_MODEL_FAILURE") ||
-            errorMessage.includes("JSON");
-
-        if (isAiFailure && userWordForFallback) {
-            return Response.json(
-                {
-                    success: false,
-                    data: createFallback(userWordForFallback),
-                    error: `AI unavailable (${errorMessage}), using fallback`,
+                    data: createFallback(error.userWord),
+                    error: `AI unavailable (${error.message}), using fallback`,
                 },
                 { status: 502 },
             );

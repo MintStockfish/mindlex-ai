@@ -5,6 +5,7 @@ import {
     WordDataSchema,
 } from "@/features/translator/validations/schemas";
 
+import { ValidationError } from "./errors";
 import {
     createSentenceSystemPrompt,
     createWordSystemPrompt,
@@ -124,14 +125,14 @@ export const ChatRequestSchema = z
 
 type ChatRequest = z.infer<typeof ChatRequestSchema>;
 
-function prepareTranslationRequest(body: unknown) {
+function prepareTranslationRequest(body: ChatRequest) {
     const result = ChatRequestSchema.safeParse(body);
 
     if (!result.success) {
         const errorMessage = result.error.issues
             .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
             .join("; ");
-        throw new Error(`VALIDATION_ERROR: ${errorMessage}`);
+        throw new ValidationError(errorMessage);
     }
 
     const data = result.data;
