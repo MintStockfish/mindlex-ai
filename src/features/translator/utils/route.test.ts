@@ -63,7 +63,7 @@ describe("route", () => {
         });
 
         mockAiRun.mockResolvedValue({
-            response: JSON.stringify({
+            output_text: JSON.stringify({
                 word: "water",
                 languageCode: "en",
                 translation: "вода",
@@ -99,7 +99,7 @@ describe("route", () => {
         });
 
         mockAiRun.mockResolvedValue({
-            response: JSON.stringify({
+            output_text: JSON.stringify({
                 translation: "вода",
                 ipa: "/ˈwɔːtər/",
                 pronunciation: "вотер",

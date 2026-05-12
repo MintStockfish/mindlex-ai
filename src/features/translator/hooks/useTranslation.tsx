@@ -23,6 +23,8 @@ async function performTranslationRequest(
     sourceLang: string,
     targetLang: string,
     mode: "word" | "sentence",
+    provider: string,
+    apiKey?: string,
 ): Promise<ApiResponse> {
     const response = await fetch("/api/translate", {
         method: "POST",
@@ -32,6 +34,8 @@ async function performTranslationRequest(
             sourceLang,
             targetLang,
             mode,
+            provider,
+            apiKey,
         }),
     });
 
@@ -58,6 +62,8 @@ export function useTranslation() {
     const [analysisType, setAnalysisType] = useState<
         "word" | "sentence" | null
     >(null);
+    const [provider, setProvider] = useState<string>("");
+    const [apiKey, setApiKey] = useState<string>("");
 
     const { addToHistory } = useHistory();
 
@@ -153,6 +159,8 @@ export function useTranslation() {
         effectiveQuery: string,
         effectiveSource: string,
         effectiveTarget: string,
+        provider: string,
+        apiKey?: string,
     ) => {
         try {
             const result = await performTranslationRequest(
@@ -160,6 +168,8 @@ export function useTranslation() {
                 effectiveSource,
                 effectiveTarget,
                 "word",
+                provider,
+                apiKey,
             );
             console.log("[TEST]: API Response (Word):", result);
 
@@ -195,6 +205,8 @@ export function useTranslation() {
         effectiveQuery: string,
         effectiveSource: string,
         effectiveTarget: string,
+        provider: string,
+        apiKey?: string,
     ) => {
         try {
             const result = await performTranslationRequest(
@@ -202,6 +214,8 @@ export function useTranslation() {
                 effectiveSource,
                 effectiveTarget,
                 "sentence",
+                provider,
+                apiKey,
             );
             console.log("[TEST]: API Response (Sentence):", result);
 
@@ -234,7 +248,10 @@ export function useTranslation() {
         }
     };
 
-    const search = async (e?: React.FormEvent, overrideQuery?: string) => {
+    const search = async (
+        e?: React.FormEvent,
+        overrideQuery?: string,
+    ): Promise<void> => {
         if (e) e.preventDefault();
         const effectiveQuery = (overrideQuery || query).trim();
 
@@ -284,12 +301,16 @@ export function useTranslation() {
                     effectiveQuery.toLowerCase(),
                     effectiveSource,
                     effectiveTarget,
+                    provider,
+                    apiKey,
                 );
             } else {
                 await handleSentenceAnalysis(
                     effectiveQuery,
                     effectiveSource,
                     effectiveTarget,
+                    provider,
+                    apiKey,
                 );
             }
         } catch (err) {
@@ -337,5 +358,9 @@ export function useTranslation() {
         targetPlaceholder,
         swapLanguages,
         restoreHistoryItem,
+        provider,
+        setProvider,
+        apiKey,
+        setApiKey,
     };
 }

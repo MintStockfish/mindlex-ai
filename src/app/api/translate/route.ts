@@ -1,21 +1,18 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
-import { TransaltionService } from "@/features/translator/services/TranslationService";
+import { TranslationService } from "@/features/translator/services/TranslationService";
 import {
     AiServiceError,
     ValidationError,
 } from "@/features/translator/utils/errors";
-import {
-    type ChatRequest,
-    createFallback,
-} from "@/features/translator/utils/formatUtils";
+import { createFallback } from "@/features/translator/utils/formatUtils";
 
 export async function POST(request: Request): Promise<Response> {
     try {
         const { env } = getCloudflareContext();
-        const body: ChatRequest = await request.json();
+        const body = await request.json();
 
-        const translatorService = new TransaltionService(env);
+        const translatorService = new TranslationService(env);
         const data = await translatorService.translate(body);
 
         return Response.json({ success: true, data });

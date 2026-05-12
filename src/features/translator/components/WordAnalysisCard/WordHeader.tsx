@@ -106,42 +106,50 @@ export default function WordHeader({
                     <DialogHeader>
                         <DialogTitle>Выберите модуль</DialogTitle>
                         <DialogDescription>
-                            Выберите или создайте модуль, чтобы сохранить туда
-                            слово.
+                            {modules.length !== 0
+                                ? "Выберите или создайте модуль, чтобы сохранить туда слово."
+                                : "У вас пока что нет созданных модулей, создайте один, чтобы сохранить туда слово."}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-2 space-y-4">
-                        <div className="space-y-2">
-                            <Label>Модули</Label>
-                            <Selector
-                                value={
-                                    modules.find(
-                                        (m) => m.id === selectedModuleId,
-                                    )?.title || ""
-                                }
-                                onChange={(title: string) => {
-                                    console.log("[TEST]: SELECTOR CHANGED");
-                                    const mod = modules.find(
-                                        (m) => m.title === title,
-                                    );
-                                    if (mod) setSelectedModuleId(mod.id);
-                                }}
-                                options={moduleOptions}
-                                label="Выберите модуль..."
-                            />
-                        </div>
+                        {modules.length != 0 && (
+                            <>
+                                <div className="space-y-2">
+                                    <Label>Модули</Label>
+                                    <Selector
+                                        value={
+                                            modules.find(
+                                                (m) =>
+                                                    m.id === selectedModuleId,
+                                            )?.title || ""
+                                        }
+                                        onChange={(title: string) => {
+                                            console.log(
+                                                "[TEST]: SELECTOR CHANGED",
+                                            );
+                                            const mod = modules.find(
+                                                (m) => m.title === title,
+                                            );
+                                            if (mod)
+                                                setSelectedModuleId(mod.id);
+                                        }}
+                                        options={moduleOptions}
+                                        label="Выберите модуль..."
+                                    />
+                                </div>
 
-                        <div className="relative flex items-center justify-center my-4">
-                            <div className="absolute inset-0 flex items-center">
-                                <span className="w-full border-t border-slate-200 dark:border-slate-800" />
-                            </div>
-                            <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-background px-2 text-muted-foreground">
-                                    Или
-                                </span>
-                            </div>
-                        </div>
-
+                                <div className="relative flex items-center justify-center my-4">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <span className="w-full border-t border-slate-200 dark:border-slate-800" />
+                                    </div>
+                                    <div className="relative flex justify-center text-xs uppercase">
+                                        <span className="bg-background px-2 text-muted-foreground">
+                                            Или
+                                        </span>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         {!isCreating ? (
                             <Button
                                 variant="outline"
@@ -192,7 +200,10 @@ export default function WordHeader({
                     <DialogFooter>
                         <Button
                             variant="outline"
-                            onClick={() => setIsDialogOpen(false)}
+                            onClick={() => {
+                                setIsDialogOpen(false);
+                                setIsCreating(false);
+                            }}
                         >
                             Отмена
                         </Button>

@@ -1,43 +1,3 @@
-async function fetchRawAiResponse(
-    env: CloudflareEnv,
-    messages: {
-        role: string;
-        content: string;
-    }[],
-): Promise<string> {
-    const result = (await env.AI.run("@cf/openai/gpt-oss-120b", {
-        input: messages,
-    })) as unknown;
-
-    if (
-        typeof result === "object" &&
-        result !== null &&
-        "output" in result &&
-        Array.isArray((result as { output: unknown[] }).output)
-    ) {
-        const output = (
-            result as {
-                output: Array<{
-                    type: string;
-                    content?: Array<{ text?: string }>;
-                }>;
-            }
-        ).output;
-        const messageOutput = output.find((item) => item.type === "message");
-
-        if (messageOutput?.content?.[0]?.text) {
-            return messageOutput.content[0].text;
-        }
-        throw new Error("UNEXPECTED_AI_RESPONSE_FORMAT");
-    }
-
-    if (typeof result === "object" && result !== null && "response" in result) {
-        return (result as { response: string }).response;
-    }
-
-    return String(result);
-}
-
 async function withRetries<T>(
     fn: () => Promise<T>,
     maxRetries: number = 3,
@@ -63,4 +23,4 @@ async function withRetries<T>(
     throw lastError || new Error("MAX_RETRIES_EXCEEDED");
 }
 
-export { fetchRawAiResponse, withRetries };
+export { withRetries };

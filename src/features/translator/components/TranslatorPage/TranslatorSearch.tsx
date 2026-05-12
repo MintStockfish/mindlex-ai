@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRightLeft, Search } from "lucide-react";
+import { ArrowRightLeft, Bot, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { HistoryButton } from "@/components/ui/historyButton";
@@ -10,6 +10,7 @@ import { useInputFocus } from "@/features/translator/contexts/InputContext";
 import { cn } from "@/lib/utils";
 
 import HistoryDialog from "../History/HistoryDialog";
+import ModelSettingsDialog from "./ModelSettingsDialog";
 
 import { HistoryItem } from "@/features/translator/types/types";
 
@@ -26,6 +27,10 @@ interface TranslatorSearchProps {
     targetPlaceholder: string;
     swapLanguages: () => void;
     onHistorySelect: (item: HistoryItem) => void;
+    provider: string;
+    setProvider: (model: string) => void;
+    apiKey: string;
+    setApiKey: (model: string) => void;
 }
 
 const LANGUAGES = [
@@ -59,12 +64,21 @@ export default function TranslatorSearch({
     targetPlaceholder,
     swapLanguages,
     onHistorySelect,
+    provider,
+    setProvider,
+    apiKey,
+    setApiKey,
 }: TranslatorSearchProps) {
     const { inputRef } = useInputFocus();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isModelDialogOpen, setIsModelDialogOpen] = useState(false);
 
     const openHistory = () => {
         setIsDialogOpen(true);
+    };
+
+    const openModelSettings = () => {
+        setIsModelDialogOpen(true);
     };
 
     return (
@@ -106,6 +120,24 @@ export default function TranslatorSearch({
 
             <div className="flex gap-2 relative z-10 h-[60px]">
                 <HistoryButton onClick={openHistory} className="h-full" />
+                <Button
+                    type="button"
+                    className={cn(
+                        "h-full aspect-square p-0 rounded-lg transition-all",
+                        "bg-zinc-100 hover:bg-zinc-200 border-2 border-zinc-300 hover:border-zinc-400",
+                        "dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:border-zinc-600 dark:hover:border-zinc-500",
+                        "active:scale-95 shadow-md",
+                        "flex items-center justify-center shrink-0",
+                    )}
+                    onClick={openModelSettings}
+                    disabled={isLoading}
+                    aria-label="Open AI model settings"
+                >
+                    <Bot
+                        style={{ width: "30px", height: "30px" }}
+                        className="text-zinc-500 dark:text-zinc-200 transition-opacity"
+                    />
+                </Button>
                 <div className="relative flex-1 h-full">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
                     <Input
@@ -136,6 +168,16 @@ export default function TranslatorSearch({
                 open={isDialogOpen}
                 onOpenChange={setIsDialogOpen}
                 onSelect={onHistorySelect}
+            />
+
+            <ModelSettingsDialog
+                open={isModelDialogOpen}
+                onOpenChange={setIsModelDialogOpen}
+                provider={provider}
+                setProvider={setProvider}
+                apiKey={apiKey}
+                setApiKey={setApiKey}
+                disabled={isLoading}
             />
         </form>
     );

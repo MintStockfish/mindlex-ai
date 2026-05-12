@@ -110,6 +110,8 @@ export const ChatRequestSchema = z
         sourceLang: z.string().default("English"),
         targetLang: z.string().default("Russian"),
         mode: z.enum(["word", "sentence"]).default("word"),
+        provider: z.string().default(""),
+        apiKey: z.string().default("").optional(),
     })
     .transform((data) => {
         const userWord = (data.prompt || data.word || "").trim();
@@ -125,7 +127,7 @@ export const ChatRequestSchema = z
 
 type ChatRequest = z.infer<typeof ChatRequestSchema>;
 
-function prepareTranslationRequest(body: ChatRequest) {
+function prepareTranslationRequest(body: unknown) {
     const result = ChatRequestSchema.safeParse(body);
 
     if (!result.success) {
@@ -151,12 +153,14 @@ function prepareTranslationRequest(body: ChatRequest) {
                     ? data.userWord
                     : data.userWord.toLowerCase(),
         },
-    ];
+    ] as const;
 
     return {
         userWord: data.userWord,
         mode: data.mode,
         messages,
+        provider: data.provider,
+        apiKey: data?.apiKey,
     };
 }
 

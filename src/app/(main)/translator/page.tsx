@@ -28,6 +28,10 @@ export default function Translator() {
         targetPlaceholder,
         swapLanguages,
         restoreHistoryItem,
+        apiKey,
+        setApiKey,
+        provider,
+        setProvider,
     } = useTranslation();
 
     return (
@@ -48,6 +52,10 @@ export default function Translator() {
                     targetPlaceholder={targetPlaceholder}
                     swapLanguages={swapLanguages}
                     onHistorySelect={restoreHistoryItem}
+                    provider={provider}
+                    setProvider={setProvider}
+                    apiKey={apiKey}
+                    setApiKey={setApiKey}
                 />
 
                 <div className="min-h-[400px]">
