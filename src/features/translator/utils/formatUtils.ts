@@ -94,11 +94,13 @@ function parseAiResponse<T>(
     }
 }
 
-function parseWordData(rawInput: unknown): WordData {
-    return parseAiResponse(rawInput, WordDataSchema, "Word");
-}
-
-function parseSentenceData(rawInput: unknown): SentenceData {
+function parseData(
+    rawInput: string,
+    type: "word" | "sentence",
+): WordData | SentenceData {
+    if (type === "word") {
+        return parseAiResponse(rawInput, WordDataSchema, "Word");
+    }
     return parseAiResponse(rawInput, SentenceDataSchema, "Sentence");
 }
 
@@ -169,7 +171,6 @@ export {
     cleanAiResponse,
     createFallback,
     parseAiResponse,
-    parseSentenceData,
-    parseWordData,
+    parseData,
     prepareTranslationRequest,
 };

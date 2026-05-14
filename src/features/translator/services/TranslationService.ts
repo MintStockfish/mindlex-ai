@@ -1,7 +1,6 @@
 import { withRetries } from "@/features/translator/utils/aiUtils";
 import {
-    parseSentenceData,
-    parseWordData,
+    parseData,
     prepareTranslationRequest,
 } from "@/features/translator/utils/formatUtils";
 
@@ -22,8 +21,8 @@ export class TranslationService {
                 const rawResponse = await aiProvider.fetch(messages);
 
                 return mode === "sentence"
-                    ? parseSentenceData(rawResponse)
-                    : parseWordData(rawResponse);
+                    ? parseData(rawResponse, "sentence")
+                    : parseData(rawResponse, "word");
             });
         } catch (error) {
             const errorMessage =

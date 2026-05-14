@@ -1,4 +1,4 @@
-import { AiMessage, AiProvider } from "./types";
+import { AiMessage, AiProvider } from "../types";
 
 const CLOUDFLARE_MODEL = "@cf/openai/gpt-oss-120b" as const;
 

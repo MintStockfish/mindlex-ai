@@ -5,7 +5,7 @@ import {
     GeminiGenerateContentResponse,
 } from "./geminiTypes";
 
-import { AiMessage, AiProvider } from "./types";
+import { AiMessage, AiProvider } from "../types";
 
 const GEMINI_MODEL = "gemini-3.1-flash-lite";
 

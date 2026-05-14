@@ -1,5 +1,7 @@
-import { CloudflareProvider } from "./ai-providers/cloudflareProvider";
-import { GeminiProvider } from "./ai-providers/geminiProvider";
+import { OpenAiProvider } from "@/features/translator/services/ai-providers/openai/openaiProvider";
+
+import { CloudflareProvider } from "./ai-providers/cloudflare/cloudflareProvider";
+import { GeminiProvider } from "./ai-providers/gemini/geminiProvider";
 
 import { AiProvider } from "./ai-providers/types";
 
@@ -14,9 +16,8 @@ export function createProvider(
 ): AiProvider {
     if (options.provider === "gemini" && options.apiKey) {
         return new GeminiProvider(options.apiKey);
+    } else if (options.provider === "openai" && options.apiKey) {
+        return new OpenAiProvider(options.apiKey);
     }
-
-    // The chatgpt implementation some day will appear here for sure.
-
     return new CloudflareProvider(env);
 }
