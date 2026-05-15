@@ -1,19 +1,13 @@
 import {
-    AiMessage,
-    AiProvider,
-} from "@/features/translator/services/ai-providers/types";
+    assertCompletedOpenAiResponse,
+    buildQuery,
+    extractOpenAiText,
+    isOpenAiErrorResponse,
+    isOpenAiGenerateContentResponse,
+    parseOpenAIJson,
+} from "./openaiUtils";
 
-type OpenAiResponse = {
-    output: {
-        content: {
-            text?: string;
-        }[];
-    }[];
-};
-
-function buildQuery(messages: readonly AiMessage[]) {
-    return { input: messages[1].content, instructions: messages[0].content };
-}
+import { AiMessage, AiProvider } from "../types";
 
 export class OpenAiProvider implements AiProvider {
     constructor(private readonly apiKey: string) {}
@@ -35,25 +29,24 @@ export class OpenAiProvider implements AiProvider {
             }),
         });
 
-        if (!response.ok) {
-            const errorMessage = await response
-                .text()
-                .catch((error: unknown) =>
-                    error instanceof Error ? error.message : String(error),
-                );
+        const result = await parseOpenAIJson(response);
 
-            throw new Error(
-                `OpenAI API error ${response.status}: ${errorMessage}`,
-            );
+        if (!response.ok) {
+            const errorBody = isOpenAiErrorResponse(result) ? result : null;
+            const message =
+                errorBody?.error.message ??
+                response.statusText ??
+                "Unknown error";
+
+            throw new Error(`OpenAI API error ${response.status}: ${message}`);
         }
 
-        const result = (await response.json()) as OpenAiResponse;
-        const text = result.output[0]?.content[0]?.text;
-
-        if (!text) {
+        if (!isOpenAiGenerateContentResponse(result)) {
             throw new Error("UNEXPECTED_OPENAI_RESPONSE_FORMAT");
         }
 
-        return text;
+        assertCompletedOpenAiResponse(result);
+
+        return extractOpenAiText(result);
     }
 }

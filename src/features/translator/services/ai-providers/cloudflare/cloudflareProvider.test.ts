@@ -1,4 +1,4 @@
-import { extractCloudflareText } from "./cloudflareProvider";
+import { extractCloudflareText } from "./cloudflareUtils";
 
 type CloudflareResult = Parameters<typeof extractCloudflareText>[0];
 
