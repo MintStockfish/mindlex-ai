@@ -1,4 +1,9 @@
 import {
+    AiErrorInfoType,
+    AiProviderError,
+} from "@/features/translator/utils/errors";
+
+import {
     assertCompletedOpenAiResponse,
     buildQuery,
     extractOpenAiText,
@@ -38,15 +43,29 @@ export class OpenAiProvider implements AiProvider {
                 response.statusText ??
                 "Unknown error";
 
-            throw new Error(`OpenAI API error ${response.status}: ${message}`);
+            const errorInfo: AiErrorInfoType = {
+                provider: "openai",
+                retryable: response.status >= 500,
+                message: `OpenAI API error ${response.status}: ${message}`,
+                status: response.status,
+            };
+
+            throw new AiProviderError(errorInfo);
         }
 
         if (!isOpenAiGenerateContentResponse(result)) {
-            throw new Error("UNEXPECTED_OPENAI_RESPONSE_FORMAT");
+            const errorInfo: AiErrorInfoType = {
+                provider: "openai",
+                retryable: false,
+                message: `UNEXPECTED_OPENAI_RESPONSE_FORMAT`,
+                status: response.status,
+            };
+
+            throw new AiProviderError(errorInfo);
         }
 
         assertCompletedOpenAiResponse(result);
 
-        return extractOpenAiText(result);
+        return extractOpenAiText(result, response.status);
     }
 }

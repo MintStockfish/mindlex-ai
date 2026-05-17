@@ -1,3 +1,5 @@
+import { AiProviderError } from "@/features/translator/utils/errors";
+
 import { isRecord } from "../utils";
 import {
     GeminiContentRole,
@@ -42,9 +44,15 @@ export async function parseGeminiJson(response: Response): Promise<unknown> {
     try {
         return await response.json();
     } catch (parseErr) {
-        throw new Error(
-            `Failed to parse JSON from Gemini: ${parseErr instanceof Error ? parseErr.message : String(parseErr)}`,
-        );
+        const message =
+            parseErr instanceof Error ? parseErr.message : String(parseErr);
+
+        throw new AiProviderError({
+            provider: "gemini",
+            retryable: response.status >= 500,
+            message: `Failed to parse JSON from Gemini: ${message}`,
+            status: response.status,
+        });
     }
 }
 
@@ -74,11 +82,14 @@ export function extractGeminiText(data: GeminiGenerateContentResponse): string {
     const candidate = data.candidates?.[0];
     if (!candidate) {
         const blockReason = data.promptFeedback?.blockReason;
-        throw new Error(
-            blockReason
+
+        throw new AiProviderError({
+            provider: "gemini",
+            retryable: false,
+            message: blockReason
                 ? `No candidates returned from Gemini: ${blockReason}`
                 : "No candidates returned from Gemini",
-        );
+        });
     }
 
     const text = candidate.content?.parts
@@ -87,7 +98,11 @@ export function extractGeminiText(data: GeminiGenerateContentResponse): string {
         .trim();
 
     if (!text) {
-        throw new Error("No text content in Gemini response");
+        throw new AiProviderError({
+            provider: "gemini",
+            retryable: false,
+            message: "No text content in Gemini response",
+        });
     }
 
     if (candidate.finishReason && candidate.finishReason !== "STOP") {

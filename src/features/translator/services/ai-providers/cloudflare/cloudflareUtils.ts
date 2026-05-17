@@ -1,8 +1,14 @@
+import { AiProviderError } from "@/features/translator/utils/errors";
+
 import { CloudflareOutput } from "./cloudflareTypes";
 
 export function extractCloudflareText(result: CloudflareOutput): string {
     if (!hasCloudflareText(result)) {
-        throw new Error("UNEXPECTED_AI_RESPONSE_FORMAT");
+        throw new AiProviderError({
+            provider: "cloudflare",
+            retryable: false,
+            message: "UNEXPECTED_AI_RESPONSE_FORMAT",
+        });
     }
 
     return getCloudflareText(result);

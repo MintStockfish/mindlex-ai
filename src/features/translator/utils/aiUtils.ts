@@ -1,3 +1,5 @@
+import { isRetryableError } from "./errors";
+
 async function withRetries<T>(
     fn: () => Promise<T>,
     maxRetries: number = 3,
@@ -11,12 +13,11 @@ async function withRetries<T>(
             return await fn();
         } catch (error) {
             lastError = error;
-            if (
-                error instanceof Error &&
-                error.message === "INVALID_INPUT_DETECTED"
-            ) {
+
+            if (isRetryableError(error) && !error.retryable) {
                 throw error;
             }
+
             console.warn(`[API] Attempt ${attempt} failed:`, error);
         }
     }

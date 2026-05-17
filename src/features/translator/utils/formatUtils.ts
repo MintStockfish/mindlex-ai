@@ -5,7 +5,7 @@ import {
     WordDataSchema,
 } from "@/features/translator/validations/schemas";
 
-import { ValidationError } from "./errors";
+import { AiOutputParseError, ValidationError } from "./errors";
 import {
     createSentenceSystemPrompt,
     createWordSystemPrompt,
@@ -59,38 +59,37 @@ function parseAiResponse<T>(
     } else if (typeof rawInput === "object" && rawInput !== null) {
         jsonString = JSON.stringify(rawInput);
     } else {
-        throw new Error("UNEXPECTED_AI_RESPONSE_FORMAT");
+        throw new AiOutputParseError("UNEXPECTED_AI_RESPONSE_FORMAT");
+    }
+
+    let rawObject: unknown;
+    try {
+        rawObject = JSON.parse(jsonString);
+    } catch {
+        console.error(`JSON Parse failed on (${errorName}):`, jsonString);
+        throw new AiOutputParseError(
+            `INVALID_JSON_FORMAT_${errorName.toUpperCase()}`,
+        );
+    }
+
+    if (
+        rawObject &&
+        typeof rawObject === "object" &&
+        "error" in rawObject &&
+        rawObject.error === "INVALID_INPUT"
+    ) {
+        throw new AiOutputParseError("INVALID_INPUT_DETECTED", false);
     }
 
     try {
-        const rawObject = JSON.parse(jsonString);
-
-        if (
-            rawObject &&
-            typeof rawObject === "object" &&
-            "error" in rawObject &&
-            rawObject.error === "INVALID_INPUT"
-        ) {
-            throw new Error("INVALID_INPUT_DETECTED");
-        }
-
-        const validatedData = schema.parse(rawObject);
-
-        return validatedData;
+        return schema.parse(rawObject);
     } catch (error) {
-        if (
-            error instanceof Error &&
-            error.message === "INVALID_INPUT_DETECTED"
-        ) {
-            throw error;
-        }
-
         if (error instanceof z.ZodError) {
             console.error(`Zod Validation Error (${errorName}):`, error.issues);
-        } else {
-            console.error(`JSON Parse failed on (${errorName}):`, jsonString);
         }
-        throw new Error(`INVALID_JSON_FORMAT_${errorName.toUpperCase()}`);
+        throw new AiOutputParseError(
+            `INVALID_JSON_FORMAT_${errorName.toUpperCase()}`,
+        );
     }
 }
 

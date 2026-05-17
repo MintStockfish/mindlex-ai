@@ -1,3 +1,8 @@
+import {
+    AiErrorInfoType,
+    AiProviderError,
+} from "@/features/translator/utils/errors";
+
 import { isRecord } from "../utils";
 import {
     OpenAiContentPart,
@@ -18,7 +23,13 @@ export async function parseOpenAIJson(response: Response): Promise<unknown> {
     } catch (error) {
         const errorMessage =
             error instanceof Error ? error.message : String(error);
-        throw new Error(`Parsing JSON error: ${errorMessage}`);
+
+        throw new AiProviderError({
+            provider: "openai",
+            retryable: response.status >= 500,
+            message: `Parsing JSON error: ${errorMessage}`,
+            status: response.status,
+        });
     }
 }
 
@@ -86,13 +97,23 @@ function hasOpenAiOutputText(item: OpenAiOutputItem): boolean {
     );
 }
 
-export function extractOpenAiText(result: OpenAiResponse): string {
+export function extractOpenAiText(
+    result: OpenAiResponse,
+    status: number,
+): string {
     const text = result.output
         .find((item) => item.type === "message")
         ?.content?.find((part) => part.type === "output_text")?.text;
 
     if (!text) {
-        throw new Error("UNEXPECTED_OPENAI_RESPONSE_FORMAT");
+        const errorInfo: AiErrorInfoType = {
+            provider: "openai",
+            retryable: false,
+            message: `UNEXPECTED_OPENAI_RESPONSE_FORMAT`,
+            status,
+        };
+
+        throw new AiProviderError(errorInfo);
     }
 
     return text.trim();
@@ -100,6 +121,10 @@ export function extractOpenAiText(result: OpenAiResponse): string {
 
 export function assertCompletedOpenAiResponse(result: OpenAiResponse): void {
     if (result.status !== "completed") {
-        throw new Error(`OpenAI response was not completed: ${result.status}`);
+        throw new AiProviderError({
+            provider: "openai",
+            retryable: false,
+            message: `OpenAI response was not completed: ${result.status}`,
+        });
     }
 }

@@ -1,4 +1,9 @@
 import {
+    AiErrorInfoType,
+    AiProviderError,
+} from "@/features/translator/utils/errors";
+
+import {
     buildGeminiRequest,
     extractGeminiText,
     isGeminiErrorResponse,
@@ -37,13 +42,25 @@ export class GeminiProvider implements AiProvider {
                 response.statusText ??
                 "Unknown error";
 
-            throw new Error(
-                `Gemini API error ${response.status}${status}: ${message}`,
-            );
+            const errorInfo: AiErrorInfoType = {
+                provider: "gemini",
+                retryable: response.status >= 500,
+                message: `Gemini API error ${response.status}${status}: ${message}`,
+                status: response.status,
+            };
+
+            throw new AiProviderError(errorInfo);
         }
 
         if (!isGeminiGenerateContentResponse(data)) {
-            throw new Error("UNEXPECTED_GEMINI_RESPONSE_FORMAT");
+            const errorInfo: AiErrorInfoType = {
+                provider: "gemini",
+                retryable: false,
+                message: "UNEXPECTED_GEMINI_RESPONSE_FORMAT",
+                status: response.status,
+            };
+
+            throw new AiProviderError(errorInfo);
         }
 
         return extractGeminiText(data);

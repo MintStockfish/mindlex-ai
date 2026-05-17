@@ -1,4 +1,5 @@
 import { withRetries } from "./aiUtils";
+import { AiOutputParseError } from "./errors";
 
 describe("withRetries", () => {
     let consoleSpy: jest.SpyInstance;
@@ -20,10 +21,12 @@ describe("withRetries", () => {
         expect(result).toEqual({ data: true });
     });
 
-    test("should exit immediately if INVALID_INPUT_DETECTED occurs", async () => {
+    test("should exit immediately if error is not retryable", async () => {
         const foo = jest.fn();
 
-        foo.mockRejectedValue(new Error("INVALID_INPUT_DETECTED"));
+        foo.mockRejectedValue(
+            new AiOutputParseError("INVALID_INPUT_DETECTED", false),
+        );
 
         await expect(withRetries(foo)).rejects.toThrow(
             "INVALID_INPUT_DETECTED",
